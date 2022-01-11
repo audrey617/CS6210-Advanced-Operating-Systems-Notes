@@ -6,17 +6,10 @@
 By lesson end, ready to discuss structure of OS
 
 # L01a: Principle of Abstraction
-![image](https://user-images.githubusercontent.com/62491253/149030892-f78b48c2-8b01-4b75-afe3-ec8a686a52d6.png=100x)
-![image](https://user-images.githubusercontent.com/62491253/149030914-b6e3f04f-01c7-41f6-9f56-233238e6892b.png=100x)
-
 1. Abstraction: A well understood interface that hides all details within a subsystem
-
-![image](https://user-images.githubusercontent.com/62491253/149031233-3af9c2cd-f7a3-4fa3-8a37-7c210ca77958.png=100x)
-![image](https://user-images.githubusercontent.com/62491253/149031308-4d971f1d-fd4c-4aa3-bbba-d0fe3e0627b1.png=100x)
-
 2. Digging Deeper Into the Power of Abstractions
-  - a series of abstractions sit between Google Earth and Electron holes
-   - From lowest level of the hierarchy to highest
+  - A series of abstractions sit between Google Earth and Electron holes
+  - From lowest level of the hierarchy to highest
      - **Electron and holes**
      - **Transistors**: transistor reigns in the randomness in the movement of electrons and holes, and gives us an abstraction of a switching device, which is the transistor
      - **Logic gates**: And-gate, not-gate & or-gate where we implement boolean logic using transistor as a switching device
