@@ -15,8 +15,9 @@ By lesson end, ready to discuss structure of OS
      - **Logic gates**: And-gate, not-gate & or-gate where we implement boolean logic using transistor as a switching device
      - **Sequential and combination logic elements**: implemented using logic gates such as and, not and or. Logic elements are then organized into a data pack, depending on what hardware circuitry or functionality we want to implement
      - **Machine Organization (data path + control)**: The data pack establishes the communication paths we need between these combinational and sequential logic elements. To realize whatever is the hardware device that we are trying to design, and control part of it is a finite shaped machine that controls the data path and implements the repertoire of the hardware device that we are trying to realize. For instance, if the intent is to implement a processor, then the instructions in the processor have to be implemented using the data pad, and controlled by the control logic
-     - **Instruction set architecture (ISA)**: The abstraction defined by a processor/CPU, like "intel inside" ads is the ISA been talked about by the promo.The ISA is all the details of how the ISA is actually implemented by the data path and the control logic
-     - **System software(OS,compilers,etc)**
+     - **Instruction set architecture (ISA)**: The abstraction defined by a processor/CPU, like "intel inside" ads is the ISA been talked about by the promo.The ISA is all the details of how the ISA is actually implemented by the data path and the control logic. The meeting point between software and hardware - the hardware implementation simply fulfils the contract of realizing the instructions of architecture of the processor.
+     - **System software(OS,compilers,etc)**: The software level doesn't care and doesn't know how the lower level  is implemented.
      - **Applications**
 
-3. Digging Deeper Into the Power of Abstractions
+3. Layers of Abstraction
+<img src="https://user-images.githubusercontent.com/62491253/149035805-ea0a6482-b8dd-4173-8b97-70871f714c49.png" alt="drawing" width="200"/>
