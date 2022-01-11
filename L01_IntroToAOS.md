@@ -20,4 +20,5 @@ By lesson end, ready to discuss structure of OS
      - **Applications**
 
 3. Layers of Abstraction
+
     <img src="https://user-images.githubusercontent.com/62491253/149035805-ea0a6482-b8dd-4173-8b97-70871f714c49.png" alt="drawing" width="400"/>
