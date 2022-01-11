@@ -25,7 +25,6 @@ By lesson end, ready to discuss structure of OS
 <p align="center">
    <img src="https://user-images.githubusercontent.com/62491253/149035805-ea0a6482-b8dd-4173-8b97-70871f714c49.png" alt="drawing" width="500"/>
 </p>
-
 <p align="center">
    <img src="https://user-images.githubusercontent.com/62491253/149037703-c2c82505-ffb1-4e76-9879-d5974be3248c.png" alt="drawing" width="500"/>
 </p>
@@ -36,7 +35,7 @@ By lesson end, ready to discuss structure of OS
 <p align="center">
    <img src="https://user-images.githubusercontent.com/62491253/149037423-72ef858f-0eae-4210-89db-c83eb98eddb4.png" alt="drawing" width="500"/>
 </p>
-The right answer is "Flase". Basically the hardware inside a computer system consists of processor, memory and I/O devices. The organization of these hardware elements within the computer system is not going to change tremendously 
+   - The right answer is "Flase". Basically the hardware inside a computer system consists of processor, memory and I/O devices. The organization of these hardware elements within the computer system is not going to change tremendously 
 
 2. Hardware Resources in a Computer System
 <p align="center">
