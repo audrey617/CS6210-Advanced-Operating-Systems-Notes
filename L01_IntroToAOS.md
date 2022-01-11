@@ -24,6 +24,6 @@ By lesson end, ready to discuss structure of OS
    <img src="https://user-images.githubusercontent.com/62491253/149035805-ea0a6482-b8dd-4173-8b97-70871f714c49.png" alt="drawing" width="500"/>
 </p>
    - Per wikipedia, The discipline of computer architecture has three main subcategories:
-     - Instruction set architecture (ISA): defines the machine code that a processor reads and acts upon as well as the word size, memory address modes, processor registers, and data type.
-     - Microarchitecture: also known as "computer organization", this describes how a particular processor will implement the ISA.[15] The size of a computer's CPU cache for instance, is an issue that generally has nothing to do with the ISA.
-     - Systems design: includes all of the other hardware components within a computing system, such as data processing other than the CPU (e.g., direct memory access), virtualization, and multiprocessing.
+    - Instruction set architecture (ISA): defines the machine code that a processor reads and acts upon as well as the word size, memory address modes, processor registers, and data type.
+    -  Microarchitecture: also known as "computer organization", this describes how a particular processor will implement the ISA. The size of a computer's CPU cache for instance, is an issue that generally has nothing to do with the ISA.
+    - Systems design: includes all of the other hardware components within a computing system, such as data processing other than the CPU (e.g., direct memory access), virtualization, and multiprocessing.
