@@ -44,6 +44,9 @@ By lesson end, ready to discuss structure of OS
 <p align="center">
    <img src="https://user-images.githubusercontent.com/62491253/149038018-09f7c0f2-6531-4368-9e6e-6e802f2a1956.png" alt="drawing" width="500"/>
 </p>
-
+          1. A numbered list
+              1. A nested numbered list
+              2. Which is numbered
+          2. Which is numbered
 3. 
 4. 
