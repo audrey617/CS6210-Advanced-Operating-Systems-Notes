@@ -34,10 +34,16 @@ By lesson end, ready to discuss structure of OS
 # L01b: Hardware Resources
 1. Hardware Continuum
 <p align="center">
-   <img src="https://user-images.githubusercontent.com/62491253/149037423-72ef858f-0eae-4210-89db-c83eb98eddb4.png" alt="drawing" width="300"/>
+   <img src="https://user-images.githubusercontent.com/62491253/149037423-72ef858f-0eae-4210-89db-c83eb98eddb4.png" alt="drawing" width="500"/>
 </p>
 The right answer is "No". Basically the hardware inside a computer system consists of processor, memory and I/O devices. The organization of these hardware elements within the computer system is not going to change tremendously 
 2. Hardware Resources in a Computer System
+<p align="center">
+   <img src="https://user-images.githubusercontent.com/62491253/149037935-16a0b851-7531-4024-9cf2-0b91f020362c.png" alt="drawing" width="500"/>
+</p>
+<p align="center">
+   <img src="https://user-images.githubusercontent.com/62491253/149038018-09f7c0f2-6531-4368-9e6e-6e802f2a1956.png" alt="drawing" width="500"/>
+</p>
 
 3. 
 4. 
