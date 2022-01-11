@@ -7,6 +7,8 @@ By lesson end, ready to discuss structure of OS
 
 # L01a: Principle of Abstraction
 1. Abstraction: A well understood interface that hides all details within a subsystem
+   - Abstraction examples (we don't know how it is implemented and we don't care) - door knob, Instruction set architecture, AND logic gate, Transistor, Int data type
+   - Not Abstraction - Nums of pins coming out of chips, Exact location of the base pads in a baseball field
 2. Digging Deeper Into the Power of Abstractions
    - A series of abstractions sit between Google Earth and Electron holes
    - From lowest level of the hierarchy to highest
