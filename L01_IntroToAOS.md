@@ -54,7 +54,8 @@ By lesson end, ready to discuss structure of OS
 </ul>
 
 
-![image](https://user-images.githubusercontent.com/62491253/149047312-2c07d9c1-efc8-4544-839c-9a4493350cf2.png)
-
+<p align="center">
+   <img src="https://m.media-amazon.com/images/I/31rXUluuPUL._AC_SS450_.jpg" alt="drawing" width="200"/>
+</p>
 3. 
 4. 
