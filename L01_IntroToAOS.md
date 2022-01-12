@@ -23,7 +23,7 @@ By lesson end, ready to discuss structure of OS
 
 3. Layers of Abstraction
 <p align="center">
-   <img src="https://www.nicepng.com/png/detail/11-117393_to-be-continued-meme-png-street-sign.png" alt="drawing" width="500"/>
+   <img src="https://user-images.githubusercontent.com/62491253/149048291-e2a0946c-9ef5-4c39-b930-6b201c24d87c.png" alt="drawing" width="500"/>
 </p>
 <p align="center">
    <img src="https://user-images.githubusercontent.com/62491253/149037703-c2c82505-ffb1-4e76-9879-d5974be3248c.png" alt="drawing" width="500"/>
@@ -53,9 +53,5 @@ By lesson end, ready to discuss structure of OS
    <li> high speed devices - frame buffer, may also hang off of the system bus</li>
 </ul>
 
-
-<p align="center">
-   <img src="https://www.nicepng.com/png/detail/11-117393_to-be-continued-meme-png-street-sign.png" alt="drawing" width="200"/>
-</p>
 3. 
 4. 
