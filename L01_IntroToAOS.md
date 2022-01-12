@@ -45,13 +45,39 @@ By lesson end, ready to discuss structure of OS
    <img src="https://user-images.githubusercontent.com/62491253/149038018-09f7c0f2-6531-4368-9e6e-6e802f2a1956.png" alt="drawing" width="500"/>
 </p>
 <ul>
-  <li>*contr - controller, details see GIOS P3L5 I/O management</li>
-  <li>IO bus & system bus: usually the system bus is a synchronous communication device between CPU and memory, and the IO bus is primarily intended for devices to communicate with the CPU and the intent is that the individual needs of each of these devices in terms of the communication band with that they may need is less than cumulative band with taht may be available for the CPU to communicate with the memory or in other words, the system bus has a communication band with that is much more than the communication band with its available in the IO bus. So the system bus is a high speed bus and it connects via a bridge to the IO bus </li>   
-   <li> The bridge itself could be a specialized IO process for scheduling the devices that need to communicate with the memory/CPU. So the role of the bridge is like a processor in itself controlling who has access to this IO bus among the set of devices that may be competing at the same time for attention by the CPU and communicating the intent of these IO devices either directly with memory or via CPU </li>
-   <li> The IO bus is typically the lower speed </li>
-   <li> The system bus is typically the higher speed </li>
-   <li> high speed devices - frame buffer, may also hang off of the system bus</li>
+  <li>*contr - controller. Depends on the sophistication of the device, and the speed of the device we are talking about, the controllers may have different capabilities. For example, the network controller may have the ability to move the data directly from the memory into the network or from the network into the memory via direct memory access. Others like keyboard may support PIO</li>
+  <li>Bus: conduit for communication, serves the purpose of connecting the CPU to the memory & I/O devices </li>
+  <li> I/O bus VS System bus: The System bus connects the CPU and the main memory and the I/O bus connects the CPU to the peripheral devices. Usually the system bus is a synchronous communication device between CPU and memory, and the I/O bus is primarily intended for devices to communicate with the CPU. In this model, the system bus is typically much higher bandwidth so that the I/O bus never really disrupts CPU and memory communication. The intent is that the individual needs of each device in terms of the communication bandwidth that they may need is less than communication bandwidth that may be available for the CPU to communicate with the memory. In other words, the system bus has a communication bandwidth that is much more than the communication bandwidth that is available in the I/O bus. So the system bus is a high speed bus and it connects via a bridge to the I/O bus </li>   
+   <li> The bridge itself could be a specialized I/O processer for scheduling the devices that need to communicate with the memory(DMA device)/CPU (slow speed device). The role of the bridge is like a processor controlling who has access to this I/O bus among the set of devices that may be competing at the same time for attention by the CPU, and communicating the intent of these I/O devices either directly with memory or via CPU. The I/O bus is typically the lower speed. The system bus is typically the higher speed since it needs to cater to all the clients that may want to access the memory either from the CPU or from the devices coming from bridge</li>
+   <li> Other high speed devices like frame buffer may also hang off of the system bus due to the need for refreshing the screen in a rapid manner from the memory</li>
+   <li> In a nutshell, if you look at the internal organization of a computer system, there are going to be 1+ CPU (single-core/multi-core/parallel), a bunch of memory, whole number of I/O devices with device controllers that communicate with the CPU or memory, a conduit system bus and I/O bus for connecting controllers to memory/CPU. There is no difference for internal organization regardless of the platform specifics </li>
 </ul>
 
-3. 
-4. 
+3. In summary, the organization of a computer system is consistent enough that many of the key operating system concepts applied all of them regardless of size and capacity. On the other hand, these differences should not be ignored and in advance in hardware have helped driven innovation in operating system so we can get the most out of capabilities. 
+
+# L01c: OS Functionality
+1. OS Functionalities
+<p align="center">
+   <img src="https://user-images.githubusercontent.com/62491253/149077162-21afe77f-7d7b-4e45-bbdf-88bc89a50cdb.png" alt="drawing" width="500"/>
+</p>
+<p> The right answer is to select 1) OS is a resource manager 2) OS provides a consistent interface to the hardware resources 3)OS schedule applications on the CPU </p>
+2. What is an OS
+   - OS protected access to hardware resources
+   - OS arbitrate among competing requests
+   - OS provides a well-defined APIs for accessing the hardware resources that are managed by the operating system, and these resources are provided as operating system services through this well-defined interfaces. Applications may make a request to the operating system for such hardware resources through this well-defined API interface. And the application with the response from the OS gets the services from the OS via API calls
+<p align="center">
+   <img src="https://user-images.githubusercontent.com/62491253/149077734-f0b9f896-0878-43ab-ba63-b4661b99abcd.png" alt="drawing" width="500"/>
+</p>
+3. Hardware software interaction
+<p align="center">
+   <img src="https://user-images.githubusercontent.com/62491253/149078514-9ec0f26f-f821-49b3-809e-cfe1f9422ba1.png" alt="drawing" width="500"/>
+</p>
+<p> The right answer is that it results in a CPU interrupt </p>
+<p align="center">
+   <img src="https://user-images.githubusercontent.com/62491253/149078757-944e6fc1-6c6e-49bf-9ea5-4e44752c1411.png" alt="drawing" width="500"/>
+</p>
+
+# L01d: Managing the CPU and Memory
+<p align="center">
+   <img src="https://www.nicepng.com/png/detail/11-117393_to-be-continued-meme-png-street-sign.png" alt="drawing" width="500"/>
+</p>
