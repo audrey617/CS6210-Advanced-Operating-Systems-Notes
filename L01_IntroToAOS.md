@@ -61,6 +61,7 @@ By lesson end, ready to discuss structure of OS
    <img src="https://user-images.githubusercontent.com/62491253/149077162-21afe77f-7d7b-4e45-bbdf-88bc89a50cdb.png" alt="drawing" width="500"/>
 </p>
 <p> The right answer is to select 1) OS is a resource manager 2) OS provides a consistent interface to the hardware resources 3)OS schedule applications on the CPU </p>
+
 2. What is an OS
    - OS protected access to hardware resources
    - OS arbitrate among competing requests
@@ -68,6 +69,7 @@ By lesson end, ready to discuss structure of OS
 <p align="center">
    <img src="https://user-images.githubusercontent.com/62491253/149077734-f0b9f896-0878-43ab-ba63-b4661b99abcd.png" alt="drawing" width="500"/>
 </p>
+
 3. Hardware software interaction
 <p align="center">
    <img src="https://user-images.githubusercontent.com/62491253/149078514-9ec0f26f-f821-49b3-809e-cfe1f9422ba1.png" alt="drawing" width="500"/>
