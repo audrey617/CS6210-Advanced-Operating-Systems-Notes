@@ -37,7 +37,7 @@ By lesson end, ready to discuss structure of OS
 </p>
 <p> The right answer is "Flase". Basically the hardware inside a computer system consists of processor, memory and I/O devices. The organization of these hardware elements within the computer system is not going to change tremendously </p>
 
-2. Hardware Resources in a Computer System
+2. Hardware Resources in a Computer System & Organization With IO Bus
 <p align="center">
    <img src="https://user-images.githubusercontent.com/62491253/149037935-16a0b851-7531-4024-9cf2-0b91f020362c.png" alt="drawing" width="500"/>
 </p>
@@ -45,9 +45,13 @@ By lesson end, ready to discuss structure of OS
    <img src="https://user-images.githubusercontent.com/62491253/149038018-09f7c0f2-6531-4368-9e6e-6e802f2a1956.png" alt="drawing" width="500"/>
 </p>
 <ul>
-  <li>Coffee</li>
-  <li>Tea</li>
-  <li>Milk</li>
+  <li>*contr - controller, details see GIOS P3L5 I/O management</li>
+  <li>IO bus & system bus: usually the system bus is a synchronous communication device between CPU and memory, and the IO bus is primarily intended for devices to communicate with the CPU and the intent is that the individual needs of each of these devices in terms of the communication band with that they may need is less than cumulative band with taht may be available for the CPU to communicate with the memory or in other words, the system bus has a communication band with that is much more than the communication band with its available in the IO bus. So the system bus is a high speed bus and it connects via a bridge to the IO bus </li>   
+   <li> The bridge itself could be a specialized IO process for scheduling the devices that need to communicate with the memory/CPU. So the role of the bridge is like a processor in itself controlling who has access to this IO bus among the set of devices that may be competing at the same time for attention by the CPU and communicating the intent of these IO devices either directly with memory or via CPU </li>
+   <li> The IO bus is typically the lower speed </li>
+   <li> The system bus is typically the higher speed </li>
+   <li> high speed devices - frame buffer, may also hang off of the system bus</li>
 </ul>
+
 3. 
 4. 
