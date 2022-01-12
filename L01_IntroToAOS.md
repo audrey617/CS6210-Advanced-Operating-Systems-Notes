@@ -3,7 +3,7 @@
 - Hardware Resources
 - OS Functionality
 - OS Abstractions (Managing the CPU and Memory)
-- By lesson end, ready to discuss structure of OS
+By lesson end, ready to discuss structure of OS
 
 # L01a: Principle of Abstraction
 1. Abstraction: A well understood interface that hides all details within a subsystem
@@ -52,6 +52,9 @@
    <li> The system bus is typically the higher speed </li>
    <li> high speed devices - frame buffer, may also hang off of the system bus</li>
 </ul>
+
+
+![image](https://user-images.githubusercontent.com/62491253/149047312-2c07d9c1-efc8-4544-839c-9a4493350cf2.png)
 
 3. 
 4. 
