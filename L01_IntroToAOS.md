@@ -55,7 +55,7 @@ By lesson end, ready to discuss structure of OS
 
 
 <p align="center">
-   <img src="https://m.media-amazon.com/images/I/31rXUluuPUL._AC_SS450_.jpg" alt="drawing" width="200"/>
+   <img src="https://www.nicepng.com/png/detail/11-117393_to-be-continued-meme-png-street-sign.png" alt="drawing" width="200"/>
 </p>
 3. 
 4. 
