@@ -3,7 +3,7 @@
 - Hardware Resources
 - OS Functionality
 - OS Abstractions (Managing the CPU and Memory)
-By lesson end, ready to discuss structure of OS
+- By lesson end, ready to discuss structure of OS
 
 # L01a: Principle of Abstraction
 1. Abstraction: A well understood interface that hides all details within a subsystem
@@ -11,14 +11,14 @@ By lesson end, ready to discuss structure of OS
    - Not an abstraction - Nums of pins coming out of chips, Exact location of the base pads in a baseball field
 2. Digging Deeper Into the Power of Abstractions
    - A series of abstractions sit between Google Earth and Electron holes
-   - From lowest level of the hierarchy to highest
+   - From lowest level of the hierarchy to the highest
      - **Electron and holes**
      - **Transistors**: transistor reigns in the randomness in the movement of electrons and holes, and gives us an abstraction of a switching device, which is the transistor
      - **Logic gates**: And-gate, not-gate & or-gate where we implement boolean logic using transistor as a switching device
      - **Sequential and combination logic elements**: implemented using logic gates such as and, not and or. Logic elements are then organized into a data pack, depending on what hardware circuitry or functionality we want to implement
-     - **Machine Organization (data path + control)**: The data pack establishes the communication paths we need between these combinational and sequential logic elements. To realize whatever is the hardware device that we are trying to design, and control part of it is a finite shaped machine that controls the data path and implements the repertoire of the hardware device that we are trying to realize. For instance, if the intent is to implement a processor, then the instructions in the processor have to be implemented using the data pad, and controlled by the control logic
-     - **Instruction set architecture (ISA)**: The abstraction defined by a processor/CPU, like "intel inside" ads is the ISA been talked about by the promo. The ISA is all the details of how the ISA is actually implemented by the data path and the control logic. The meeting point between software and hardware - the hardware implementation simply fulfils the contract of realizing the instructions of architecture of the processor. ISA defines the machine code that a processor reads and acts upon as well as the word size, memory address modes, processor registers, and data type.
-     - **System software(OS,compilers,etc)**: The software level doesn't care and doesn't know how the lower level  is implemented.
+     - **Machine Organization (datapath + control)**: The datapath (the arithmetic logic unit, the set of registers, and the CPU's internal bus(es) that allow data to flow between them) establishes the communication paths we need between these combinational and sequential logic elements. To realize whatever is the hardware device that we are trying to design, and control part of it is a finite shaped machine that controls the datapath and implements the repertoire of the hardware device that we are trying to realize. For instance, if the intent is to implement a processor, then the instructions in the processor have to be implemented using the datapath, and controlled by the control logic
+     - **Instruction set architecture (ISA)**: The abstraction defined by a processor/CPU, like "intel inside" ads is the ISA been talked about by the promo. The ISA is all the details of how the ISA is actually implemented by the datapath and the control logic. The meeting point between software and hardware - the hardware implementation simply fulfils the contract of realizing the instructions of architecture of the processor. ISA defines the machine code that a processor reads and acts upon as well as the word size, memory address modes, processor registers, and data type
+     - **System software(OS,compilers,etc)**: The software level doesn't care and doesn't know how the lower levels are implemented
      - **Applications**
 
 3. Layers of Abstraction
