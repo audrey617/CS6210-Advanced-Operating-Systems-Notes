@@ -60,11 +60,13 @@ By lesson end, ready to discuss structure of OS
 <p align="center">
    <img src="https://user-images.githubusercontent.com/62491253/149077162-21afe77f-7d7b-4e45-bbdf-88bc89a50cdb.png" alt="drawing" width="500"/>
 </p>
-The right answer : 
-- OS is a resource manager 
-- OS provides a consistent interface to the hardware resources 
-- OS schedule applications on the CPU 
 
+The right answer: 
+<ul>
+  <li>1) OS is a resource manager </li>
+  <li>2) OS provides a consistent interface to the hardware resources </li>
+  <li>3) OS schedule applications on the CPU </li>
+</ul>
 
 2. What is an OS
    - OS protected access to hardware resources
