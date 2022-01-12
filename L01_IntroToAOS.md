@@ -84,7 +84,14 @@ By lesson end, ready to discuss structure of OS
 <p align="center">
    <img src="https://user-images.githubusercontent.com/62491253/149078514-9ec0f26f-f821-49b3-809e-cfe1f9422ba1.png" alt="drawing" width="500"/>
 </p>
-<p> The right answer is that it results in a CPU interrupt </p>
+<ul>
+  <li>The right answer: </li>
+    <ul>
+       <li> it results in a CPU interrupt </li>
+    </ul>
+  </li>
+</ul>
+
 <p align="center">
    <img src="https://user-images.githubusercontent.com/62491253/149078757-944e6fc1-6c6e-49bf-9ea5-4e44752c1411.png" alt="drawing" width="500"/>
 </p>
