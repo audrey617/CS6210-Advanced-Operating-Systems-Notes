@@ -137,7 +137,10 @@
    <img src="https://user-images.githubusercontent.com/62491253/149277420-e9cde036-b4a2-484d-9f8b-e70405729a42.png" alt="drawing" width="500"/>
 </p>
 
+tbc
+
 6. Memory-related OS abstractions
  <p align="center">
    <img src="https://user-images.githubusercontent.com/62491253/149277535-bb0c3f46-ba84-4ed6-ae97-db0a29100b78.png" alt="drawing" width="500"/>
 </p>
+tbc
