@@ -96,7 +96,8 @@
 </p>
 
 # L01d: Managing the CPU and Memory
-1. <p align="center">
+1. Managing the CPU and Memory: How is it Possible
+<p align="center">
    <img src="https://user-images.githubusercontent.com/62491253/149273410-5625a2fd-e930-450b-a1b7-39523ff5008a.png" alt="drawing" width="500"/>
 </p>
 </p>
@@ -113,6 +114,7 @@
   <li>Are the resource requirements of a program known to the OS before you launch it? yes and no. The OS knows enough about the program at the time of launch. So from the disk, it can create a memory footprint for the application. For instance, on your favorite platform, when you click on an icon, what is going on is, a piece of the operating system called the operating system loader is reading in the disk resident image of that application, and creating a memory resident image of that application. so this is what called the memory footprint. The memory footprint of the program contains the code that needs to get executed on the processor, global data that it might be accessing, the stack that is needed when the program is makeing procedure calls and the heap which is the dynamic memory. Then that's created by the operating system loader at the point where you click on an icon. Once the program starts running,can the application ask for additional resources at run time? of course. This is exactly the service that is provided by the operating system. For example, if the application needs more memory, it can make an operating system call, and similarly if it needs to make a connection to access a web server it makes operating system call. The operating system then performs the service on the behalf of the application, and the application can then continue with whatever it needs to get done. That's how an OS caters to the resource requirement of applications. In other words, in addtion to catering to the initial requirement of an application at the point of launching it,the OS is also the broker through which a running application can request and get additional resources during its execution time </li>
 </ul>
 
+3. Managing the CPU and Memory: Precious Resources
  <p align="center">
    <img src="https://user-images.githubusercontent.com/62491253/149275513-7d555ed3-4d7c-4169-a994-4d78a8f03e23.png" alt="drawing" width="500"/>
 </p>
@@ -121,7 +123,7 @@
   <li>The right answer is NO. OS is also a program and has to run on the CPU as we saw when we talked about how an OS deals with external interrupts. So it is going to need seom resources (CPU, memory cycles...). But a good OS will take the minimal amount of time and minimal amount of resources to do its thing. So the right answer is no, as otherwise you will not use an OS. It is sort of like when give to a charity, the first question you ask is, what percentage of the collection is used by the charity as administrative overhead? You don't want to give to a charity that spends more than a few percentage points of the collections on administrative overhead. Same thing with an OS. Most time the resources, CPU, memory and so on, is being used for running the applications. The OS gets in the way as a broker, only for arbitrating and providing the resources needed by an application safely and securely, and then gets out of the way as quickly as possible </li>
 </ul>
 
-3. Processor Related OS Abstractions
+4. Processor Related OS Abstractions
  <p align="center">
    <img src="https://user-images.githubusercontent.com/62491253/149276528-b20c806f-4db2-4633-997b-05f688bf8ed2.png" alt="drawing" width="500"/>
 </p>
@@ -130,12 +132,12 @@
    <li> A process is a program in execution. Running the program on the CPU is that by scheduling the program (static) to run on the processor,the OS gives life to program and the process is the program in execution.Therefore, the process is the program plus the state of the running program. and yes, the state of the running program is not static. It is continuously evolving as the program executes.  </li>
 </ul>
 
-4.Difference Between Process and Thread
+5.Difference Between Process and Thread
  <p align="center">
    <img src="https://user-images.githubusercontent.com/62491253/149277420-e9cde036-b4a2-484d-9f8b-e70405729a42.png" alt="drawing" width="500"/>
 </p>
 
-5. Memory-related OS abstractions
+6. Memory-related OS abstractions
  <p align="center">
    <img src="https://user-images.githubusercontent.com/62491253/149277535-bb0c3f46-ba84-4ed6-ae97-db0a29100b78.png" alt="drawing" width="500"/>
 </p>
