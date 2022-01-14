@@ -102,7 +102,7 @@
 </p>
 </p>
 <ul>
-  <li>The right answer is c. scheduling </li>
+  <li>The right answer is c. OS is multiplexing the CPU among the competing apps. You may have multiple cores but you don't have one core for every app, instead the OS do the scheduling </li>
 </ul>
 
 2.Catering to Resource Requirements
@@ -111,7 +111,7 @@
 </p>
 <ul>
   <li>The resource needs of an application includes time to compute on the CPU, the memory to hold instructions and data, and peripheral devices it might need to access during execution.</li>
-  <li>Are the resource requirements of a program known to the OS before you launch it? yes and no. The OS knows enough about the program at the time of launch. So from the disk, it can create a memory footprint for the application. For instance, on your favorite platform, when you click on an icon, what is going on is, a piece of the operating system called the operating system loader is reading in the disk resident image of that application, and creating a memory resident image of that application. so this is what called the memory footprint. The memory footprint of the program contains the code that needs to get executed on the processor, global data that it might be accessing, the stack that is needed when the program is makeing procedure calls and the heap which is the dynamic memory. Then that's created by the operating system loader at the point where you click on an icon. Once the program starts running,can the application ask for additional resources at run time? of course. This is exactly the service that is provided by the operating system. For example, if the application needs more memory, it can make an operating system call, and similarly if it needs to make a connection to access a web server it makes operating system call. The operating system then performs the service on the behalf of the application, and the application can then continue with whatever it needs to get done. That's how an OS caters to the resource requirement of applications. In other words, in addtion to catering to the initial requirement of an application at the point of launching it,the OS is also the broker through which a running application can request and get additional resources during its execution time </li>
+  <li>Are the resource requirements of a program known to the OS before you launch it? yes and no. The OS knows enough about the program at the time of launch. So that from the disk, it can create a memory footprint for the application. For instance, on your favorite platform, when you click on an icon, what is going on is, a piece of the operating system called the operating system loader is reading in the disk resident image of that application, and creating a memory resident image of that application. so this is what called the memory footprint. The memory footprint of the program contains the code that needs to get executed on the processor, global data that it might be accessing, the stack that is needed when the program is makeing procedure calls and the heap which is the dynamic memory. Then that's created by the operating system loader at the point where you click on an icon. Once the program starts running,can the application ask for additional resources at run time? of course. This is exactly the service that is provided by the operating system. For example, if the application needs more memory, it can make an operating system call, and similarly if it needs to make a connection to access a web server it makes operating system call. The operating system then performs the service on the behalf of the application, and the application can then continue with whatever it needs to get done. That's how an OS caters to the resource requirement of applications. In other words, in addtion to catering to the initial requirement of an application at the point of launching it, the OS is also the broker through which a running application can request and get additional resources during its execution time </li>
 </ul>
 
 3. Managing the CPU and Memory: Precious Resources
@@ -129,18 +129,22 @@
 </p>
 <ul>
    <li> A program is the static image (memory footprint) that is loaded into memory when you launch on application </li>
-   <li> A process is a program in execution. Running the program on the CPU is that by scheduling the program (static) to run on the processor,the OS gives life to program and the process is the program in execution.Therefore, the process is the program plus the state of the running program. and yes, the state of the running program is not static. It is continuously evolving as the program executes.  </li>
+   <li> A process is a program in execution. Running the program on the CPU is that by scheduling the program (static) to run on the processor,the OS gives life to program and the process is the program in execution.Therefore, the process is the program plus the state of the running program. And yes, the state of the running program is not static. It is continuously evolving as the program executes.  </li>
 </ul>
 
 5.Difference Between Process and Thread
  <p align="center">
    <img src="https://user-images.githubusercontent.com/62491253/149277420-e9cde036-b4a2-484d-9f8b-e70405729a42.png" alt="drawing" width="500"/>
 </p>
-
-tbc
+<ul>
+   <li>What is the difference between a process and a thread? An analogy will help here. Let's say there is a morning newspaper. This morning newspaper lying on the dining table is like a program in memory. No life. I come to the dining table and pick up the newspaper, and particularly the sports section and reading it. My starting to read the sports section of the newspaper is akin to the OS giving life to the program by starting execute it. So now there is one life in the program. That is one line of control, that is coursing through the core and data structures of the program. This is what is called the thread of execution through the program. So we have one thread of control that is coursing through the program just as I am reading a section of the newspaper. Now my wife comes along and picking up the business section and starts reading it. That's perfectly fine. Depending on our interest, I'm reading the sports section and my wife is reading the business section. Each is reading a different section of the same newspaper. Similarly, we can have multiple lives coursing through the program. Each blazing a completely different trail through the code and data structures of the program. Now each of this is a thread of control. Could there be a conflict between these threads? Sure. My wife and I may want to read the same section of the newspaper. That's a conflict. Similarly, the threads that are executing within the same program may wanna read or update the same data structures. There are the issues that the OS has to deal with, and this is what I meant when I said that the OS is orbiter for completing requests for resources. Now generalizing it, a program can have several threads of control, and each thread of control may be course through different sections of the program. And it could also be competiing for the same section of the program as well as the same data structure in order to manipulate. Thus, a process, is a program plus the state of all the threads that are executing within the program. Just as a single newspaper could be shared by me, my wife and possibly my children, in the similar manner, a program may have multiple life coursing through it and each is a thread of control, and the process is the program in execution, meaning it is the program plus the state of all the threads that are current executing within this program. </li>
+</ul>
 
 6. Memory-related OS abstractions
  <p align="center">
    <img src="https://user-images.githubusercontent.com/62491253/149277535-bb0c3f46-ba84-4ed6-ae97-db0a29100b78.png" alt="drawing" width="500"/>
 </p>
-tbc
+<ul>
+   <li>How is one program, let' say an email, protected from the misbehavior of another program, say the web browser. This is where memory related operating system abstractions come into play. In particular, the Operating system provides address space as an abstraction for each process that is distinct from one another. So the data and code that corresponds to a particular program is contained in a container which is called the address space. That's the abstraction provided by the operating system. And this address space abstraction of the OS is implemented by whatever hardware capabilities that the underlying processor architecture provides you. Processor and memory are the most precious resources. And what we've done is a quick review to understand the abstractions in the OS to manage these resources.</li>
+</ul>
+
