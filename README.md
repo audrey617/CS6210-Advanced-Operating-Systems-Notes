@@ -10,6 +10,5 @@ Intro: [Course intro page](https://omscs.gatech.edu/cs-6210-advanced-operating-s
 
 ## Table of content
 
-- Week 1 : Introduction to Advanced OS  
-  - A quick review for basic OS concepts
+- Week 1 : Introduction to Advanced OS  (A quick review for basic OS concepts)
 
