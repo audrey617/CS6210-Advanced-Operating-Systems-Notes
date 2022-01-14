@@ -3,7 +3,6 @@
 - Hardware Resources
 - OS Functionality
 - OS Abstractions (Managing the CPU and Memory)
-- By lesson end, ready to discuss structure of OS
 
 # L01a: Principle of Abstraction
 1. Abstraction: A well understood interface that hides all details within a subsystem
