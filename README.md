@@ -13,3 +13,4 @@ Repo Desc: My notes for the review purpose
 
 - Week 1 : [Introduction to Advanced OS](https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/L01_IntroToAOS.md)  (A quick review for basic OS concepts)
 
+- Week 2 :[Structure](https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/L02_Structure.md) 
