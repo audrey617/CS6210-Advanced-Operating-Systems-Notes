@@ -47,7 +47,7 @@
   <li>Responsiveness: How quickly the OS reacts to external events, and this is particularly important for applications  that are interactive in nature, Imagine playing video game -> click mouse -> want to see actions immediately on the screen </li> 
 </ul>
 
-7. Commercial OS
+6. Commercial OS
 <p align="center">
    <img src="https://user-images.githubusercontent.com/62491253/150036733-47c3e28c-d031-4afc-9e8d-de77cee0b8fc.png" alt="drawing" width="500"/>
 </p>
@@ -56,7 +56,7 @@
   <li>Are all the goals simultaneously achievable in a given operaing system? In the first glance it would seem that some of the goals conflict with one another. For example, it might seem that achieve performance we may have to sacrifice protection and/or flexibility </li> 
 </ul>
 
-8. Monolithic Structure
+7. Monolithic Structure
 <p align="center">
    <img src="https://user-images.githubusercontent.com/62491253/150037356-420d6c7b-d7a0-46eb-be9d-b6a99d7528af.png" alt="drawing" width="500"/>
 </p>
@@ -64,14 +64,15 @@
   <li>Now let's talk about different approaches to operating system structuring. The first structure that I will introduce to you is what we will call as a monolithic structure.   <li> You have the hardware at the bottom which is managed by the operating system and hardware includes,of course, the CPU, memory, peripheral devices such as the network and storage and so on.</li>   <li> And there are applications at the top. And each of these applications is in its own hardware address space. What that means is that every application is protected from one another because the hardware ensures that the address space occupied by one application is different from the other applications and that is the first level of protection that you get between the applications themselves.</li>   <li> And all the services that applications expect from the operating system are contained in this blob and that might include file system and network access, scheduling these applications on the available CPU, virtual memory management, and access to other peripheral devices. The OS itself of course is a program providing entry points for the applications for the services that are expected by the applications. And code and the data structure of the operating system is contained in its own hardware address space. What that means is that the operating system is protected from the applications and vise versa. So even if an application were to do anything in terms of misbehavior, either maliciously or unintentionally because they are in there own address spaces and the operating system is in its own hardware address space. Malfunctioning of an application does not affect the integrity of the operating system services. That is, when an application needs any system service, we switch from the hardware address space that is representing this particular application, into the hardware address space of the operating system. And execute the system code that provides the service that that is expected by the application. For example, accessing the file from the hard disk, or dynamic allocation of more memory that an application may want, or sending a message on the network. All of these things are done within the confines of the address space of the operating system itself. Note that all of the services expected of the operating system, file system, memory management, CPU scheduling, network and so on, are all contained in this one big blob. And that is the reason it's also sometimes referred to as the monolithic structure of an operating system.</li></li> 
 </ul>
 
-9. DOS-like Structure
+8. DOS-like Structure
 <p align="center">
    <img src="https://user-images.githubusercontent.com/62491253/150038025-a9894454-ade2-437b-9477-2cb9b794911e.png" alt="drawing" width="500"/>
 </p>
 <ul>
-  <li>Some of you may remember Microsoft's first entry  in the world of PCs, with their operating system called DOS, or disc operating system, and the structure of DOS looks as shown here.  And at first glance, at least visually, You might think that this structure is very similar to what I showed you as a monolithic structure before. What is the difference you see in this structure? First I would like you to think about it yourself before we go any further, so here is a question for you.</li> 
+  <li>Some of you may remember Microsoft's first entry in the world of PCs, with their operating system called DOS, or disc operating system, and the structure of DOS looks as shown here.  And at first glance, at least visually, You might think that this structure is very similar to what I showed you as a monolithic structure before. What is the difference you see in this structure? </li> 
 </ul>
 
+9. DOS-like Structure Pros and Cons
 <p align="center">
    <img src="https://user-images.githubusercontent.com/62491253/150038068-36f1bfda-ede2-45dc-a21b-82092d8e045a.png" alt="drawing" width="500"/>
 </p>
@@ -80,15 +81,17 @@
    <img src="https://user-images.githubusercontent.com/62491253/150038086-61ec8c44-b9cf-4cc7-be4d-03d74aa474fe.png" alt="drawing" width="500"/>
 </p>
 <ul>
-  <li>You have noticed visually that the key difference  was, the red line was replaced by a dotted  line, separating the application from the operating system.  And what you get out of that is performance.  Access to system services are going to be like  a procedure call, and what is lost in the  DOS-like structure is the fact that you don't  have protection. Of the operating system from the application.  An errant application can corrupt the operating system.  We'll elaborate on this in the next few panels.</li> 
+  <li>You have noticed visually that the key difference was, <strong>the red line was replaced by a dotted line, separating the application from the operating system</strong>. And what you get out of that is performance.  Access to system services are going to be like a procedure call, and what is lost in the DOS-like structure is the fact that you don't have protection of the operating system from the application. An errant application can corrupt the operating system.</li> 
 </ul>
 
-10.DOS-like Structure (cont)
+10. DOS-like Structure (cont)
 <p align="center">
    <img src="https://user-images.githubusercontent.com/62491253/150066994-b09789d9-021f-4d63-b3a9-cf08a89e4463.png" alt="drawing" width="500"/>
 </p>
 <ul><li>
-So in the DOS-like structure, the main  difference from the monolithic structure that I  showed you earlier is that the red  line separating the application from the operating system  is now replaced by a dotted line. What that means, the main difference is  there is no hard separation between the  address space of the application And the address  space of the operating system. The good  news is an application can access all the  operating system services very quickly. As they would  any procedures that they may execute within their  own application with the same speed. At  memory speeds, an application can make calls into  the operating system and get system services. That's  the good news. But the bad news is  that there is no protection of the  operating system from inerrant application. So, the  integrity of the operating system can be  compromised by a runaway application, either maliciously  or unintentionally corrupting the data structures that  are in the operating system. Now, you  may wonder why DOS Chose this particular structure. Well, at least in the early  days of PC, it was thought that a personal computer, as the name suggests, is a platform for a single user and, more importantly, the vision was, there will be exactly one app that is running at a time. Not even multitasking. So performance and simplicity was the key and protection was not primary concern in the DOS-like structure. And that you can  get good performance comes from the simple observation that there is no hard separation between the  application and the operating system. The operating system  is not living in its own address space.  The application and the operating system are in  the same address space. And therefore, making a  system call by an application is going to happen as  quickly as the application would call a procedure  which the application developer wrote himself or herself.
+<li> So in the DOS-like structure, the main difference from the monolithic structure that I showed you earlier is that the red line separating the application from the operating system is now replaced by a dotted line. What that means, the main difference is there is no hard separation between the address space of the application and the address space of the operating system. </li>
+<li> The good news is an application can access all the operating system services very quickly. As they would  any procedures that they may execute within their own application with the same speed. At memory speeds, an application can make calls into  the operating system and get system services. That's the good news. But the bad news is that there is no protection of the  operating system from an errant application. So, the integrity of the operating system can be compromised by a runaway application, either maliciously or unintentionally corrupting the data structures that are in the operating system.</li>
+<li> Now you may wonder why DOS Chose this particular structure. Well, at least in the early  days of PC, it was thought that a personal computer, as the name suggests, is a platform for a single user and, more importantly, the vision was, there will be exactly one app that is running at a time. Not even multitasking. So performance and simplicity was the key and protection was not primary concern in the DOS-like structure. And that you can get good performance comes from the simple observation that there is no hard separation between the application and the operating system. The operating system is not living in its own address space. The application and the operating system are in the same address space. And therefore, making a system call by an application is going to happen as quickly as the application would call a procedure which the application developer wrote himself or herself.</li>
 </li> </ul>
 
 11. Loss of Protection in DOS like Structure
