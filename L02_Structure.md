@@ -217,7 +217,7 @@ So now we set the stage for discussing the spin and the exokernel approaches to 
    <li>So in other words, in a nutshell, what we want in the operating structure is performance, protection, and flexibility.</li>
 </ul>
 
-##3. Approaches to Extensibility
+<h2>3. Approaches to Extensibility</h2>
 <p align="center">
    <img src="https://user-images.githubusercontent.com/62491253/150073187-1e6849fa-c52f-498d-83d9-9c287149e778.png" alt="drawing" width="500"/>
 </p>
