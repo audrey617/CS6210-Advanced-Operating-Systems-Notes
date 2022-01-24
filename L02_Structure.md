@@ -8,7 +8,7 @@
 </p>
 
 # L02a: OS Structure Overview
-##1. OS System Services: 
+<h2>1. OS System Services: </h2>
 
 <p align="center">
    <img src="https://user-images.githubusercontent.com/62491253/150034600-22a4c9d4-29ae-4d04-9644-fe6f5f209ab8.png" alt="drawing" width="500"/>
