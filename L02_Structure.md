@@ -73,7 +73,7 @@
   <li>Some of you may remember Microsoft's first entry in the world of PCs, with their operating system called DOS, or disc operating system, and the structure of DOS looks as shown here.  And at first glance, at least visually, You might think that this structure is very similar to what I showed you as a monolithic structure before. What is the difference you see in this structure? </li> 
 </ul>
 
-##9. DOS-like Structure Pros and Cons
+<h2>9. DOS-like Structure Pros and Cons</h2>
 <p align="center">
    <img src="https://user-images.githubusercontent.com/62491253/150038068-36f1bfda-ede2-45dc-a21b-82092d8e045a.png" alt="drawing" width="500"/>
 </p>
@@ -85,7 +85,7 @@
   <li>You have noticed visually that the key difference was,the red line was replaced by a dotted line, separating the application from the operating system. And what you get out of that is performance.  Access to system services are going to be like a procedure call, and what is lost in the DOS-like structure is the fact that you don't have protection of the operating system from the application. An errant application can corrupt the operating system.</li> 
 </ul>
 
-##10. DOS-like Structure (cont)
+<h2>10. DOS-like Structure (cont)</h2>
 <p align="center">
    <img src="https://user-images.githubusercontent.com/62491253/150066994-b09789d9-021f-4d63-b3a9-cf08a89e4463.png" alt="drawing" width="500"/>
 </p>
@@ -96,7 +96,7 @@
 <li> Now you may wonder why DOS Chose this particular structure. Well, at least in the early days of PC, it was thought that a personal computer, as the name suggests, is a platform for a single user and, more importantly, the vision was, there will be exactly one app that is running at a time. Not even multitasking. <strong> So performance and simplicity was the key and protection was not primary concern in the DOS-like structure.</strong> And that you can get good performance comes from the simple observation that there is no hard separation between the application and the operating system. The operating system is not living in its own address space. The application and the operating system are in the same address space. And therefore, making a system call by an application is going to happen as quickly as the application would call a procedure which the application developer wrote himself or herself.</li>
 </ul>
 
-##11. Loss of Protection in DOS like Structure
+<h2>11. Loss of Protection in DOS like Structure</h2>
 <p align="center">
    <img src="https://user-images.githubusercontent.com/62491253/150067607-96991160-d03f-4df9-a0c9-85c85c650ce3.png" alt="drawing" width="500"/>
 </p>
@@ -107,7 +107,7 @@ But this loss of protection with the Dos-like structure is simply unacceptable f
    <li> Now, you may wonder why do we need to customize the operating system service for different applications? Why not one size fits all? Why is there an issue? If you look at a couple of examples, the need for customization will become fairly obvious. For example, Interactive video games. The requirement of applications, that are providing a video game experience for the user. Or consider another application, which is computing all the prime numbers. You can immediately see that the operating system needs for these two classes of applications are perhaps very different. On the one hand, for the little kid who is playing a video game, the key determinant of a good operating system would be responsiveness — How quickly the operating system is responding to his moves when he plays his video game. On the other hand, for the programmer that wrote this prime number computing application, the key determinant of performance is going to be sustained CPU time that's available for crunching this application.   
 </li></ul>
 
-##12. Opportunities for Customization
+<h2>12. Opportunities for Customization</h2>
 <p align="center">
    <img src="https://user-images.githubusercontent.com/62491253/150068145-8d61e089-3c96-4cb0-a80f-1f4442c13866.png" alt="drawing" width="500"/>
 </p>
@@ -117,7 +117,7 @@ But this loss of protection with the Dos-like structure is simply unacceptable f
    <li>Similar opportunities for customization exist in the way the operating system schedules processes on the processor and reacts to external events such as interrupts and so on.</li>
 </ul>
 
-##13. Microkernel based OS Structure
+<h2>13. Microkernel based OS Structure</h2>
 <p align="center">
    <img src="https://user-images.githubusercontent.com/62491253/150069251-b48cac8a-e9fd-4775-920f-79fe841f5b21.png" alt="drawing" width="500"/>
 </p>
@@ -136,7 +136,7 @@ But this loss of protection with the Dos-like structure is simply unacceptable f
 
  <ul><li> So what have we gained by the structure? What we have gained by the structure is extensibility. Because these OS services are implemented as service processes, we can have replicated server processes with different characteristics. For instance, this application (App1) may choose to use this particular file system (file system1). Another application (App2) may choose a different file system (file system2). No longer do we have that one size fits all characterization of the monolithic kernel. And this is the biggest draw for the microkernel based design that it is easy to extend the services that are provided with the operating system to customize the services depending on the needs of the application. This all sounds good, but is there a catch?</li></ul>
 
-##14. Downside to Microkernel
+<h2>14. Downside to Microkernel</h2>
 <p align="center">
    <img src="https://user-images.githubusercontent.com/62491253/150070170-6abc6da5-aeaa-4388-9fc5-ce44098bad3c.png" alt="drawing" width="500"/>
 </p>
@@ -146,7 +146,7 @@ But this loss of protection with the Dos-like structure is simply unacceptable f
    <li>On the other hand, if you look at a microkernel based structure, the application has to make an IPC call in order to contact the service, which is, in this case, a file system service let's say, which means that the application has to go through the microkernel, making the IPC call. Going up to the file system and the file system does the work, makes another IPC call in order to deliver the results of that system service back up to the application. So the minimum traversal so that you can see is going from the application of the microkernel, microkernel to the file system, and back into the microkernel and back up to the application. Potentially, there may be many more calls that may happen among servers that are sitting above the microkernel. Because the file system may have to contact the storage manager and the file system may have to contact the memory manager. All of those are server processes living above the microkernel and all of them require IPC for talking to one another. So what that means is that with this structure, there is a potential that we may have to switch between the address spaces of the application and many services that are living on top of the microkernel, whereas in the case of the monolithic structure, there is only two address space switches, one to go from the application into the operating system, and the other to return back to the application. Whereas in a microkernel based design, there could potentially be several address space switches depending on the number of servers that need to be contacted in order to satisfy one system call that may be emanating from the application.
 </li></ul>
 
-##15. Why Performance Loss
+<h2>15. Why Performance Loss</h2>
 <p align="center">
    <img src="https://user-images.githubusercontent.com/62491253/150070725-9b15b334-96ad-44d0-914c-d5810532cdf0.png" alt="drawing" width="500"/>
 </p>
@@ -158,7 +158,7 @@ But this loss of protection with the Dos-like structure is simply unacceptable f
    <li>All of those can result in affecting the performance of the operating system. Whereas they're in a monolithic structure, since all the components are contained within the same address space, it is much easier for sharing data without copying. And that's one of the biggest potential sources of performance loss when we have this microkernel based structure.</li>
 </ul>
 
-##16. Features of Various OS
+<h2>16. Features of Various OS</h2>
 <p align="center">
    <img src="https://user-images.githubusercontent.com/62491253/150071147-919f6783-2c47-4b31-abb0-fc180901d3b5.png" alt="drawing" width="500"/>
 </p>
@@ -173,7 +173,7 @@ But this loss of protection with the Dos-like structure is simply unacceptable f
    <li>A micro-kernel based operating system also pays attention to protection because it makes sure that the applications and the servers are in distinct hardware address spaces separated from the microkernel itself and it is also easily extensible because you can have different servers that provide the same service but differently to cater to the needs of the application. But it may have performance flaws because of the need for so many border crossing that might be needed to go between applications and the server processes. Having said that I want to give a note of caution, on the surface it may appear that the microkernel based approach may not be performant because of the potential for frequent border crossings. I'll have a surprise for you on this aspect when we discuss the L3 microkernel later on in this course module where it is shown that a microkernel can be made performant by careful implementation, that's the key. I'll leave you with that thought, but we'll come back to a micro kernal base design using L3 later on.</li>
 </ul>
 
-##17. What do we Want
+<h2>17. What do we Want</h2>
 <p align="center">
    <img src="https://user-images.githubusercontent.com/62491253/150071850-d086e764-924b-4366-a4ce-9e7653ba0a44.png" alt="drawing" width="500"/>
 </p>
@@ -187,7 +187,7 @@ But this loss of protection with the Dos-like structure is simply unacceptable f
 </ul>
 
 # L02b: The SPIN Approach
-##1. The SPIN Approach Introduction
+<h2>1. The SPIN Approach Introduction</h2>
 <p align="center">
    <img src="https://user-images.githubusercontent.com/62491253/150072482-07961bc0-df5c-4ce2-90be-8a9fd4acd5a7.png" alt="drawing" width="500"/>
 </p>
@@ -204,7 +204,7 @@ So now we set the stage for discussing the spin and the exokernel approaches to 
 </li></ul>
 
 
-##2. What are we Shooting for in OS Structure
+<h2>2. What are we Shooting for in OS Structure</h2>
 <p align="center">
    <img src="https://user-images.githubusercontent.com/62491253/150072666-46fe76de-23e0-416b-b4aa-0a77ee303c95.png" alt="drawing" width="500"/>
 </p>
@@ -245,7 +245,7 @@ So the key idea in spin is to <strong> co-locate a minimal kernel with its exten
    <li>So in a nutshell, what we've accomplished with a Spin approach to extensibility as we are writing on the characteristics of a strongly typed programming language, that enforces strong typing and therefore allows the operating system designer to implement logical protection domains instead of relying on hardware address spaces. And consequently we're making extensions as cheap as procedure calls.</li>
 </ul>
 
-##4. Logical Protection Domains
+<h2>4. Logical Protection Domains</h2>
 <p align="center">
    <img src="https://user-images.githubusercontent.com/62491253/150074539-ee059bd3-3901-4c1c-b916-db11f76bb9cc.png" alt="drawing" width="500"/>
 </p>
