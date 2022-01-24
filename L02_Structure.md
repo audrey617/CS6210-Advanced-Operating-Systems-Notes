@@ -1,6 +1,7 @@
 # Lesson outline
 - [OS Structure Overview](https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/L02_Structure.md#l02a-os-structure-overview)
-- [The SPIN Approach & The Exokernel Approach](https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/L02_Structure.md#l02b-the-spin-approach)
+- [The SPIN Approach](https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/L02_Structure.md#l02b-the-spin-approach)
+- The Exokernel Approach
 - The L3 Microkernel Approach
 <p align="center">
    <img src="https://user-images.githubusercontent.com/62491253/150064173-e203bbc9-d523-4115-a3d1-2015d6bb625d.png" alt="drawing" width="500"/>
