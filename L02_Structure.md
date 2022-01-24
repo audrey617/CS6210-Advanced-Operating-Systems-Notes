@@ -18,7 +18,7 @@
    <img src="https://user-images.githubusercontent.com/62491253/150034627-20bf078b-26de-4c81-a56a-8c00a34e09cf.png" alt="drawing" width="500"/>
 </p>
 
-##3. OS Structure
+<h2>3. OS Structure</h2>
 <p align="center">
    <img src="https://user-images.githubusercontent.com/62491253/150034723-081d76a5-afb5-4a23-be20-94085e201d8e.png" alt="drawing" width="500"/>
 </p>
@@ -34,7 +34,7 @@
    <img src="https://user-images.githubusercontent.com/62491253/150035154-c9950f69-f1af-4ae4-9c62-47aaf43e32b6.png" alt="drawing" width="500"/>
 </p>
 
-##5. Goals of OS Structure
+<h2>5. Goals of OS Structure</h2>
 <p align="center">
    <img src="https://user-images.githubusercontent.com/62491253/150035261-73b64066-fbd5-47c8-b749-532ac1580781.png" alt="drawing" width="500"/>
 </p>
@@ -48,7 +48,7 @@
   <li>Responsiveness: How quickly the OS reacts to external events, and this is particularly important for applications  that are interactive in nature, Imagine playing video game -> click mouse -> want to see actions immediately on the screen </li> 
 </ul>
 
-##6. Commercial OS
+<h2>6. Commercial OS</h2>
 <p align="center">
    <img src="https://user-images.githubusercontent.com/62491253/150036733-47c3e28c-d031-4afc-9e8d-de77cee0b8fc.png" alt="drawing" width="500"/>
 </p>
@@ -57,7 +57,7 @@
   <li>Are all the goals simultaneously achievable in a given operaing system? In the first glance it would seem that some of the goals conflict with one another. For example, it might seem that achieve performance we may have to sacrifice protection and/or flexibility </li> 
 </ul>
 
-##7. Monolithic Structure
+<h2>7. Monolithic Structure</h2>
 <p align="center">
    <img src="https://user-images.githubusercontent.com/62491253/150037356-420d6c7b-d7a0-46eb-be9d-b6a99d7528af.png" alt="drawing" width="500"/>
 </p>
@@ -65,7 +65,7 @@
   <li>Now let's talk about different approaches to operating system structuring. The first structure that I will introduce to you is what we will call as a monolithic structure.   <li> You have the hardware at the bottom which is managed by the operating system and hardware includes,of course, the CPU, memory, peripheral devices such as the network and storage and so on.</li>   <li> And there are applications at the top. And each of these applications is in its own hardware address space. What that means is that every application is protected from one another because the hardware ensures that the address space occupied by one application is different from the other applications and that is the first level of protection that you get between the applications themselves.</li>   <li> And all the services that applications expect from the operating system are contained in this blob and that might include file system and network access, scheduling these applications on the available CPU, virtual memory management, and access to other peripheral devices. The OS itself of course is a program providing entry points for the applications for the services that are expected by the applications. And code and the data structure of the operating system is contained in its own hardware address space. What that means is that the operating system is protected from the applications and vise versa. So even if an application were to do anything in terms of misbehavior, either maliciously or unintentionally because they are in there own address spaces and the operating system is in its own hardware address space. Malfunctioning of an application does not affect the integrity of the operating system services. That is, when an application needs any system service, we switch from the hardware address space that is representing this particular application, into the hardware address space of the operating system. And execute the system code that provides the service that that is expected by the application. For example, accessing the file from the hard disk, or dynamic allocation of more memory that an application may want, or sending a message on the network. All of these things are done within the confines of the address space of the operating system itself. Note that all of the services expected of the operating system, file system, memory management, CPU scheduling, network and so on, are all contained in this one big blob. And that is the reason it's also sometimes referred to as the monolithic structure of an operating system.</li></li> 
 </ul>
 
-##8. DOS-like Structure
+<h2>8. DOS-like Structure</h2>
 <p align="center">
    <img src="https://user-images.githubusercontent.com/62491253/150038025-a9894454-ade2-437b-9477-2cb9b794911e.png" alt="drawing" width="500"/>
 </p>
