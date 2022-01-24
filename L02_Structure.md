@@ -188,6 +188,12 @@ But this loss of protection with the Dos-like structure is simply unacceptable f
 
 # L02b: The SPIN Approach
 1. The SPIN Approach Introduction
+<ul><li>
+So now we set the stage for discussing the spin and the exokernel approaches to achieving extensibility of the operating system without losing out on protection or performance. Both these approaches start with two premises: 
+   <ul><li>The first premise, is that microkernel-based design compromises on performance due to frequent border crossings</li> 
+   <li> The second premise is that monolithic design does not lend itself to extensibility. </li></ul>
+   Because of the starting premises of spin and exokernal. Both these approaches have certain commonality in what they strive to do, although the path taken by these two approaches are very different.
+</li></ul>
 
 <p align="center">
    <img src="https://user-images.githubusercontent.com/62491253/150072482-07961bc0-df5c-4ce2-90be-8a9fd4acd5a7.png" alt="drawing" width="500"/>
@@ -197,9 +203,7 @@ But this loss of protection with the Dos-like structure is simply unacceptable f
    <img src="https://user-images.githubusercontent.com/62491253/150072549-0b743c5d-4255-4d7b-af8f-ee3e04210f25.png" alt="drawing" width="500"/>
 </p>
 
-<ul><li>
-So now we set the stage for discussing the spin and the exokernel approaches to achieving extensibility of the operating system without losing out on protection or performance. Both these approaches start with two premises. The first premise, is that micro-kernel based design compromises on performance due to frequent border crossings. And the second premise is that, monolithic design does not lend itself to extensibility. Because of the starting premises of spin and exokernal. Both these approaches have certain commonality in what they strive to do, although the path taken by these two approaches are very different.
-</li></ul>
+
 
 2. What are we Shooting for in OS Structure
 <p align="center">
