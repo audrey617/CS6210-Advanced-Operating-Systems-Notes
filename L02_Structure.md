@@ -552,3 +552,35 @@ https://www.youtube.com/watch?v=TZB60F5kNSk
 
 
 # L02d: The L3 Microkernel Approach
+
+<h2>1. The L3 Microkernel Approach Introduction</h2>
+<ul>
+   <li>Both Spin and Exokernel started out with the assumption that microkernel-based operating systems structure is inherently poised for poor performance. Why did they start with such an assumption? Well they used a popular microkernel of the time called Mach which was developed at CMU as an exemplar for microkernel-based operating system structure. But Mach had portability as an important goal. If we keep performance as the primary goal, can we achieve that with a microkernal based approach? In this lesson, we will look at L3, a microkernal based operating system design that provides a contrarian viewpoint to the spin and exokernal assumption.
+   </li>
+</ul>
+
+<h2>2. Microkernel-Based OS Structure</h2>
+<p align="center">
+   <img src="https://user-images.githubusercontent.com/62491253/150889441-8395b241-1cae-478f-b522-d8576a995e17.png" alt="drawing" width="500"/>
+</p>
+
+<ul>
+   <li>Just to refresh your memory about micro kernel based operating system structure, the idea is micro kernel the micro kernel is providing a small number of simple abstractions, such as address based and inter process communication. And all the system services that you normally expect from an operating system, such as the file system Memory manager, CPU scheduling, and so on are implemented as processes above microkernal.</li>
+   <li>In other words, these operating system services run at the same privilege level as user-level applications. All of them in their own individual address spaces. And only the microkernel runs at a different level of privilege provided by the processor architecture. Since all the operating system services are implemented as server's processes on top of the microkernel, they may have to cooperate with one another in order to satisfy a particular user's request. And in that case, they may have to talk to one another, and in order to do that, they need IPC that is provided by the microkernel in order to accomplish what is needed by a particular system call emanating from an application.
+   </li>
+</ul>
+
+<h2>3. Potentials for Performance Loss</h2>
+<p align="center">
+   <img src="https://user-images.githubusercontent.com/62491253/150889666-eb5e28c2-54fb-4bab-bcdd-fdb8d8d282d1.png" alt="drawing" width="500"/>
+</p>
+
+<ul>
+   <li>What are the potentials for performance loss when you have a microkernel based operating system design?</li>
+   <li>Border Crossings : Explicit cost (making system calls from application processes to the microkernel) +  Implicit costs (border crossings between services)
+      <ul><li> The main source of potential performance loss would occur at border crossings as we have seen before, and border crossings have both an explicit cost associated with it as well as an implicit cost associated with it. The explicit cost is the fact that from an application which is at a particular protection level, namely the user level protection level of the processor architecture, you are slipping into the microkernel which is at a different privilege level. That is the explicit cost in border crossing.</li>
+         <li>In order to accomplish a particular service that an application has requested, the service has actually provided by several processes above the MicroKernal, and therefore, there are boarder crossings involved going from the application to the MicroKernal to the particular service. Let's say a file system service, and on top of that, a system service like file system may have to consult other services such as a storage module or a memory management module, in order to complete the requested service of the application. In which case there are going to be protected procedure calls that are going to be executed between services that are part of the operating system. And these are protected procedure calls, because they are going across address spaces, it is going to be more expensive than simple or normal procedure calls. Typically, protected procedure calls can be as expensive as 100 times normal procedure calls, and this is coming up because of the fact that each of these services in a micro-kernel based design is assumed to be implemented in its own address base to protect the integrity of each of these system services. </li> 
+         </li></ul>
+   <li> Why are protector procedure calls that much more expensive than normal procedure calls? This is where the implicit Cost of border crossings comes in. Whether the border crossing happens when we go from the user address piece into the kernel address piece or between one hardware address piece representing a paticular system service. To the hardware address space of another system service. And that implicit cost is a fact that we're losing locality, both in terms of address translations contained in the TLB, as well as the contents of the cache that the processor uses in order to access memory. All of those add up in making protective procedure calls or going between user space and kernel space, that much more expensive.
+  </li>
+</ul>
