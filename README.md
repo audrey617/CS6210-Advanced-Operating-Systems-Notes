@@ -15,4 +15,4 @@ Repo Desc: My notes for the review purpose
 
 - Week 2 : [Structure](https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/L02_Structure.md) 
 
-- Week 3 : [Virtualization]
+- Week 3 : [Virtualization](https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/L03_Virtualization.md)
