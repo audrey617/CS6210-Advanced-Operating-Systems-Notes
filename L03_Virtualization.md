@@ -1,8 +1,8 @@
 # Lesson outline
 - [Intro to Virtualization](https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/L03_Virtualization.md#l03a-intro-to-virtualization)
-- Memory Virtualization
+- [Memory Virtualization](https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/L03_Virtualization.md#l03b-memory-virtualization)
 - CPU & Device Virtualization
-- 
+
 <p align="center">
    <img src="https://user-images.githubusercontent.com/62491253/150921690-d2850ea5-1e99-4a22-87f0-f244d18792b7.png" alt="drawing" width="500"/>
 </p>
