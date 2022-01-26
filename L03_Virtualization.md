@@ -71,7 +71,81 @@
    <li>The terminology that you will often encounter is either VMM, which stands for virtual machine monitor or hypervisor. And these operating systems that are running on top of the shared hardware resources are often referred to as virtual machines, or VM for short. We've always been using the term VM to mean virtual memory. You have to do a mind shift for this lesson module, VM means virtual machine. And each of these operating systems that run on top of the shared hardware resource, I'll often refer to them as either guest operating systems or virtual machines or VM for short. So watch out.</li>
    <li>Now, I should point out that there are two types of hypervisors.</li>
    <li>The first type is what is called a native hypervisor or bare metal, meaning that the hypervisor is running on top of the bare hardware. And that's why it's called a bare-metal hypervisor or a native hypervisor. And all of the operating systems that I'm showing you inside of the black box are running on top of this hypervisor. They're called the guest operating systems because they're the guest of the hypervisor running on the shared resource.</li>
-   <li>The second type of hypervisor, what is called the hosted hypervisor, the hosted ones run on top of a host operating system and allows the users to emulate the functionality of other operating systems. So the hosted hypervisor is not running on top of the bare metal, but it is running as an application process on top of the host operating system. And the guest operating systems are [UNKNOWN] clients of this hosted hypervisor. Some examples of hosted hypervisors include VMware, Workstation, and Virtual Box. Both of these terminologies you may have heard of. If you don't have access to a computer that's running Linux operating system in this course you're likely to be doing your course projects on a virtual box or a VMWare workstation that's available to run on Windows platform. For the purpose of this lesson today, however, we will be focusing on the bare metal hypervisors. These bare metal hypervisors interfere minimally with the normal operation of these guest operating systems on the shared resources in a spirit which is very similar to the extensible operating systems that we studied earlier, like the spin and exokernel and therefore the bare metal hypervisors, offer the best performance for the guest operating system on the shared resource.
+   <li>The second type of hypervisor, what is called the hosted hypervisor, the hosted ones run on top of a host operating system and allows the users to emulate the functionality of other operating systems. So the hosted hypervisor is not running on top of the bare metal, but it is running as an application process on top of the host operating system. And the guest operating systems are clients of this hosted hypervisor. Some examples of hosted hypervisors include VMware, Workstation, and Virtual Box. Both of these terminologies you may have heard of. If you don't have access to a computer that's running Linux operating system in this course you're likely to be doing your course projects on a virtual box or a VMWare workstation that's available to run on Windows platform.</li>
+   <li>For the purpose of this lesson today, however, we will be focusing on the bare metal hypervisors. These bare metal hypervisors interfere minimally with the normal operation of these guest operating systems on the shared resources in a spirit which is very similar to the extensible operating systems that we studied earlier, like the spin and exokernel and therefore the bare metal hypervisors, offer the best performance for the guest operating system on the shared resource.
    </li>
 </ul>
 
+
+<h2>6. Connecting the Dots</h2>
+<p align="center">
+   <img src="https://user-images.githubusercontent.com/62491253/151086365-fdc60937-70de-4b2a-823c-52b95dfc6883.png" alt="drawing" width="500"/>
+</p>
+
+<ul>
+   <li>If you're a student of history, you probably know that ideas come at some point of time and the practical use may come at a much later point of time. An excellent example of that is Boolean algebra, which was invented at the turn of the century as a pure mathematical exercise by George Boole. Now, Boolean algebra is the basis for pretty much anything and everything we do with computers. The concept of virtualization also had its beginning way back in time.</li>
+   <li>It started with IBM VM 370 in the 60s and the early 70s. And the intent. And IBM VM370 was to give the illusion to every user on the computer as though the computer is theirs. That was the vision and it was also a vehicle for binary support for legacy applications that may run on older versions of IBM platforms.</li>
+   <li>And then of course we had the microkernels that we have discussed in the earlier course module which surfaced in the 80s and early 90s.</li>
+   <li>That in turn gave way to extensibility of operating systems in the 90s.</li>
+   <li>The Stanford project SimOS in the late 90s, laid the basis for the modern resurgence of virtualization technology at the operating system level and in fact, was the basis for VMware.</li>
+   <li>Even the specific ideas we're going to explore in this course module. Through Xen and VMware, are papers that date back to the early 2000s. They were proposed from the point of view of supporting application mobility, server consolidation, collocating, hosting facilities, distributed web services. These are all sort of the candidate applications for which Xen and VMware while positioning this virtualization technology.</li>
+   <li>And now today, virtualization has taken off like anything. Why the big resurgence today? Well, companies want a share of everybody's pie. One of the things that has become very obvious, is the margin for device making companies in terms of profits, is very small. And everybody wants to get into providing services for end users. This is pioneered by IBM and others are following suit as well. So the attraction with virtualization technology is that companies can now provide resources with complete performance isolation and bill each individual user separately. And companies like Microsoft, Amazon, HP, you name it, everybody's in this game wanting to provide computing facilities through their data centers to a wide diversity of user communities. So that it's a win-win situation for both the users that do not want to maintain their own computing infrastructure and constantly upgrading them. And the companies like IBM that has a way of providing these resources on a rental basis, on a utility basis, to the user community. You can see the dots connecting up from the extensibility studies of the 90s like the spin and exokernel, to virtualization today, that is providing computational resources, much like we depend on utility companies to provide electricity and water.</li>
+   <li>In other words, virtualization technology has made computing very much like the other utilities that we use to such as electricity and water and so on. And that's the reason why there's a huge resurgence in the user virtualization technology in all the data centers across the world. 
+   </li>
+</ul>
+
+
+<h2>7. Full Virtualization</h2>
+<p align="center">
+   <img src="https://user-images.githubusercontent.com/62491253/151086897-c9c07f8b-cd3e-4f0d-aa55-589f29048291.png" alt="drawing" width="500"/>
+</p>
+
+<ul>
+   <li>One idea for this virtualization framework is what is called full virtualization, and in full virtualization the idea is to leave the operating system pretty much untouched. So you can run the unchanged binary of the operating system on top of the hypervisor. This is called full virtualization because the operating system is completely untouched. Nothing has been changed. Not even a single line of code is modified in these operating systems in order to run on the hypervisor simultaneously. But we have to be a little bit clever to get this to work, however. Operating systems running on top of the hypervisor are run as user-level processes. They're not running at the same level of privilege as a Linux operating system that is running on bare metal. But if the operating system code is unchanged, it doesn't know that it does not have the privilege for doing certain things that it would do normally on bare metal hardware. In other words, when the operating system executes some privileged instructions, meaning they have to be in a privileged mode or kernel mode to run on bare metal in order to execute those instructions. Those instructions will create a trap that goes into the hypervisor and the hypervisor will then emulate the intended functionality of the operating system. And this is what is called the trap and emulate strategy. Essentially, each operating system thinks it is running on bare metal. And therefore, it does exactly what it would have done on a bare-metal processor, meaning that it'll try to execute certain privileged instructions thinking it has the right privilege. But it does not have the right privilege, because it's run as a user-level process on top of the hypervisor. And therefore, when they try to do something that requires a high level of privilege than the user level, it will result in a trap into the hypervisor, and the hypervisor will then emulate the intended functionality of the particular operating system. There are some thorny issues with this trap and emulate strategy of full virtualization, and that is. In some architectures, some privilege instructions may fail silently. What that means is, you would think that the instruction actually succeeded, but it did not. And you may never know about it. And in order to get around this problem, in fully virtualized systems, the hypervisor will resort to a binary translation strategy, meaning. It knows what are the things that might fail silently in the architecture. Look for those gotchas in each of these individual binaries of the unmodified guest operating systems. And through binary editing strategy. They will ensure that those instructions are dealt with careful, so that if those instructions fail silently, the hypervisor can catch it and take the appropriate action. And this was a problem in early instances of Intel architecture. Both Intel and AMD have since started adding virtualization support to the hardware, so that such problems don't exist any more. But in the early going, when virtualization technology was experimented with, in the late 90's and the early 2000s, this was a problem that virtualization technology had to overcome in order to make sure that you can run operating systems as unchanged binaries on a fully virtualized hypervisor. Full virtualization is the technology that is employed in the vmware system.
+   </li>
+</ul>
+
+
+<h2>8. Para Virtualization</h2>
+<p align="center">
+   <img src="https://user-images.githubusercontent.com/62491253/151087303-e71c4c92-dc94-4e20-8b1c-c20dd8358b8c.png" alt="drawing" width="500"/>
+</p>
+
+<ul>
+   <li>Another approach to virtualization is to modify the source code of the guest operating system. If we can do that, not only can we avoid problematic instructions, as I mentioned earlier with full virtualization, but we can also include optimizations. For instance, letting the guest operating system, see real hardware resources, underneath the hypervisor, access to real hardware resources and also being able to employ tricks such as page coloring. Exploiting the characteristics of the underlaying hardware. It is important to note, however, that so far as the applications are concerned, nothing is changed about the operating system because the interfaces that the applications see is exactly the interfaces provided by. The operating system, if there is an application that is running on window, it sees the same API. If the application is running on top of Linux, it sees exactly the same API as it would if this Linux operating system was running on native hardware. In this sense, there's no change to the application's themselves. But, the operating system has to be modified in order to account for the fact that it is not running on bare metal, but it is running as a guest of the hypervisor. And this is why this technology is often referred to as Para Virtualization, meaning it is not fully virtualized, but a part of it is modified to account for being a guest of the hypervisor. The Zen product family uses this para virtualization approach. Now this brings up an interesting question. I said that, in order to do this paravisualization we have to modify the operating system, but how big is this modification?
+   </li>
+</ul>
+
+
+<h2>9. Modification of Guest OS Code</h2>
+<p align="center">
+   <img src="https://user-images.githubusercontent.com/62491253/151087470-8c07df3b-22b9-49d4-9ffd-ee18328caf5d.png" alt="drawing" width="500"/>
+</p>
+
+<p align="center">
+   <img src="https://user-images.githubusercontent.com/62491253/151087637-ffa876e4-ccdc-458f-b438-c3b18dd266fb.png" alt="drawing" width="500"/>
+</p>
+
+
+<h2>10. Para Virtualization (cont)</h2>
+<p align="center">
+   <img src="https://user-images.githubusercontent.com/62491253/151087677-b19fd790-8249-4d5b-ba09-c5affe8f6dc0.png" alt="drawing" width="500"/>
+</p>
+
+<ul>
+   <li>This table is showing you the lines of code that the designers of Xen hypervisor had to change in the native operating systems. The two native operating systems that they implemented on top of Xen hypervisor are Linux and Windows XP. And you see that, in the case of Linux, for instance, the total amount of the original code base that had to be changed is just about 1%, 1.36%. And in the case of XP, it is miniscule, almost an annoyance. So in other words, even though, in para virtualization we have to modify the operating system to run on top of the hypervisor, the amount of code change that has to be done in the operating system in order to make it run on top of the hypervisor can be bound to a very small percentage of the total code base of the original operating system. Which is good news.
+   </li>
+</ul>
+
+
+<h2>11. Big Picture</h2>
+<p align="center">
+   <img src="https://user-images.githubusercontent.com/62491253/151087855-39ac676a-bd1b-48f1-9aef-0344be23b9de.png" alt="drawing" width="500"/>
+</p>
+
+<ul>
+   <li>So, what is the big picture with virtualization? In either of the two approaches that I mentioned, whether it is full virtualization or parel virtualization, we have to virtualize, the hardware resources and make them available safely to the operating systems that are running on top of the hypervisor. And when we talk about hardware resources, we're talking about the memory hierarchy, the CPU, and the devices that are there in the hardware platform. How to virtualize them and make them available in a transparent manner for use by the operating systems that live above the hypervisor? And how do we affect? Data and control transfer between the guest operating systems and the hyper-visor. So these are all the questions that we will be digging deeper into in this course module. That wraps up the basic introduction to virtualization technology. And now it is time to roll up our sleeves and look deeper into the nuts and bolts of virtualizing the different hardware elements in the hypervisor. 
+   </li>
+</ul>
+
+# L03b: Memory Virtualization
