@@ -1,6 +1,6 @@
 # Outline
 - [Extensibility, Safety and Performance in the SPIN Operating System](https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/Note_papers.md#extensibility-safety-and-performance-in-the-spin-operating-system)
-- Exokernel: An Operating System Architecture for Application-Level Resource Management
+- [Exokernel: An Operating System Architecture for Application-Level Resource Management](https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/Note_papers.md#exokernel-an-operating-system-architecture-for-application-level-resource-management)
 - On Micro-Kernel Construction
 - Improved Address-Space Switching on Pentium Processors by Transparently Multiplexing User Address Spaces
 - Xen and the Art of Virtualization
