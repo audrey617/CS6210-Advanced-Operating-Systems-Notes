@@ -74,4 +74,4 @@
 </ul>
 
 <h2>Xen and the Art of Virtualization</h2>
-<p>Bershad, B. N., Savage, S., Pardyak, P., Sirer, E. G., Fiuczynski, M. E., Becker, D., Chambers, C., & Eggers, S. (1995). Extensibility safety and performance in the SPIN operating system. ACM SIGOPS Operating Systems Review, 29(5), 267–283. </p>
+<p>Barham, Paul, Boris Dragovic, Keir Fraser, Steven Hand, Tim Harris, Alex Ho, Rolf Neugebauer, Ian Pratt, and Andrew Warfield. "Xen and the art of virtualization." ACM SIGOPS operating systems review 37, no. 5 (2003): 164-177 </p>
