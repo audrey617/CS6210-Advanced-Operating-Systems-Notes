@@ -19,7 +19,7 @@
                <li>Safety: the exposure of applications to the actions of others, and requires that access be controlled at the same granularity at which extensions are defined</li>
                <li>Good performance: low overhead communication between an extension and the system</li>
              </ul></li>
-         <li>the SPIN operating system relies on four tech-niques implemented at the level of the language or its runtime
+         <li>the SPIN operating system relies on four techniques implemented at the level of the language or its runtime
             <ul>
                <li>Co-location: Operating system extensions are dynamically linked into the kernel virtual address space. Co-location enables communication between system and extension code to have low cost</li>
                <li>Enforced modularity: Extension is written in Modula-3,a modular programming language for which the compiler enforces interface boundaries between modules. Extensions, which execute in the kernel’s virtual address space, cannot access memory or execute privileged instructions unless they have been given explicit access through an interface. Modularity enforced by the compiler enables modules to be isolated from one another with low cost</li>
