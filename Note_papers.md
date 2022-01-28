@@ -73,5 +73,35 @@
    
 </ul>
 
+<h2>Exokernel: An Operating System Architecture for Application-Level Resource Management</h2>
+<p>Engler, Dawson R., M. Frans Kaashoek, and James O'Toole Jr. "Exokernel: An operating system architecture for application-level resource management." ACM SIGOPS Operating Systems Review 29.5 (1995): 251-266. </p>
+
+<ul>
+  <li> The exokernel operating system architecture provides application-level management of physical resources. In the exokernel architecture, a small kernel securely exports all hardware resources through a low-level interface to untrusted library operating systems. Library operating systems use this interface to implement system objects and policies. This separation of resource protection from management allows application-specific customization of traditional operating system abstractions by extending, specializing, or even replacing libraries. </li>
+  <li> We believe these problems (denies applications the advantages of domain-specific optimizations, discourages changes to the implementations of existing abstractions, restricts the flexibility of application builders) can be solved through application-level (i.e., untrusted) resource management. Exokernel, in which traditional operating system abstractions, such as virtual memory (VM) and interprocess communication (IPC), are implemented entirely at application level by untrusted software. In this architecture, <strong>a minimal kernel — which we call an exokernel — securely multiplexes available hardware resources. </strong></li>
+  <li>Substantial evidence exists that applications can benefit greatly from having more control over how machine resources are used to implement higher-level abstractions</li>
+  <li>the lower the level of a primitive, the more efficiently it can be implemented, and the more latitude it grants to implementors of higher-level abstractions. </li>
+  <li>goal is to separate protection from management. one way to achieve it is per app per VM, another is to export hardware resources rather than emulating them.</li>
+  <li>An exokernel employs three techniques to exportresources securely. First, by using secure bindings, applications can securely bind to machine resources and handle events. Second, by using visible resource revocation, applications participate in a resource revocation protocol. Third, by using an abort protocol, an exokernel can break secure bindings of uncooperative applications by force. </li>
+  <li>Our solution is to allow traditional abstractions to be implemented entirely at application level.To provide the maximum opportunity for application-level re-source management, the exokernel architecture consists of a thin exokernel veneer that multiplexes and exports physical resources securely through a set of low-level primitives. Library operating systems, which use the low-level exokernel interface, implement higher-level abstractions and can define special-purpose implementations that best meet the performance and functionality goals of applications. Applications link against stan-dard libraries (e.g., WWW, POSIX, and TCP libraries for Web ap-plications) or against specialized libraries (e.g., a distributed shared memory library for parallel applications).This structure allows the extension, specialization and even replacement of abstractions.</li>
+  <li>Library operating systems: since libraries are not trusted by an exokernel, they are free to trust the application. The number of kernel crossings in an exokernel system can be smaller, since most of the operating system runs in the address space of the application. Library operating systems can provide as much portability and compatibility as is desirable.An application that runs on an exokernel can freely replace these libraryoperating systems withoutany special privileges, which sim-plifies the addition and development of new standards and features.Extending or specializing a library operating system might be considerably simplifiedby modular design.To reduce the space required by these libraries, support for shared libraries and dynamic linking will be an essential part of a complete exokernel-based system. </li>
+  <li>As in microkernel systems, an exokernel can provide backward compatibility in three ways: one, binary emulation of the operating system and its programs; two, by implementing its hardware ab-straction layer on top of an exokernel; and three, re-implementing the operating system’s abstractions on top of an exokernel. </li>
+  <li>Design Principles: 1) Securely expose hardware: The central tenet of the exokernel architecture is that the kernel should provide secure low-level primitives that allow all hardware resources to be accessed as directly as possible. An exokernel must export privileged instructions to library operating systems to enable them to imple-ment traditional operating system abstractions such as processes and address spaces. Each exported operation can be encapsulated within a system call that checks the ownership of any resources involved.  2) Expose allocation: the library operating system should participate in every allocation decision 3) Expose Names:an exokernel should export bookkeeping data structures  4)Expose Revocation: Visible revocation allows physical names to be used easily and permits library operating systems to choose which instance of a specific resource to relinquish.  </li>
+  <li>Secure Binding: a protection mechanism that decouples authorization from the actual use of a resource. We use three basic techniques to implement secure bindings: hardware mechanisms, software caching, and downloading application code. </li>
+  <li>Page 5</li>
+  <li>Page 5</li>
+  <li>Page 5</li>
+  <li>Page 5</li>
+  <li>Page 5</li>
+
+</ul>
+
+
+
+
+
+
+
+
 <h2>Xen and the Art of Virtualization</h2>
 <p>Barham, Paul, Boris Dragovic, Keir Fraser, Steven Hand, Tim Harris, Alex Ho, Rolf Neugebauer, Ian Pratt, and Andrew Warfield. "Xen and the art of virtualization." ACM SIGOPS operating systems review 37, no. 5 (2003): 164-177 </p>
