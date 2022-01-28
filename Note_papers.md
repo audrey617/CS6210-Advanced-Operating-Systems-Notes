@@ -1,8 +1,9 @@
-# Paper Name Outline
+# Outline
 - [Extensibility, Safety and Performance in the SPIN Operating System](https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/Note_papers.md#extensibility-safety-and-performance-in-the-spin-operating-system)
 - 
 - 
 
+# Note
 <h2>Extensibility, Safety and Performance in the SPIN Operating System</h2>
 <p>Bershad, B. N., Savage, S., Pardyak, P., Sirer, E. G., Fiuczynski, M. E., Becker, D., Chambers, C., & Eggers, S. (1995). Extensibility safety and performance in the SPIN operating system. ACM SIGOPS Operating Systems Review, 29(5), 267–283. </p>
 
