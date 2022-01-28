@@ -1,9 +1,9 @@
 # Outline
 - [Extensibility, Safety and Performance in the SPIN Operating System](https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/Note_papers.md#extensibility-safety-and-performance-in-the-spin-operating-system)
-- 
-- 
-
-
+- Exokernel: An Operating System Architecture for Application-Level Resource Management
+- On Micro-Kernel Construction
+- Xen and the Art of Virtualization
+- Memory Resource Management in VMware ESX Server
 
 <p align="center">
    <img src="https://user-images.githubusercontent.com/62491253/151467512-d346c262-fddb-4b67-a976-34cd822b7770.png" alt="drawing" width="500"/>
