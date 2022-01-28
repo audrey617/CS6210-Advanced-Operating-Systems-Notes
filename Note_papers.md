@@ -1,8 +1,6 @@
 # Paper Name Outline
 - [Extensibility, Safety and Performance in the SPIN Operating System](https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/Note_papers.md#extensibility-safety-and-performance-in-the-spin-operating-system)
-
 - 
-
 - 
 
 <h2>Extensibility, Safety and Performance in the SPIN Operating System</h2>
