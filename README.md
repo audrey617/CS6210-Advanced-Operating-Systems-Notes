@@ -16,3 +16,5 @@ Repo Desc: My notes for the review purpose
 - Week 2 : [Structure](https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/L02_Structure.md)  (Spin, ExoKernel, L3)
 
 - Week 3 : [Virtualization](https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/L03_Virtualization.md)
+
+- Papers : [Note](https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/Note_papers.md) (Use Outline section to redirect)
