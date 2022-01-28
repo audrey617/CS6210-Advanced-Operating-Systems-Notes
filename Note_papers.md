@@ -3,7 +3,7 @@
 - 
 - 
 
-# Note
+# Notes
 <h2>Extensibility, Safety and Performance in the SPIN Operating System</h2>
 <p>Bershad, B. N., Savage, S., Pardyak, P., Sirer, E. G., Fiuczynski, M. E., Becker, D., Chambers, C., & Eggers, S. (1995). Extensibility safety and performance in the SPIN operating system. ACM SIGOPS Operating Systems Review, 29(5), 267–283. </p>
 
