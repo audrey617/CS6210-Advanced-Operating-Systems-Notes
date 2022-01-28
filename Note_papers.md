@@ -3,7 +3,8 @@
 
 
 <h2>Extensibility, Safety and Performance in the SPIN Operating System</h2>
-Bershad, B. N., Savage, S., Pardyak, P., Sirer, E. G., Fiuczynski, M. E., Becker, D., Chambers, C., & Eggers, S. (1995). Extensibility safety and performance in the SPIN operating system. ACM SIGOPS Operating Systems Review, 29(5), 267–283. 
+<p>Bershad, B. N., Savage, S., Pardyak, P., Sirer, E. G., Fiuczynski, M. E., Becker, D., Chambers, C., & Eggers, S. (1995). Extensibility safety and performance in the SPIN operating system. ACM SIGOPS Operating Systems Review, 29(5), 267–283. </p>
+
 
 <ul>
    <li> <strong>SPIN is an operating system</strong> that can be dynamically specialized to safely meet the performance and functionality re-quirements of applications. </li>  
@@ -27,11 +28,8 @@ Bershad, B. N., Savage, S., Pardyak, P., Sirer, E. G., Fiuczynski, M. E., Becker
       </ul>
    </li>
    
-   <li>SPIN is primarily written in Modula-3, which allows extensions to directly use system interfaces without requiring runtime conversion when communicating with other system code. Although SPIN relies on language features to ensure safety withinthe kernel, applications can be written in any language and execute within their own virtual address space. Only code that requires low-latency access to system services is written in the system’s safe extension language. For example, we have used SPIN to implement a UNIX operating system server. The bulk of the server is written in C, and executes within its own address space (as do applications). The server consists of a large body of code that implements the DEC OSF/1 system call interface, and a small number of SPINextensions that provide the thread, virtual memory, and device interfaces required by the server. 
-   </li>
-
-      <li> Motiviation: An extensible system is one that can be changed dynamically to meet the needs of an application.
-   </li>
+   <li>SPIN is primarily written in Modula-3, which allows extensions to directly use system interfaces without requiring runtime conversion when communicating with other system code. Although SPIN relies on language features to ensure safety withinthe kernel, applications can be written in any language and execute within their own virtual address space. Only code that requires low-latency access to system services is written in the system’s safe extension language. For example, we have used SPIN to implement a UNIX operating system server. The bulk of the server is written in C, and executes within its own address space (as do applications). The server consists of a large body of code that implements the DEC OSF/1 system call interface, and a small number of SPINextensions that provide the thread, virtual memory, and device interfaces required by the server. </li>
+   <li> Motiviation: An extensible system is one that can be changed dynamically to meet the needs of an application.</li>
    
    <li> <strong>The SPIN Architecture </strong>
       <ul>
@@ -42,8 +40,7 @@ Bershad, B. N., Savage, S., Pardyak, P., Sirer, E. G., Fiuczynski, M. E., Becker
       <li>Extensions in SPIN are defined in terms of events and handlers.An event is a message that announces a change in the state of the system or a request for service. An event handler is a procedure that receives the message. An extension installs a handler on an event by explicitly registering the handler with the event through a central dispatcher that routes events to handlers. Event names are protected by the domain machinery. An event is defined as a procedure exported from an interface and its handlers are defined as procedures having the same type. A handler is invoked with the arguments specified by the event raise.The right to call a procedure is equivalent to the right to raise the event named by the procedure.</li>
       </ul>
    </li>
-
-    <li> <strong>The core services</strong>
+   <li> <strong>The core services</strong>
       <ul>
       <li>Extensible memory management:The SPIN memory management interface decomposes memory services into three basic components: physical storage, naming, and translation.These correspond to the basic memory resources exported by processors, namely physical addresses, virtual addresses, and translations. Application-specific services interact with these three services to define higher level virtual memory abstractions, such as address spaces. </li>
       <li>Extensible thread management:An operating system’s thread management system provides applications with interfaces for scheduling, concurrency, and synchronization. Applications, though, can require levels of functionality and performance that a thread management system is unable to deliver.In SPIN an application can provide its own thread package and scheduler that executes within the kernel.The thread package defines the application’s execution model and synchronization constructs. Although SPIN does not define a thread model for applications, it does define the structure on which an implementation of a thread model rests. This structure is defined by a set of events that are raised or handled by schedulers and thread packages. A scheduler multiplexes the underlying processing resources among competing contexts, called strands. A strand is similar to a thread in traditional operating systems in that it reflects some processor context. Unlike a thread though, a strand has no minimal or requisite kernel state other than a name. An application-specific thread package defines an implementation of the strand interface for its own threads.Together, the thread package and the scheduler implement the control flow mechanisms for user-space contexts.Application-specific thread packages only manipulate the flow of control for application threads executing outside of the kernel. For safety reasons, the responsibility for scheduling and synchronization within the kernel belongs to the kernel. As a thread transfers from user mode to kernel mode, it is checkpointed and a Modula-3 thread executes in the kernel on its behalf. As the Modula-3 thread leaves the kernel, the blocked application-specific thread is resumed. A global scheduler implements the primary processor allocation policy between strands.Additional application-specific schedulers can be placed on top of the global scheduler.That is, an application-specific scheduler presents itself to the global scheduler as a thread package. </li>
