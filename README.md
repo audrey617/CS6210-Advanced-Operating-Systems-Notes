@@ -17,4 +17,6 @@ Repo Desc: My notes for the review purpose
 
 - Week 3 : [Virtualization](https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/L03_Virtualization.md)
 
+- Week 4&5 : [Parallel Systems](https://docs.google.com/document/d/1chu8Xz5yP-fJmmAiCy34WcpyaeBAu8fGI-pGVln8IdQ/edit?usp=sharing)
+
 - Papers : [Note](https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/Note_papers.md) (Use Outline section to redirect)
