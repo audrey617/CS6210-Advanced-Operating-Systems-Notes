@@ -8,7 +8,8 @@ Time: Spring 2022
 Intro: [Course intro page](https://omscs.gatech.edu/cs-6210-advanced-operating-systems)
 
 Repo Desc: 
-My notes for the review purpose. Based off of the transcripts of the lectures. Please feel free to leave a comment/comit if you spot errors in md.file or google docs.
+My notes for the review purpose. Based off of the transcripts of the lectures. 
+<p>       Please feel free to leave a comment/comit if you spot errors in md.file or google docs.</p>
 
 ## Table of content
 
