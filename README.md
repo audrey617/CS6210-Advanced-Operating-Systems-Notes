@@ -17,7 +17,7 @@ Repo Desc: My notes for the review purpose. Based off of the transcripts of the 
 
 - Week 3 : [Virtualization](https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/L03_Virtualization.md)
 
-- Week 4&5 : [Parallel Systems (Google Docs)](https://docs.google.com/document/d/1chu8Xz5yP-fJmmAiCy34WcpyaeBAu8fGI-pGVln8IdQ/edit?usp=sharing), [github pdf version](https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/L04_%20Parallel%20Systems.pdf)
+- Week 4&5 : [Parallel Systems (Google Docs)](https://docs.google.com/document/d/1chu8Xz5yP-fJmmAiCy34WcpyaeBAu8fGI-pGVln8IdQ/edit?usp=sharing), [Parallel Systems github pdf](https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/L04_%20Parallel%20Systems.pdf)
 
 
 - Papers : [Note](https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/Note_papers.md) (Use Outline section to redirect)
