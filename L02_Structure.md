@@ -371,14 +371,11 @@ So the key idea in spin is to <strong> co-locate a minimal kernel with its exten
 
 
 # L02c: The Exokernel Approach
-TODO: take a look and add to note
+More resources: take a look
 http://www.cs.cornell.edu/courses/cs6410/2010fa/lectures/08-extensible-kernels.pdf
 https://amplab.github.io/cs262a-fall2016/notes/09-extensible-oses-Exokernel-Spin.pdf
 https://ucbrise.github.io/cs262a-spring2018/notes/19-extensible-oses-Exokernel-Spin.pdf
 https://cs.nyu.edu/~rgrimm/teaching/sp11-os/exospin.pdf
-
-Todo: video to watch after read - Dawson R. Engler, Frans Kaashoek and James O'Toole, "Exokernel: An Operating System Architecture for Application-Level Resource Management ",
-https://www.youtube.com/watch?v=TZB60F5kNSk
 
 <h2>1. Exokernel Approach to Extensibility</h2>
 <p align="center">
