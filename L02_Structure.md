@@ -561,7 +561,7 @@ https://cs.nyu.edu/~rgrimm/teaching/sp11-os/exospin.pdf
 </p>
 
 <ul>
-   <li>Just to refresh your memory about micro kernel based operating system structure, the idea is microkernel the microkernel is providing a small number of simple abstractions, such as address based and inter process communication. And all the system services that you normally expect from an operating system, such as the file system Memory manager, CPU scheduling, and so on are implemented as processes above microkernal.</li>
+   <li>Just to refresh your memory about micro kernel based operating system structure, the idea is the microkernel is providing a small number of simple abstractions, such as address based and inter process communication. And all the system services that you normally expect from an operating system, such as the file system Memory manager, CPU scheduling, and so on are implemented as processes above microkernal.</li>
    <li>In other words, these operating system services run at the same privilege level as user-level applications. All of them in their own individual address spaces. And only the microkernel runs at a different level of privilege provided by the processor architecture. Since all the operating system services are implemented as server's processes on top of the microkernel, they may have to cooperate with one another in order to satisfy a particular user's request. And in that case, they may have to talk to one another, and in order to do that, they need IPC that is provided by the microkernel in order to accomplish what is needed by a particular system call emanating from an application.
    </li>
 </ul>
