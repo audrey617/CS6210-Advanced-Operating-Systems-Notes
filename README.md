@@ -20,6 +20,6 @@ Repo Desc:
 
 - Week 4&5 : [Parallel Systems (Google Docs)](https://docs.google.com/document/d/1chu8Xz5yP-fJmmAiCy34WcpyaeBAu8fGI-pGVln8IdQ/edit?usp=sharing), [Parallel Systems (github link, pdf)](https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/L04_Parallel%20Systems.pdf)
 
-- Week 6&7 : Distributed Systems - TODO
+- Week 6&7 : Distributed Systems - TODO (Have another exam this weekend. Will start 2/28)
 
 - Papers : [Note](https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/Note_papers.md) (Use Outline section to redirect)
