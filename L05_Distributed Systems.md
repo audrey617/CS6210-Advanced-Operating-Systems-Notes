@@ -1,5 +1,5 @@
 # Lesson outline
-- [L05a: Definitions](-)
+- [L05a: Definitions](https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/L05_Distributed%20Systems.md#1-definitions-introduction)
 - [L05b: Lamport Clocks](-)
 - [L05c: Latency Limits](-)
 - [L05d: Active Networks](-)
