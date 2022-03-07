@@ -1,6 +1,6 @@
 # Lesson outline
 - [L05a: Definitions](https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/L05_Distributed%20Systems.md#1-definitions-introduction)
-- [L05b: Lamport Clocks](-)
+- [L05b: Lamport Clocks](https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/L05_Distributed%20Systems.md#l05b-lamport-clocks)
 - [L05c: Latency Limits](-)
 - [L05d: Active Networks](-)
 - [L05e: Systems from Components](-)
@@ -98,13 +98,13 @@
 </p>
 
 <p align="center">
-   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l5/12.JPG?raw=true" alt="drawing" width="500"/>
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l5/11.JPG?raw=true" alt="drawing" width="500"/>
 </p>
 
 <h2>9. Example of Event Ordering</h2>
 
 <p align="center">
-   <img src="" alt="drawing" width="500"/>
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l5/12.JPG?raw=true" alt="drawing" width="500"/>
 </p>
 
 <ul>
