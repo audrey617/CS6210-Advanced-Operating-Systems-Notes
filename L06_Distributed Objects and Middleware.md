@@ -1,6 +1,6 @@
 # Lesson outline
 - [L06a: Spring Operating System](https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/L06_Distributed%20Objects%20and%20Middleware.md#l06a-spring-operating-system)
-- [L06b: Java RMI](-)
+- [L06b: Java RMI](https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/L06_Distributed%20Objects%20and%20Middleware.md#l06b-java-rmi)
 - [L06c: Enterprise Java Beans](-)
 
 # L06a: Spring Operating System
