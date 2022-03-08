@@ -417,16 +417,18 @@
 </ul>
 
 <h2>8. Control Transfer</h2>
-
 <p align="center">
    <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l5/42.JPG?raw=true" alt="drawing" width="500"/>
 </p>
 
 <ul>
-  <li></li> 
-  <li></li> 
-  <li></li> 
-
+  <li>So the second source of overhead is the control transfer overhead. And that is the context switches that have to happen in order to effect an RPC call and return. And let's now look at the context switches that happen in doing the RPC.</li> 
+  <li>Let's say this is the client machine, and on the client machine the client is making a call. So, they're making the call another call is made. The kernel has to say, oh, this client wants to make an RPC call and we know that the semantics of RPC is that, the client is blocked until the results are returned. And therefore, the operating system on the client side, will switch from the current client that is making the call, to another process, let's call it C1. So this is the first context which that's going to happen.</li> 
+  <li>On the client box, the RPC call is sent out in the wire, reaches the server machine, and when it reaches the server machine, the server machine is executing some arbitrary process let's call it S1, so when the call comes in, the kernel has to switch to the particular server process, that is going to handle this incoming RPC call. So this is the second context switch. So, the server machine and the operating system on the server machine is currently executing some process S1. So it has to S in order to answer the incoming RPC call. So that is the second context switch that happens.</li> 
+  <li>Then the server procedure executes. And once the server procedure is completed execution, it's now going to send the results out, and when it wants to send the results out, at that point, the work is done for the server. And so the server operating system has to switch from S to some other process S 2, so that's again a context which that's going to happen because the server is done with whatever it has to do. So that's the third contact switch.</li> 
+  <li>Then the RPC result is coming over the wire. Come to the client side. Exactly similar to what happened over here. When it comes back to the client side, the kernel at that point is executing some process, C2. And this particular result message is coming back, saying well the original call sent out on behalf of this client's seed, the result have come back. Now it is time to reschedule this client, so that this client can receive the results, and continue with his execution. Remember that the semantic it's like a procedural call, but it is a remote procedural call, the client is blocked For the result to come back and when the result comes back. The kernel can schedule the client to continue with its execution. So that's what is going on. So potentially, there are four contact switches that are going on.</li> 
+  <li>Now let's look at these contact switches and figure out what contact switches are critical. Now, this contact switch is essentially to make sure that, the client box is not being underutilized, right? So once the client has made this call, til the result comes back, the client box is underutalized, and therefore, the operating system says, well let me switch to some other process that can lose some useful work on this node. So that is, this contact switch. Not critical from the point of view of the latency for RPC. Now when the message comes over here. This context switch is crucial because, at this point, when the RPC call comes in, this guy, the server box is executing some of the process S1. So it has to switch to this server process, S, which can actually execute the RPC call. So this is an essential part of the RPC latency. And, similarly, to this context which, that I talked about This contact switch is happening in order to make sure that the server's machine is not underutilized. When the server is done with the RPC call, it's going to send the results back, and therefore, we need the contact switch out of this server process. To some of the process that we can utilize this server box. That's this contact switch. Again, similar to this context switch, this context switch is not in the critical path of RPC latency.
+</li> 
 </ul>
 
 <h2>9. Control Transfer (cont)</h2>
@@ -435,12 +437,12 @@
    <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l5/43.JPG?raw=true" alt="drawing" width="500"/>
 </p>
 
-<ul>
+<!-- <ul>
   <li></li> 
   <li></li> 
   <li></li> 
 
-</ul>
+</ul> -->
 
 <h2>10. Protocol Processing</h2>
 
@@ -448,12 +450,12 @@
    <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l5/44.JPG?raw=true" alt="drawing" width="500"/>
 </p>
 
-<ul>
+<!-- <ul>
   <li></li> 
   <li></li> 
   <li></li> 
 
-</ul>
+</ul> -->
 
 <h2>11. Protocol Processing (cont)</h2>
 
@@ -461,12 +463,12 @@
    <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l5/44.JPG?raw=true" alt="drawing" width="500"/>
 </p>
 
-<ul>
+<!-- <ul>
   <li></li> 
   <li></li> 
   <li></li> 
 
-</ul>
+</ul> -->
 
 <h2>12. Latency Limits Conclusion</h2>
 
@@ -474,13 +476,13 @@
    <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l5/44.JPG?raw=true" alt="drawing" width="500"/>
 </p>
 
-<ul>
+<!-- <ul>
   <li></li> 
   <li></li> 
   <li></li> 
 
 </ul>
-
+ -->
 
 <!-- <h2></h2>
 
