@@ -366,10 +366,60 @@
 </ul>
 
 
-<h2></h2>
+<h2>4. Components of RPC Latency</h2>
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l5/38.JPG?raw=true" alt="drawing" width="500"/>
+</p>
+
+<ul>
+  <li>Let's now discuss the components of the RPC latency. By now we are all familiar with the semantics of RPC, namely, in RPC the client, is making a remote procedure call to a server, and it has to send the arguments of the call to the server so that the server can execute the server procedure and return the results back to the client. So if you look at the components of the RPC latency, it starts with the client, with a client call. So the client call subsumes a number of things.</li> 
+  <li>Number one, it is setting up the arguments for the call. The client has to set up the arguments for the procedure call. And then it makes a call into the kernel. And once the kernel is being informed that it wants to make this call, the kernel validates the call, and then marshals the arguments into a network packet, and sets up the controller to actually do the network transmission. That entire set of activities that the client program and the kernel is involved in, in getting ready a network packet to send out, is subsumed in this one line, which I say is the client call.</li> 
+  <li>The second part of the latency is the controller latency, and this is the part where the controller says, well, there is a message to be sent out. I know where it is in memory. I have to first DMA that message into my buffer and then put the message out on the wire. That's the controller latency and so this part of it is in hardware, and as operating system designer we're going to take what the hardware gives us. Controller latency is what you have, that given by the hardware.</li> 
+  <li>The third part of the latency is the time on the wire. Now this really depends, as one might imagine, on the distance between the client and the server. The limiting factor of course is speed of light. So, depending on the bandwidth that's available between the source and the destination, perhaps if you have to go through intermediate routers and so on. It is going to take a certain amount of time to go from the client to the server machine, and that we call as the time on the wire. So then, the message arrives over on the destination node, and it arrives in the form of an interrupt to the operating system.</li> 
+  <li>So, the interrupt has to be handled by the operating system, and part of handling the interrupt is moving the bits that come in on the wire into the controller buffer. And from the controller buffer into the memory of the node.So all of that activity is subsumed in this item number four, which I call the interrupt handling. </li> 
+  <li>So once the interrupt handling is complete, then we can set up the server procedure to execute the original call. Now, what is involved in that? Well, you have to locate the server procedure, and once you locate the server procedure, you have to dispatch the server procedure. And once you dispatch the server procedure, you have to unmarshal the network packet that comes in as the actual arguments for the call that the server procedure has to execute. So all of that setup is first done, and then the server procedure can actually execute the call. So this is the five-step process. From the time the client says, I want to make a RPC call to the point of actually executing the call, these are the layers of software and, of course, hardware and time on the wire, by which time you're ready to execute the server procedure.So even though it looks like a simple procedure call from the clients point of view, there is all this latency to be incurred in executing a remote procedure call. So at the end of step five, the server is all set to execute the procedure. Let's see what happens then.</li> 
+  <li>So step number six is server execution, meaning that it is actually executing the procedure. And of course, this is not under our control as operating system designer, because at this point, the amount of time that the server is going to execute this procedure depends really on the logic of the program that has been written as a client server program. And then, finally, once the server procedure has completed execution, then it says okay, I am ready to send the reply back to the client, and that's where we pick up again, so, what happens is that at that point, you are receiving the results. So, once again, just like when the client wanted to send the arguments, you have to convert the actual arguments into a network packet and send it out on the wire. Similarly,when the server is ready to reply, you have to take that reply, which is the results of the execution of this procedure, and make it into a network packet. And at this point, once it has been made into a network packet it has to be handed over to the controller, and the controller does exactly what we did on this side, which is to say the controller latency is going to be incurred. So that's why you see item number two appearing all over again in the return path. Similar to sending the arguments over to the server on the wire, the results have to be sent on the wire back to the client. And so you see that item number three, which is the time on the wire, is reappearing on the return path as well. Come over to this side.</li> 
+  <li>The incoming result message is going to result in an interrupt on the receiving node, the client node. And that is exactly similar to what happened on the server side item number four. So you see number item number four reappearing on the return path as well. So that is the interrupt handling part. And once that interrupt is handled, the operating system on the client side said, oh this was on behalf of this client, let me redispatch the client, set up the client so that the client can then receive the results, and restart execution where it left off. So the only two new things that we added in the return path was item number six and seven. Two, three, and four was exactly the same as what we saw on the way over to the server, that is being repeated on the way back to the client.</li> 
+  <li>So that's the seven step latency involved in the RPC, not worrying about the actual execution time of the server core itself because that is not in the purview of the operating system, it is in the purview of the client server program that the app developer has done.
+</li> 
+</ul>
+
+<h2>5. Sources of Overhead on RPC</h2>
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l5/39.JPG?raw=true" alt="drawing" width="500"/>
+</p>
+<ul>
+  <li>Now that we understand the components of RPC latency, let's understand the sources of overhead that creeps in in carrying out all the different functions, going from the client to the server and back to the client. So far as the client is concerned, this looks like an innocuous procedure call, right? So it just says, I want to call a procedure S.foo, and here are the arguments. Well unfortunately, this call is not a simple procedure call but it is a remote procedure call. And the sources of overhead that creeps in, in a remote procedure call, are marshaling, data copying, control transfer and protocol processing. So we'll look at each one of these things in more detail. Now how can we reduce the overhead in the kernel? What we want to do is, think what the hardware gives you in order to reduce the latency incurred for each of these components of the RPC latency.
+</li> 
+</ul>
+
+
+<h2>6. Marshaling and Data Copying</h2>
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l5/40.JPG?raw=true" alt="drawing" width="500"/>
+</p>
+<ul>
+  <li>First let's look at how we can reduce the overhead and marshaling the arguments and the data copying.</li> 
+  <li>Just to jog your memory, marshaling refers to the fact that the semantics of the RPC call being made between the client and the server. It's something that the operating system doesn't have any clue about. So in other words, the arguments that are actually passed between the client and the server has semantic meaning only between the client and the server. The operating system has no knowledge of it. And therefore marshaling is the term that is used to say, let's accumulate all of the arguments that is there in the call and make one contiguous network packet out of it, so that we can give it to the kernel and the kernel can send it out.</li> 
+  <li>That's what is being described as marshaling, and the biggest source of overhead in marshaling is the data copying that's going to happen, and I'll explain that in a minute.</li> 
+  <li>Potentially, in doing the marshaling, there could be three copies involved. Where are these three copies coming aboard? Well, first of all, the client is executing. When a client is executing a procedure, all the arguments for the procedure call that it wants to do is living on the stack of the client. And there is an entity, we'll introduce this terminology even before, called the client stub, and the role of the client stub is to take the arguments of the call which are living on the stack, and convert it into a contiguous sequence of bytes called an RPC message, so the RPC message has no semantic meaning, and it's just a contiguous string of bytes, which you can pass to the kernel, and the kernel can then send it out on the wire, just like any other message. So that's the first thing that the stub does, and that's the first source of overhead. The client stub is making the first copy from the stack, in order to create an RPC message. Now remember that the client is a user program, so it is living in the user space outside the kernel, and so this RPC message, which is being created by the stub, it is pulled off the client's address space,which is living outside the kernel. So, this RPC message is in user space and the kernel has to make a copy of the RPC message from the user space into its own buffer, the kernel buffer. And that's a second source of overhead. The second source of copy in doing the marshalling of the arguments. So now it is in the buffer of the operating system kernel, now the operating system can kick the network controller and say " hey, go ahead, take this buffer, send it out in the wire to the desired destination". And the network controller, at that point, is going to move the bits from the buffer, which is in the system memory, of the operating system, into its internal buffer using DMA. And this is the third copy that is happening. The copy that is done by the network controller, using DMA to move the bits of the RPC message, copied from the user space into the internal buffer of the kernel. And now this movement is being orchestrated by the hardware to move it from the kernel buffer into the internal buffer of the network controller, so that it can then get out on the wire. So those are the three copies involved in marshaling the arguments of the call, before it can be put out on the wire.The copying overhead is the biggest source of overhead for RPC latency.</li> 
+  <li>Now, how do we reduce the number of copies? Well, it turns out that the third copy that you're looking at here, moving the bits from the system memory into the network controller, there's a hardware action. That is unavoidable, and therefore, we're going to live with it. Unless the network controller is completely redesigned, if the network controller is saying, well, I need to DMA the bits from the system memory into my buffer. Well, I have to DMA the bits from the system memory into my internal buffer, before I can put it all on the wire. Then this third copy is inevitable so we live with it. But we would like to see if we can try to reduce the number of copies involved here. The first idea is, can we eliminate this copy that is done by the client stub? Why is that happening? Well, it has to create a network message in order to send it out on the wire. As we said, that the semantics of this call is only known to the client and the server, and the client stub is taking the argument and making a network packet out of it. And it was doing it in user space. And so what we're going to do is, we're going to marshal it directly into the kernel buffer. In other words, we've now moved this stub, the client side stub, from the user space down into the kernel. If you can move it into the kernel, then from the stack a stub can directly marshal it into the kernel buffer. And so that intermediate copy that we had here creating an RPC message and copying it. Again into the kernel buffer is avoided if the stub can directly work on the stack, and write it into the kernel memory. So what this means is that, at instantiation time, the client stub is installed inside the kernel. At bind time, when the client binds with the server at the bind time, what we going to do is, we going to say that here is the client stub, please put it inside the kernel so that, later on, you can use that in order to do the marshaling. So the synthesized procedure is installing the kernel for each client call, so for each client server relationship. We synthesize the procedure, which is the client's job, install it in the kernel for use every time, I make this call. This stub can be invoked to convert the argument that are living on the stack, into a network message, and directly put it into the kernel buffer. So this, obviously, will eliminate. From the two copies down to one copy because, the intermediate copy of converting the arguments into an RPC message is now eliminated. Now, the problem with this idea is that we're seeing, let's dump some code into the kernel and that may not be something that is, so palatable. So this is a solution that's possible if the RPC service that is being provided between the client and the server, the trusted service and therefore we can trust, who is putting the stub into the kernel. In that case the solution maybe a reasonable one to adopt.
+</li> 
+</ul>
+
+<h2>7. Marshaling and Data Copying (cont)</h2>
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l5/41.JPG?raw=true" alt="drawing" width="500"/>
+</p>
+<ul>
+  <li>An alternative to dumping code into the kernel, is to leave the stub in the users piece itself. But have a structured mechanism, for communication between the client stub and the kernel. And that structured mechanism is a shared descriptor. And the shared descriptor, is a way by a which the sub can describe to the kernel that here is some stuff sitting in the user space. And I am going to tell you how exactly you can extract this information, from the user space and construct it into this buffer for transmission on the wire. Recall what I told you earlier and that is the kernel has no idea, of the semantics of this call and therefore, it has no knowledge of the actual arguments. The data structures that are being used in the call. So what we're going to do is use the shared descriptor as a vehicle for the stub to communicate to the kernel the data structures that need to be passed. So for instance, let's say that the argument for the call has four parameters. Then this descriptor has four entries, and each entry is saying, this is a starting point of a particular Data item, and this is the length of the data item. This is the starting point of the second data item, and this is the length of the data item. Third data item, fourth data item. Kernel doesn't have to know the semantics of these data items. All it needs to know is, what is the starting address for a particular data item, and what is the length of the data item. That's all it needs to know. And this is the descriptor that. Allows the stub to inform the kernel about the arguments, how many arguments there are and what are the size of each argument. It doesn't have to tell the kernel, oh, here is an integer, here's a floating point, here's an array. No, none of that. All that the stub is doing is, it's saying. Here is the starting address for an argument, and here is the length of that argument. Because usually data structures are organized contiguously, so if you have a, an integer, it is occupying full contiguous bytes and memory. If you have floating point number, it is occupying some number of contiguous bytes in memory, and therefore. What the stub is doing is, is creating the shared descriptor that is providing the information of the kernel in the layer of the arguments on the stack, and once the layer of the arguments and the stack are known to the kernel, then the kernel can use these contiguous data items. That are living on the stack, describe the shared descriptor, and create a contiguous packet in its internal buffer. That's a second way you can do, in order to reduce the number of copies from two to one. So in both cases, what we have done is either the first approach of pushing the client stub into the kernel or the second approach of having a shared descriptor between the user stub, which is living. In user space and the kernel in order to describe the layout of the data structures, that need to be assembled into a data packet by the kernel using the shared descriptor. Both of these allow us to reduce the number of copies from three down to two. Either the one copy that is happening Going from this stack into the kernel buffer and this second copy, as I said, is unavailable if the network controller is requiring DMA to be done from the system memory into its internal buffer before the bits can be pushed out of the wire. So that's the first source of overhead, these are techniques that we have looked at. Two differnet techniquest for reducign the copying overhead that is the dominate part of marshalling the arguments. And this happens on both sides. It happens when the client has to push the arguments to the server side. And it happens again on the server side when the server has to push the results back to the client. So the marshalling is happening on both ends, and for both ends we can Use this technique of using a shared descriptor or pushing the clients dub or the service dub into the kernel in order to reduce the number of copies from two down to one.
+</li> 
+</ul>
+
+<h2>8. Control Transfer</h2>
 
 <p align="center">
-   <img src="" alt="drawing" width="500"/>
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l5/42.JPG?raw=true" alt="drawing" width="500"/>
 </p>
 
 <ul>
@@ -379,9 +429,57 @@
 
 </ul>
 
+<h2>9. Control Transfer (cont)</h2>
 
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l5/43.JPG?raw=true" alt="drawing" width="500"/>
+</p>
 
+<ul>
+  <li></li> 
+  <li></li> 
+  <li></li> 
 
+</ul>
+
+<h2>10. Protocol Processing</h2>
+
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l5/44.JPG?raw=true" alt="drawing" width="500"/>
+</p>
+
+<ul>
+  <li></li> 
+  <li></li> 
+  <li></li> 
+
+</ul>
+
+<h2>11. Protocol Processing (cont)</h2>
+
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l5/44.JPG?raw=true" alt="drawing" width="500"/>
+</p>
+
+<ul>
+  <li></li> 
+  <li></li> 
+  <li></li> 
+
+</ul>
+
+<h2>12. Latency Limits Conclusion</h2>
+
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l5/44.JPG?raw=true" alt="drawing" width="500"/>
+</p>
+
+<ul>
+  <li></li> 
+  <li></li> 
+  <li></li> 
+
+</ul>
 
 
 <!-- <h2></h2>
