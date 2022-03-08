@@ -437,12 +437,11 @@
    <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l5/43.JPG?raw=true" alt="drawing" width="500"/>
 </p>
 
-<!-- <ul>
-  <li></li> 
-  <li></li> 
-  <li></li> 
-
-</ul> -->
+<ul>
+  <li>The result comes back and when the result comes back the client box is executing some process C2. The kernel has to switch to this client, so that is can see the results, an continue with it's execution. So this context switch, is again in the critical path of RPC latency. So if you look at RPC call, the two contact switches that are in the critcal path of RPC latency. There's a context switch that happens here and the context switch that happens here. So only two context switches are in the critical path of the latency, the context switch that happens on the server machine when the call comes in, and similarity, the context switch that happens on the client machine when the results come in. So this context switch that happens on the client machine to keep the client machine utilizied, can be overlapped with the network communication to send the call out. So in other words, this context which is not the critical path of RPC latency and therefore do this context which, while the RPC call. Is in transmission on the wire. So while overlapping the context switch that happens on the client box after the call has been sent out with the communication time on the wire for the opposite call. Similarly on the server side, once the server is completed execution and it is ready to send the results out, send it out of the wire and in parallel with sending it out in the wire, it can overlap The contact that happens here in order to keep the server box busy doing useful stuff, S2, S2 that can be overlapped with this network communication. So, only this contact switch and this contact switch are in the critical path of latency. So, we can reduce the number of contact switches down to two. Originally we started with 4, we can reduce it down to 2. By observing that the context which is that happened on the client end box and the server box to keep them utilized can be overlapped with a network communication for sending the arguments over to the server, or sending the results over to the client. Of course we are greedy.</li> 
+  <li>Can we reduce it to one? Can we actually reduce the number of context switches Down to one. Let's think about this. So we said that when this RPC call was made, the operating system on the client side said, well, this is a blocking semantic, and therefore, this guy is not going to do any useful work, so I'm going to block him and wait for the results to come in. So this context switch that c, the operating system did on the client side was essentially to keep this client box from being under-utilized, but do we really need to do the switch? Well, it really depends. If the server procedure is going to execute for a long time, then, you know, this client box is going to be under-utilized for a long time. And in that case, it might be a good thing to context which in order to make sure that we are utilizing the resources that we have. But on the other hand, If, suppose, this RPC call, we know that this RPC call is going to come back very soon. And if it is on a local area network and the server procedure that is going to be executed is not going to take a long time. Then perhaps that RPC call will come back very quickly. If that is the case, we can get rid of this context switch that we talked about here. In order to keep the client box busy, we did this context switch. Don't do that. We can spin instead of switching on the client side. And if you do that, then the client is reading but is not being context restored. It is just that the box is underutilized, so the only context which that we incur is the context which on the server because you never know when an RPC call is going to come in. So when an RPC call comes in, you obviously have to contact switch into the server context in order to execute the call. That's the necessary evil. We'll incur that. But on the client side, what we're going to do is, we're going to spin instead of switching so that. Even though the box is underutilized, you're not doing anything on the client side, just sending the call out and waiting. And in that case, we've gotten rid of the second context switch that you need to incur. Because another context was stalled and therefore this context switch which we said is in, inevitable, because. It has to be done in order to receive the results for the client. Well, we can get rid of it if we never switched in the first place, and that's the trick here. To reduce the number of conflicts which is down to one, we can spin on the client side instead of switching so that we can be ready to receive. The results of the RPC call execution when the server is done. Again, the intent here is that we wanted to the latency that is incurred in the RPC call. And since these two contract switches were in the critical path of the latency, we would really like to see how we can elimintate at least one of them. And this context which is inevitable and this context which we can eliminate, by spinning on the client side instead of switching in the first place.
+</li> 
+</ul>
 
 <h2>10. Protocol Processing</h2>
 
@@ -450,6 +449,104 @@
    <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l5/44.JPG?raw=true" alt="drawing" width="500"/>
 </p>
 
+<ul>
+  <li>So we talked about marshalling, data copying, and content switches, and the fourth component that adds to the latency of the RPC transmission is protocol processing, and that's the next thing that we're going to look at. Now the question is, what transport should we use for the RPC? And this is where we want to see how we can take advantage of what the hardware is giving us. If we are working in a local area network, the local area network is reliable, and therefore our focus should really be on reducing the latency and not worry so much about reliability. It is often the case that performance and reliability are at odds with each other. If you focus on reliability, then performance may take a back seat. So here, since the RPC performance is the most critical thing that we are worried about, we're going to focus on reducing the latency. And we're going to assume that the LAN is reliable and therefore let's not worry about the reliability of message transmission in a local area network. That's the idea behind, the next thing that we're going to look at.</li> 
+  <li>Let's think about all the thing that could go wrong in message transmission, and see why some of those things may not be that important, given that we have a reliable local area network. The first thing is, you send a message, it might get lost. But, if in a local area network, the chances that messages will actually get lost, is not very high. It happens in wide area internet, because messages have, have to go out through several different routers, and they maybe queuing in the routers, and there may be loss of packets in the wire and so on. But that's not something that you have to worry about in a local area network. So that assumption that messages may not get lost, suggests that there's no need for low level acknowledgements. Why? Because you're sending a call and the call is going to be executed and the result is going to come back. And usually in network transmission, we send acknowledgements to say that, yes, I received the message. Now, in this case because the semantics of RPC says that the act of receiving the RPC call is going to result in server procedure execution and the result is going to come back, the result itself serves as the ACK. And therefore we don't need low level ACKs to say, oh, I received you arguments of the call. You don't have to do that. And similarly, you don't have to have a low level ACK that says oh, I received the results. Because the results were not received, the caller, the client is going to resend the client call. So the high level semantic of RPC can itself serve as a way we can coordinate between the client and the server and we can eliminate low level ACKs and if we eliminate low level ACKs, that reduces a latency in the transport. The second thing is in message transmission on the Internet, we worry about messages getting corrupted. Not maliciously or anything like that, but just due to vagaries of the network messages may get corrupted in going on the wire that connects the source and destination. And for that reason, it's typical to employ checksum in the messages to indicate the integrity of the message that checksum is usually computed in software and appended to the message and sent on wire. But in a local area network things are reliable, we don't have to do extra overhead and software for generating the checksum, just use hardware checksum if it is available, just use hardware checksum for packet integrity. Don't worry about adding an extra layer of software in the protocol processing for doing software checksum. So that's the second optimization that you can make to make the protocol processing leaner. The third source of overhead that comes about in message transmission is once again related to the fact that messages may get lost in transmission. And therefore in order to make sure that if messages are lost in transmission, you usually buffer the packets. So that if the message is lost in transmission, you can re-transmit the package.
+</li> 
+</ul>
+
+<h2>11. Protocol Processing (cont)</h2>
+
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l5/44.JPG?raw=true" alt="drawing" width="500"/>
+</p>
+
+<ul>
+  <li>Now once again let's think about the semantics of RPC. The client has made the call and the client is blocked and since the client is blocked, we don't need to buffer the message on the client's side. If the message gets lost for some reason, you don't hear back the result of the RPC from the destination, in a certain amount of time, you can resend the call, from the client side. And therefore you don't have to buffer the client side RPC message but it can reconstruct the client side message and resend the call. Therefore client side buffering is something that you can get rid of, once again, because the LAN is reliable. The next source of overhead, similar to client side buffering, happens on the server side, and that is the server is sending the results and the results may get lost. LAN reliable may not happen that often but it could happen ,and therefore we do want do the buffering. On the server side because if we don't buffer it then you have to reexecute the server procedure to produce a result and that's not something that you want to do because it involves reexecuting the server procedure which may be much more latency intensive then simply buffering the packet that corresponds to the result of executing the server procedure so you do want to buffer on the server site but. The buffering on the server side can be overlapped with the transmission of the message. So in other words the result has been computed by the server procedure. Now go ahead and send the result. While you are sending the result back to the client, do the buffering. That you can overlap the service side buffering with the result transmission, and get it out of the critical path of the latency for protocol processing. So, removing low level asks, employing hardware check sum and not doing check sum in software. Eliminating client side buffering all together. And overlapping the server side buffering with the result transmission are optimizations that you can do. In protocol processing, recognizing that the LAN is reliable and therefore we don't have to focus so much on the reliability of message transmission. But focus rather on the latency, and how we can reduce the latency, by making the protocol processing lean and mean
+</li> 
+</ul>
+
+<h2>12. Latency Limits Conclusion</h2>
+
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l5/44.JPG?raw=true" alt="drawing" width="500"/>
+</p>
+
+<ul>
+  <li>So once again recapping what we said. The sources of RPC latency are the following. Marshaling and data copying. Context switches, both at the client side and the server side. Similarly marshaling and data copying also happens both in the client side and the server side. And the actual protocol processing in order to send the packet on the wire. These are all the things that are happening in software. Those are the things that as OS designers, we have a chance to do something about. And what we saw were techniques that we can employ for each one of those, reduce the number of copies, reduce the number of context switches, and make the protocol processing lean and mean so that the latency involved in RPC is reduced to as minimum as possible from the software side. And we are going to take whatever the hardware gives us. If the hardware gives us an ability to, to do DMA from the client buffer, we'll use that but if it doesn't, then we have to anchor that. So that's what we are seeing here. As the opportunities for reducing the total latency in going from the client to the server and back to the client in RPC.
+</li> 
+</ul>
+
+
+# L05d: Active Networks
+<h2>1. Active Networks Introduction</h2>
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l5/45.JPG?raw=true" alt="drawing" width="500"/>
+</p>
+
+<ul>
+  <li>In the previous lesson, we learned some tricks we can employ as operating system designers for optimizing the RPC communication software which powers client-server communication in the local area network from the point of view of reducing communication latency. Of course, user interactions go beyond the local area network to the wide area Internet. The primary issue, once a packet leaves your local node, is to route the packet reliably and quickly to the destination. Routing is part of the functionality of the network layer of the protocol stack of an operating system. What happens to a packet once it leaves your node? Well, the intermediate hardware routers between your node and the destination have routing tables. That help them to move the packet towards the desired destination node by doing a table look-up. The routing tables evolve over time, since the Internet itself is evolving continually. That's the big picture. And there are lots of fascinating details which you can learn in a course that is dedicated to computer networking. For the next part of the lesson on distributed systems, we want to ask the question, what can be done in the intermediate routers, to accommodate the quality of service needs of individual packet flows through the network? Or in other words, can we make the routers en route to the destinations smart? The specific thought experiment we are going to discuss is called active networks. And then, we will connect the dots from active networks to the current state of the art, which is referred to as software defined networking.</li> 
+  <li>Thus far in the course, we've been focusing on specializing operating system services for a single processor, or a multi-core or a parallel system, or a local area network. In this lesson, we will take this idea of specializing to the the wide area network. Specifically, we will study the idea of providing quality of service for network communication in an operating system by making the network active.
+</li> 
+</ul>
+
+<h2>2. Routing on the Internet</h2>
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l5/46.JPG?raw=true" alt="drawing" width="500"/>
+</p>
+
+<ul>
+  <li>Normally, when we think about routing of packets on the internet, typically what happens is. At the source node, you create a network packet and go through the layers of software stack on the sending node, and send the packet out on the network. And this network packet has a desired destination. And of course, it has to go through a whole number of intermediate routers in order to get to its eventual destination. And the routers on the Internet that are intermediate between the source and the destination, they don't inspect the packet for the contents or anything like that. All that they're doing is when the packet comes in, they're looking at the destination known for that packet and figuring out what is the next hub that I have to send the packet to. So each router is making the determination of the next hub for the package, and it makes the determination by doing a table lookup. So every router has a routing table, and the routing table is telling. Given a particular destination, what is the next hop? And that's how the packet flows from source to destination through a whole bunch of intermediate routers and finally gets to the destination. So in other words, the routers en route to the destination from the source, are simply forwarding packets. That is the nodes are passive. And they're just doing a table lookup in order to figure out what is the next hop that I have to send this packet to? </li> 
+  <li>Now, what does it mean to make the nodes active? What we mean by making the node active is that the next hop for sending this package towards a destination is not simply a table lookup. But it is actually determined by the router executing code that is actively as opposed to doing just a passive table lookup. So, in other words, the packet in addition to the payload that is intended for the destination also carries code with it. And the code is being executed by the router in order to make a determination as to what to do with this packet in terms of routing it towards the desired destination. This sounds really clever because it can provide customized service for networks flows that are going through the network. And every network can have its own way of choosing what may be the desired route, in terms of going from source to destination. And so in other words we're saying. Well, this is an opportunity to virtualize the traffic flow from my network traffic independent of other network flows. This should be very familiar to you all because we've been talking about customizing operating system services in the SPIN operating system, and the Exokernel and so on. But, of course, the problem that we're talking about here, much, much, harder because the network is wide open. Our network traffic flow is going through the public internet infrastructure ,and we are talking about specializing the network flow for every network flow independent of others. There are lots of challenges to this values of active network. In particular, how can we write such code that we can distribute and send it over the wire so that routers can execute it. And who can write such code? And how can we be sure that the injected code does not break the network? Or in other words, for a particular network flow, there is a code that is going to be centered on. How do we make sure that is not going to in some way stymie other network flows? These are things that we have to worry about and sort of opening up the router and saying that we're going to take network flow specific decisions in each of the routers.
+</li> 
+</ul>
+
+<h2>3. Active Networks Example</h2>
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l5/47.JPG?raw=true" alt="drawing" width="500"/>
+</p>
+
+<ul>
+  <li>Let me give you an example to motivate why this vision of active networks is both intriguing and interesting. You may all know that Diwali is a big festival in India, just like Christmas is in the Western world. And let's say that I am sending Diwali greetings electronically to my siblings, who are in India. What I can do, is I can send individually a greeting message to each of my siblings. And so, there'll be N messages going out on the Internet from source to destination. So I send out N messages, and to reach any of my siblings. That's one way of doing it.</li> 
+  <li>A nicer approach would be, given that all my siblings are clustered in one corner of the globe, it would be nice if I could send just one message, traverses the Internet, gets to close to the destination of where my siblings are, and the router that is at this end, demultiplexes my message and sends it to all my siblings. Obviously, the second method is more frugal in terms of using network resources. I don't have to send N messages. I can send one message, and finally at or close to the destination, an active node takes this one message, recognizes, oh, this is intended for multiple recipients, and demultiplexes them, and sends it to all the eventual recipients of this message.</li> 
+  <li>We can generalize this idea and say that this idea of active router is going to be spread out throughout the Internet, so that even if my siblings, let's say, are distributed all over the world, then I could still send a single message from my source, and it gets demultiplexed along the way, depending on where all the eventual recipients are for this particular message that starts from me. So in other words, we can sprinkle this intelligence that is in this one particular router to all the routers in the Internet and that way we are making the entire Internet an active network. That's the vision behind active networks where the nodes in the internet will become, not just passive entities, but actually active, in looking at the message, and figuring out what to do with it, in terms of routing decisions.
+</li> 
+</ul>
+
+<h2>4. How to Implement the Vision</h2>
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l5/48.JPG?raw=true" alt="drawing" width="500"/>
+</p>
+
+<ul>
+  <li>Now that we've motivated the vision, let's see how we can implement the vision. In order to implement this vision, the operating system should provide quality of service APIs to the application. And these quality of service APIs could be things like, oh, this particular network flow that I'm creating has certain real time constraints, because it has video data and so on and so forth. And those are the hints that the operating system is going to use, in terms of synthesizing code that corresponds to the API that the operating system is providing you, to give hints to the network. So, the code that the operating system is going to synthesize is essentially taking the quality of service constraints, and putting them as executable code that can be, then passed it on as part of the packet. So in other words, the protocol stack of the operating system has to be enhanced to service these quality of service requirements, and generally to synthesize the code that has to be part of the payload. So the application is not only providing a payload, but it is giving quality of service constraints. And the operating system, in addition to the payload, generates or synthesizes code corresponding to this quality of service instructions. And this slaps on the IP header for where this particular message is eventually to be delivered, and hands it over to the Internet. And in the Internet, if we assume that the Internet routers are capable of executing this specialized code, then depending on the nature of what is being requested, a particular order may say, oh this particular packet I have to send it to multiple destinations, so let me send this down this link, down this link, and similarly when it comes over here, this router may say, oh, this packet has to go to multiple destinations. And so on and that we can see that intelligent routing decisions can be taken in the network. That's out of the road map of how we can take this vision and try to implement it. But the problem with carrying out the vision, in terms of this implementation that I just sketched, is that changing the operating system is non-trivilous, especially the protocol stackers, they have already mentioned TCP IP has several hundred thousand lines of code, so it is non trivial to change the protocol stack of every node in the entire universe. To handle active networks. And also, the second part of the challenge is that the network routers are not open. So, in other words, we cannot expect that every router on the Internet is capable of processing the code that I'm going on slap on to this payload and be able to make intelligent routing decisions. So there is a impedance mismatch between the vision and the implementation that I've sketched right here.
+</li> 
+</ul>
+
+<h2>5. ANTS Toolkit</h2>
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l5/49.JPG?raw=true" alt="drawing" width="500"/>
+</p>
+
+<ul>
+  <li>So, the ANTS toolkit, ANTS stands for Active Node Transfer System, took a different approach to show the utility of the vision. Since modifying the protocol stack is nontrivial, instead, the ANTS toolkit is really an application-level package. And this toolkit is available for the application programmer to say, here is my pay load and quality of service constraints. And what the ANTS toolkit does is to create an ANTS header to this payload. So, the new payload looks like this. And this is what is called a capsule. And a capsule consists of an ANTS header and the actual payload. And this is what is given to a normal operation system protocol stack. And so, this normal operating system protocol stack looks at this as the payload that has been given to it and it knows the destination address, where this has to go sticks on the IP header for it. So, the new packet that is generated by the protocol stack, looks like this. It has the IP header, and the rest is payload so long as This protocol stack is concerned, but we know this payload consists of two parts. One is the normal payload that the application generated, and in addition to that there is the ANTS header that have been slapped on by the ANTS tool kit and this is what traverses the network and when it traverses the network if a node in the network is a normal node, meaning it is not a smart node, but it is a normal IP router. Then it simply uses the IP header to say, well, here is what I have to do in terms of sending the packet to the next hop, towards the destination. On the other hand, if a node that receives this packet is an active node. Then, it can actually process this ANTS header, and say, oh, this particular packet needs to be. Demuliplexed, and sent to two different routes. And it might take that intelligent routing decision based on the nature of that node. So that's the idea, that we can push one of the paint points out of the operating system, into an enhanced toolkit that lives above the operating system. So that's sort of the ANTS toolkit vision. That's one part. Now, the second part, and of course the fact that the internet may not be open to opening up all of the routers to to be processing the specialized code that comes in the capsule. So, what we do is we keep the active nodes only at the edge of the network. In other words, the core IP network is unchanged, and all of the magic happens only at the edge of the network. So, once again, if I go back to my example of sending greetings to my siblings, then only the edge nodes have to do the magic in order to take my original message and process the code to deliver it to multiple destinations. So the rest of the network can remain unchanged. So the core of the IP network can, can be unchanged, and intelligence can be at the edge of the network. So this is, sort of, allowing, sort of, matting this active network vision with the core IP network being unchanged.
+</li> 
+</ul>
+
+<h2>6. ANTS Capsule and API</h2>
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l5/50.JPG?raw=true" alt="drawing" width="500"/>
+</p>
+<ul>
+  <li>So having given you the high level description of what ANTS toolkit does, let's dig a little deeper and look at the structure of the ANTS capsule as well as the APIs provided by ANTS in order to do capsule processing. First of all, the header as I told you consists of three parts. The original IP header, which is important for routing the package towards the destination if a node is a normal node, not an active node. And this is of course the payload that was generated by the application. And in the middle is this ANTS header, and there are two fields in this ANTS header that are particularly important. One is a type field, the other is a prev field. The type field is a way by which you can identify the code that has to be executed to process this capsule. And this type field is really an MD5 hash of the code that needs to be executed on this capsule, and we'll come back to that in a minute. And the second field that I said is important is the prev field. And this prev field is the identity of the upstream node that successfully processed the capsule of this type. And this information is going to be useful for us in terms of identifying the code that needs to be executed in order to process this capsule. We'll come back to how these two fields are actually used in processing a capsule once this capsule arrives at an active node. The short hint that I'll give you is that the capsule itself, as you see, does not contain the code that needs to be executed to process this capsule, but it only contains a type field. And this type field is a vehicle by which we can identify the code that needs to be executed to process this capsule. More on that in a minute. First, let's talk about the API that ANTS toolkit provides you. The most important function that we want to accomplish using the ANTS toolkit is forwarding packets through the network intelligently. So routing the capsule is the most important function that needs to be done. And that's most of what this ANTS API is all about. And that part is contained right here, saying that, well, route this packet in this manner, and deliver the packet to an application. And this is the set of API calls that allows you to do routing of the capsule through the network. This is where what I said about virtualizing the network comes in. Regardless of the actual topology, physical topology, I can take routing decisions commensurate with the network flow requirements contained in the capsule that arrives at a node. So the second part of the API is API for manipulating what is called a soft-store. Now, soft-store is storage that's available in every routing node for personalizing the network flow with respect to a particular type of capsule. And I mentioned earlier that the type is only a pointer to the code, not the code itself. And the soft-store is a place where we can store the code that corresponds to a particular capsule type. So the primitives that are available for manipulating the soft-store are things like put object and get object. The soft-store is basically key value store and in this key value store, you can store whatever is important for personalizing the network flow for capsules of this type. An obvious candidate for storing in the soft-store is the code that is associated with this type. So you can store the code that is associated with this type, so that future capsules of the same type, when it arrives at a particular node, they can retrieve the code from the soft-store and execute the code that needs to be executed for processing capsules of this type. Other interesting things that you might put into this soft-store are things like computed hints about the state of the network, which can be used for future capsule processing for capsules of the same type. And the third category of API that's available is querying the node for interesting tidbits about the state of the network or details about that node itself, for instance, what is the identity of the node that I'm currently at, and what the local time is at this node, at this node, and so on and so forth. So these are the kinds of things that are available. So the key thing that I want you to get out of looking at this ANTS API is that it is a very, very minimal setup API. So the number of API calls fits in this little table here. So that's the idea. Remember that routers are in the public Internet. And if you're talking about executing code in the router that is part of the public Internet, the router program that we're executing at a router node has to have certain important characteristics. Number one, it has to be easy to program. Number two, it should be easy to debug, maintain, and understand. And number three, it should be very quick, because we are talking about routing packets, and so the router program should not take a long time to do its router processing. So the API, this very simple API, allows you to generate very simple router programs that are easy to program because the APIs are simple, easy to debug, easy to maintain and understand. And the program itself is pretty small, that it's going to take not a humongous amount of time to do the packet processing.
+</li> 
+</ul>
+
+
+<h2>7. Capsule Implementation</h2>
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l5/51.JPG?raw=true" alt="drawing" width="500"/>
+</p>
 <!-- <ul>
   <li></li> 
   <li></li> 
@@ -457,10 +554,9 @@
 
 </ul> -->
 
-<h2>11. Protocol Processing (cont)</h2>
-
+<h2>8. Potential Apps</h2>
 <p align="center">
-   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l5/44.JPG?raw=true" alt="drawing" width="500"/>
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l5/52.JPG?raw=true" alt="drawing" width="500"/>
 </p>
 
 <!-- <ul>
@@ -470,10 +566,38 @@
 
 </ul> -->
 
-<h2>12. Latency Limits Conclusion</h2>
+<h2>9. Pros and Cons of Active Networks</h2>
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l5/53.JPG?raw=true" alt="drawing" width="500"/>
+</p>
+<!-- <ul>
+  <li></li> 
+  <li></li> 
+  <li></li> 
+
+</ul>
+ -->
+
+
+<h2>10. Roadblocks</h2>
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l5/54.JPG?raw=true" alt="drawing" width="500"/>
+</p>
 
 <p align="center">
-   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l5/44.JPG?raw=true" alt="drawing" width="500"/>
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l5/55.JPG?raw=true" alt="drawing" width="500"/>
+</p>
+<!-- <ul>
+  <li></li> 
+  <li></li> 
+  <li></li> 
+
+</ul> -->
+
+
+<h2>11. Feasible</h2>
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l5/56.JPG?raw=true" alt="drawing" width="500"/>
 </p>
 
 <!-- <ul>
@@ -483,6 +607,18 @@
 
 </ul>
  -->
+<h2>12. Active Networks Conclusion</h2>
+<!-- <ul>
+  <li></li> 
+  <li></li> 
+  <li></li> 
+
+</ul>
+ -->
+
+
+
+
 
 <!-- <h2></h2>
 
