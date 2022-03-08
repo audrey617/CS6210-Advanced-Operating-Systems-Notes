@@ -20,9 +20,9 @@ Repo Desc:
 
 - Week 4&5 : [Parallel Systems (Google Docs)](https://docs.google.com/document/d/1chu8Xz5yP-fJmmAiCy34WcpyaeBAu8fGI-pGVln8IdQ/edit?usp=sharing), [Parallel Systems (github link, pdf)](https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/L04_Parallel%20Systems.pdf)
 
-- Week 6&7 : [Distributed Systems](https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/L05_Distributed%20Systems.md)
+- Week 6&7 : [Distributed Systems](https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/L05_Distributed%20Systems.md) NOT DONE!
 
-- Week 8: [Distributed Objects and Middleware](-) TODO!
+- Week 8: [Distributed Objects and Middleware](https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/L06_Distributed%20Objects%20and%20Middleware.md) NOT DONE!
 
 - Week 9-10: [Distributed Subsystems](-) TODO!
 
