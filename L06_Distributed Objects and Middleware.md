@@ -302,108 +302,129 @@
 </ul>
 
 # L06c: Enterprise Java Beans
+<h2>1. Enterprise Java Beans Introduction</h2>
 <p align="center">
-   <img src="https://www.nicepng.com/png/detail/11-117393_to-be-continued-meme-png-street-sign.png" alt="drawing" width="500"/>
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l6/30.JPG?raw=true" alt="drawing" width="500"/>
 </p>
 
+<ul>
+  <li>Welcome back! Let's connect the dots. We started with the technical issues in the structure of an operating system for a single CPU, then a parallel machine, then a distributed system. We saw how object technology with it's innate concepts of inheritance and reuse helps in structuring operating systems at different levels. Now, we go one step further. How do we structure the system software for a large scale distributed system service? It's too limiting to call it an operating system. Large scale distributed service.</li> 
+  <li>As we continue this lesson, we'll get a glimpse of how object technology has gone ballistic to provide the services that you're reliant on for your everyday internet e-commerce experience.</li> 
+  <li>In this lesson, we will describe enterprise java beans and the term java bean is used to signify reusable software components. That is many objects, java objects, in a bundle so that it can be passed around easily from one application to another application for reuse.
+</li> 
+</ul>
+
+<h2>2. Inter Enterprise View</h2>
+
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l6/31.JPG?raw=true" alt="drawing" width="500"/>
+</p>
+
+<ul>
+  <li>I'm sure all of us use, routinely, services on the internet such as email through Google or Yahoo. And perhaps purchase things using eBay or make orders for airline reservations and so on. And when we do that, we think of an enterprise that we are accessing from our work station or laptop or personal mobile device. We think of an enterprise as a monolithic entity.</li> 
+</ul>
+     
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l6/32.JPG?raw=true" alt="drawing" width="500"/>
+</p>          
+<ul>
+  <li>But, in fact, if you look inside the enterprise, the enterprise, the intra enterprise view, is pretty complicated. There's a whole bunch of services and servers that are interconnected, there may be marketing division, the sales division, the production division, inventory division, the research division and so on. All of these constitute what an enterprise is. So internally the view of the enterprise is much more complex than what you see from the outside coming in and using services provided by a particular enterprise.</li> 
+</ul>
+
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l6/33.JPG?raw=true" alt="drawing" width="500"/>
+</p>    
+
+<ul><li>Things get a lot more complicated in this day and age because when we access an enterprise, in fact, the enterprises, they talk to one another. And this is, what is usually called a supply chain model, and so on. Where, the service that you are, requesting may not be serviced by, a single entity but may actually involve the entity that you're contacting, contacting other entities in order to. Put together a solution for a particular request, and what is even more challenging is when enterprises merge. For instance, if three companies merge together, and this happened a while back. There's a company called Digital Equipment Corporation that got bought out by Compaq and those two merged, and later on HP bought out Compaq. And so you can see, that when things like this happen, the inter-enterprise view is much more complex. And now when companies merge like this, the idea of an enterprise, the idea of an enterprise, becomes an amalgam of three different entities coming together, in this example for instance. So the enterprise transformation challenges are many: interoperability of the systems that constitute different enterprises, interface compatibility when such merging happens, system evolution. You know, things are not stagnant, now this transformed enterprise has to continuously evolve as well. Scalability, reliability and the cost of maintaining a complex system like that. All of these things are the challenges that have to be faced both internally and across enterprises.</li> 
+</ul>
+
+<h2>3. Enterprise Java Beans Example</h2>
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l6/34.JPG?raw=true" alt="drawing" width="500"/>
+</p>   
+<ul>
+  <li>We often refer to services that we're using on an everyday basis, such as airline reservation or Gmail or websurfing, as giant scale services, as opposed to the services that you get within your organization. Example, a file server. There's a later module in this course called Internet Scale Computing, and in that we will discuss programming models and resource management issues for providing such giant scale services. The focus of this point however, is to show how object technology facilitates structuring such services.</li> 
+  <li>Let's look at an example to put things in perspective. Let's say you want to purchase a round trip ticket to go from Atlanta to Chennai, India. With a few clicks, you can send your request over to a portal such as Expedia. And Expedia then goes to work for you. It contacts a whole bunch of different airlines, gets the best options that are available from all these different choices, and then it comes back to you with a bunch of options. Now you may take your own sweet time deciding which one of those you may want to pick, based on cost, perhaps convenience, guarantees. For example, you don't want your baggage to end up in Timbuktu. So, based on all of that, you may want to make a decision. Maybe you have to talk to your spouse or significant other, siblings, children, so on, in order to make the final decision. Finally you decide, then commit to buying the ticket, and then Expedia will complete the transaction based on the choice that you made. And you get your ticket and life is good. Well, not so fast. While you are busy procrastinating with your choices, there's another person who is planning almost an exact similar trip to yours. Same dates, same constraints, same destination, and so on. And you can immediately see that, without your realizing, you are actually competing for resources. In this case, a physical resource, a seat on a particular flight going from Atlanta to Chennai, India, with others that you don't even know exist on this planet. Therefore, the service provider, in this case multiple enterprises involved, Expedia and all the airlines together, that are handling your request, they all have to work together to make sure that the result, any resource conflict that might occur between simultaneous requests across space and time coming from several different clients.</li> 
+  <li>So all the issues that we've discussed in the context parallel and distributed systems, synchronization, communication, and immediacy of actions, concurrency, all of these become important. And they surface in this very simple example across space and time. And additionally, all services need some common features. For example, a shopping cart on your browser. And in fact, even though this particular example is illustrating an airline reservation, if it comes to booking a ticket on a train, or getting hotel reservation, or booking tickets to go see a game, all of those things have similar requirements. And many of them are probably repeatable. And many of them, such as the shopping cart in this example, are features that might be needed even if the services that you're talking about are completely different, such as an airline reservation and hotel booking. So since the same issues crop up in the implementation of each new service, we don't want to reinvent the wheel every time. This is where object technology comes in, the power of reuse of components.
+</li> 
+</ul>
+
+<h2>4. N Tier Applications</h2>
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l6/35.JPG?raw=true" alt="drawing" width="500"/>
+</p>   
+<ul>
+  <li>Now such applications are what are called N-tier applications because if you look at the software stack that comprises an application such as this, you'll see several different layers. You have a presentation layer. And the presentation layer is the one that is responsible for painting the screen on your browser. Perhaps dynamically generating the page based on the request you made. And there may be application logic that corresponds to what the service is providing. And there is business logic that corresponds to the way airfares are decided, seats are allocated, all these kinds of things. And there's a database layer that accesses the database that contains information about all the things that the application and the business logic have to decide on in order to satisfy a particular request. And all these different layers have to worry about many of the issues that we're already familiar with, in the context of writing, parallel programs and distributive programs, and those include persistence for actions.</li> 
+  <li>For example, let's say I made a choice, but I haven't completed the booking. I may go away and come back later on, in order to complete that booking. So persistence is something that I might need. You need a notion of transaction because I have initiated a particular operation and I have not completed it and so transaction properties may be needed in order to make sure that a reservation that started Is finally complete and I have made the booking. Caching of data that you pulled in from a database server so that you can access the database more quickly. Clustering, which corresponds to taking a set of related services and clustering it together in order to improve the performance of the service. And similarly clustering the data that you're accessing from a data base server. All of these are issues, and of course one of the things that we worry about a lot this days in Ecommerce is security, in particular when we are communicating financial information, credit card information, and personal information like social security Id's and so on We worry a lot about services provided by the server and that my personal information is not compromised in any fashion. So these are all the sets of issues that N-tier Applications have to worry about in making sure that the services it provides are trustworthy from an end user's point of view. </li> 
+  <li>How do we structure an N-tier application like this? The things that we want to reduce is reduce the amount of network communication because that results in latency, reduce security risks for the users which means that the business logic should not be compromised. And increase the concurrency for handling an individual request. For instance, there's an individual request, but in processing this request, there's an opportunity to exploit parallelism. Often times, these are called embarrassingly parallel applications because even though this request seems like a single request, there's an opportunity to exploit parallelism. And the kind of parallelism is embarrassingly parallel because the same query. I want to find out the availability of seats on a particular date. I don't care about which airline I go by. That's an opportunity for parallelism for the expedia server, to go in parrallel to multiple airlines and find out the availability of seats on the dates that I requested. Similarly, there's opportunity for exploiting concurrency across several simultaneous requests that are coming in. And also for clustering the computation that may have to be done on the server for computations that are common across simultaneously arriving requests. We want to reuse components aggressively. By components we mean portions of the application logic that can be reused in constructing these applications as well as in the execution of the components in order to service the requests that are coming in simultaneously from several different clients.
+</li> 
+</ul>
+
+
+<h2>5. Structuring N Tier Applications</h2>
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l6/36.JPG?raw=true" alt="drawing" width="500"/>
+</p>   
+
+<ul>
+  <li>To structure the N-tier applications we're going to talk about one particular framework as an example. It's just as an example, there are other frameworks that provide similar functionality to the JEE framework which is called the Java Enterprise Edition framework. And in the JEE framework there are four containers for constructing an application service. And containers you can think of as protection domains implemented typically in a Java virtual machine.</li> 
+  <li>In the JEE version of, of building N-tier applications there are four containers there are the client contain and there is an applet container for the client, which will reside typically on a web server. And this is the one that interacts with the browser on the end client. And the presentation logic that I mentioned to you earlier is provided in a container, which is called a web container, and this is the guy that is responsible for dynamically perhaps creating the pages that have to be sent by the web server back to the browser of the client. And there is an EJB container, which is the one that manages the business logic that corresponds to what needs to be done in order to carry out the request that is come in from the end client. And there may be a database server, that the business logic is communicating with in order to get access to the data that it needs to process the request that came in. So these are the four containers: the client container, the applet container, the web container and the EJB container that are, the containers that are available for packaging the objects that constitute. The entire application for providing a particular service, for example, airline reservation service or a hotel reservation service.</li> 
+  <li>The key hope is that we want to exploit as much as possible, reuse components, and for this purpose continuing sort of the coffee analogy starting with Java. The word bean is used to indicate a unit of reels, that is, a bundle of Java objects providing a specific functionality. For example, there may be a bean that provides the shopping cart function. So that becomes a unit that reuse in constructing an N-tier application. The containers that I talked about here host the beans. That is, a container allows you to package a whole bunch of Java beans and make it available in this container, in the JEE framework.</li> 
+  <li>There are four types of beans, one type of bean is called an entity bean. For instance an entity bean maybe a row of a database. If you think about the database holding employee records for instance, one drawer of the database may correspond to all the employees whose last names start with the alphabet "a". And typically entity beans are persistent objects with primary keys. And the persistence for the entity bean may be built into the bean itself and that is what is called bean management persistence, or it may be built into the container into which that entity bean is instantiated. In either case since we are dealing with objects that may need persistence, it is important that the persistance for that object is handled somewhere either in the entity itself or the container into which that entity is being hosted.</li> 
+  <li>The second type bean is what is called a session bean. And the session bean typically is associated with a particular client. And a particular session, meaning a temporal window over which a client is interacting with the service. That is what a session bean may be holding. And a session bean could be a stateful session bean, meaning, for instance, I am ordering, let's say, a computer by contacting a portal for Dell. In that case, the session that I'm establishing with the Dell portal, that session has to be stateful, because it has to remember what choices I'm making. I may actually keep those choices alive, go away for a while, come back the next day, and continue with my purchase. So, sessions could be stateful. There could also be stateless sessions. For instance if I start an email session using my browser with Google using Gmail, that session maybe stateless. I go away, everything that I did during that session can be thrown away because I'm going to start a brand new session when I reinitiate a connection with a Gmail server. So in that sense, a session bean could be a state-full session bean or a stateless session bean.</li> 
+  <li>And the third type of bean is what is called a message-driven bean. This kind of bean is useful for asynchronous behavior. For instance, I might be interested in getting the stock quotes, I might have a stock quote ticker on my browser and I might want to get updates on the movement of stocks of a particular company that I'm interested in. And that would be something that is accomplished using a message bean, which is having this asyncrhonous behavior. Stock ticker is an example, news feed is an example, RSS feeds that you typically are using, these days, are examples of message driven beans. And the finer we make these beans, each of these beans is denoting a functionality, but if you can have fine grained Versions of these beans. That gives a greater opportunity to enhance a concurrency for dealing with an individual request that's coming into your application's server, or there could be concurrent requests. In addition to my own request, there could be parallel requests coming in. All of those can be dealt with more concurrently if we implement these beans at a finer level of granularity. But if you implement the bean at a finer level of granularity that means that the business logic is also getting more complex. So, there is always this trade off in structuring end clear applications that we made have a complex business logic In order to support finer grain concurrency or I might choose to keep the business logic very simple and use coarse-grained beans. And this is where the core of what we are going to discuss lies, and that is. We are going to discuss different design alternatives for structuring such entity application servers.
+</li> 
+</ul>
+
+<h2>6. Design Alternative (Coarsegrain Session Beans)</h2>
+
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l6/37.JPG?raw=true" alt="drawing" width="500"/>
+</p>   
+
+<ul>
+  <li>So the first design alternative that we're going to look at is using coarse-grain session beans. In this structure that I'm showing you, we're only looking at the web container. The EJB container because the applet container that interfaces with the client is in the web browser. So we don't worry about that. We'll talk only about how we structure the web container and the EJB container in the different design alternatives. So the web container contains the presentation logic and in the structure that I'm showing you a servelet corresponds to an individual session with a particular client. So, this box represents a particular client. This box represents a second client. And there's a presentation logic commensurate with servelet one, that is client number one. And similarly, presentation logic commensurate with servelet two, which is client number two. And there's a coarse grain session bean that is associated with each of these servelet. And in turn the session bean corresponds to the client that is being served through the servelet number one. And similarly, servelet number two is served by this session bean. And as the name suggests, the session bean is responsible for the specific needs of the particular client that it is serving for this particular session.</li> 
+  <li>Therefore, the session bean will worry about the data accesses that are needed to the database in order for the Business Logic to do its thing. So if, let's say, we're doing an airline reservation system and if this is requesting a particular booking, then the session bean is going to be the one that contacts the database server in order to pull the specific dates and airline reservation. Information that is needed for the business logic to do the pruning and selection commensurate with whatever this particular client is requesting. And there are multiple sessions that are contained in this EJB container, depending on the number of clients that have simultaneously temporally made requests to this particular service. So the EJB container has to provide some service for all the sessions that are concurrently going on in this server. All of the data accesses that are needed for a particular session is taken care of by the session bean. And therefore, the amount of help that we need from the EJB container, in terms of services, is pretty minimal for supporting this particular model, and in fact, it is confined to any conflicts that might arise in terms of external accesses for satisfying the request of these different session beans. So the EJB container service that would be needed is primarily for coordinating, if any across concurrent independent sessions. An example would be, if they want to access the same portion of the database for writing some records.</li> 
+  <li>In that case, they may need some coordination help from the EJB container service. The other important attribute of this structure is that the business logic is confined to the corporate network. It is not exposed to the outside world because it's not contained in the web container, it is contained in the EJB container and therefore the business logic is not exposed beyond the corporate network. That's a good thing. So, the pros of this particular structure is that you need minimal container services and also that the business logic is not exposed to the outside world.</li> 
+  <li>But the cons for this particular structure is, this application structure is very akin to a monolithic kernel that we've talked about a lot. There is very limited concurrency for accessing different parts of the database. For instance, I mentioned that the services provided by these giant scale services tend to be embarrassingly parallel. So there is a lots of opportunities for pulling in data, example would be let's say, that the particular query is to compile demographic distribution of all the employees in the company. In that case, there's an opportunity to pull in lots of data simultaneously from the database. But unfortunately, the structure doesn't allow you to exploit such concurrency. So in other words, this core screen session been structure represents a lost opportunity. For accessing and pulling lots of data from the database in parallel for satisfying either the same request or even concurrent requests that may be accessing the same portions of the same database.
+</li> 
+</ul>
+
+<h2>7. Design Alternative (Data Access Object)</h2>
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l6/38.JPG?raw=true" alt="drawing" width="500"/>
+</p> 
+<ul>
+  <li>The second design alternative I'm going to talk about mitigates exactly the problem that I had mentioned earlier. And that is, you want parallelism for accessing the database because, this is probably one of the slowest link in the whole processing of request because pulling in data from the database is going to take a lot of time. Both in terms of I/O that has to be done through disks as well as the network communication to pull in the data into the container where the processing needs to happen. And for that purpose the structure that we have here is to push the business logic as part of this container in which the servelet and the presentation logic was there we add the business logic also and make it a three tier software structure here. Servelet presentation logic and business logic, and all of the data access is going to be done through what are called entity beans. As I mentioned earlier, entity beans have persistence characteristics, and in this particular example i can think of the entity bean as representing one row of the database. So the data access object are implemented using a whole bunch of entity beans and you can decide as the designer whether an entity bean is responsible for one row of the database or maybe for a set of rows of the database. But in any event what we've done is, we've taken the parallelism that is available in terms of data access to the database and encoded it through the entity bean so that they can be parallel access to the unit of granularity that we have in terms data base access. So the EJB container now contains these entity beans. So now if a servelet that is serving a particular client needs to access some portion of the database, it can form more parallel requests to these entity beans, to as many entity beans as it wants. And all of those entity beans can work in parallel on behalf of a single client. And pull in the data that is needed and serve it up to the business logic so that the business logic can then do its thing. So we are reducing the time for data access by having this parallel structure and exploiting the available concurrency that may be there in terms of I/O performance, and also even if there are parallel requests, those parallel requests may want access to the same portion of the database. If you think about the example I gave you of two difference individuals wanting to make airline reservation for exactly the same dates and the same set of constraints. Then there may be an opportunity for this entity bean to cluster the request coming from several different end clients and amortize the access to the database server across several different clients that are temporally happening at the same time.</li> 
+  <li>I mentioned entity beams usually are dealing with persistent state, which means that the persistence has to be provided at some level to these entity beans. So that persistence has to be provided to the data accessed object at some level, which are using these entity beans. It could be done at the level of individual entity beans, which is called the bean managed persistence. If the bean is managing the persistence needs of the data access object, then that is called bean managed persistence. Or it could be that the container is providing that facility, in which case the persistence needs of the data access object is provided by the container and that is called container managed persistence. So these are two different design choices we can make in this structure. The structure is the same for the design alternate of two. That is, we're using entity beings to implement data access objects, and we're deciding the granularity of the data access object based on the level of concurrency that you want in constructing this application service. But within that choice there are two possibilities again in terms of how we provide persistence for the data access object, either by providing it in the entity bean itself, or using the container service to provide that.</li> 
+  <li>So this, once again, points to opportunities for reuse of facilities that may be available. The same container-managed persistence may be usable for different types of applications. One application may be an airline application, another application may be a portal for hotel booking. All of those different applications may be able to reuse container-managed persistence that's available in the structure.</li> 
+  <li>So the pros of this structure is first of all, the concurrency that you can actually exploit concurrency for data access for the same client in parallel or even across different clients by amortizing the data access. That may be needed concurrently for similar services that are overlapping in terms of data usage. That's the good news.</li> 
+  <li>There's one con to this approach, and that is, because we moved the business logic into the web container from the EJB container, it exposes the business logic to the outside network. We are not confined to the corporate network but the business logic is exposed outside the corporate network in this design alternative. So, all the data access code that you used to be in the session bean in the previous structure that I talked about. All the data access code is now moved into this entity bean. That's how we get the parallelism in the fact that there are multiple entity beans that are carrying the same data access code and they could be accessing different portions of the database concurrently resulting in exploitation of parallelism and reusing the latency for the business logic to get all the data it needs from the data base in order to do its work.
+</li> 
+</ul>
+
+
+<h2>8. Design Alternative (Session Bean With Entity Bean)</h2>
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l6/39.JPG?raw=true" alt="drawing" width="500"/>
+</p> 
+
+<ul>
+  <li>The second design alternative gave concurrency but at the cost of exposing the business logic, and the third design alternative that I'm going to explain to you, is going to correct that, it's using session bean with entity bean. The idea is that, we're going to associate it with each client session, a session facade, it's a design pattern that allows you to construct a session and associate it with a particular client. So, for instance, in this case, this session facade corresponds to servelet 1, which corresponds to the client that it is serving similarly this session facade, serving client number 2. And as in the first design, what you see is that the web container contains only the servelet and the presentation logic that is associated with that particular servlet. Now the business logic, is moved back into the EJB container, and it sits with the session facade. And we still have the data access objects implemented using the entity  bean concept that I mentioned in the second design alternative. So, the session facade is worrying about all the data access needs of its associated business logic. Similarly, this session facade is worrying about all the data access needs of this business logic, and what the session facade is going to do is, it's going to form out the data access requests corresponding to the business logic associated with this session. So, there's an opportunity again, to exploit parallelism because you can form out parallel requests to multiple entity beans. That are handling the data access to different portions of the database and similar to the second, design alternative, we're going to structure this database to be at whatever level of granularity that we think is the right one. So this entity bean may be responsible for an individual role or a cluster of rows and so on. And that way, we can have the granularity that we want for parallel access so that the business logic can be served in parallel, and at the same time, we have moved the business logic back into the EJB container. So, the business logic is not exposed outside the corporate network.</li> 
+  <li>We have a couple of choices of how we want to structure the session bean with the enity bean. Now the web container is going to use RMI, a remote interface in the distributed object framework of Java, in order to communicate with the business logic, and the session facade is going to communicate with the entity bean either using RMI. In that case, the interaction between the session facade and the entity bean is very similar to the interaction between the servlet and the session facade. That is, it'll use RMI. Or, we can choose to construct the interface between the session facade and the entity bean, using local interfaces. And the reason why we may want to choose one or the other, using the RMI allows us to, sort of, keep this entity bean wherever we want in the network. On the other hand, if we chose the local option, what we're seeing is that we will co-locate the entity beans in the same EJB container as the business logic and the session facade. The advantage of doing that is that because it is local, we don't have to incur network communication, in order to go and fetch the data from the entity bean. The entity bean, of course, has to fetch it from the database servers, but once it fetches it from the database servers, it doesn't have to go through the network in order to give it to the business logic if you're using local interfaces. So that's another bifurcation within this design alternative. We can choose to construct this portion of the application using remote interface or local interface.</li> 
+  <li>And the prose of this structure is in some sense getting the best of both worlds. We're not exposing the business logic, which was the virtue of the first design alternative, and we're also getting concurrency through the data access object encoded as entity beans. So you get the concurrency and the fact that the business logic is within the corporate network. Both of those good features are available in this design alternative.</li> 
+  <li>Is there a con? We are incurring additional network access in order to do the servers that we want for the data access, and that can be mitigated by call locating, the entity bean, and the session facade in the same EJB container. So that's a choice that you can make.</li> 
+  <li>So these are the 3 design alternatives that we talked about. One is a coarse-grain session bean alternative. The second is a finer-grained data access object alternative, and the third is sort of putting together the first two. Putting the session bean as a facade. To actually access the data access objects, which are encoded in entity bean so that you can get concurrency. Notice that in talking about these different design alternatives, we're only talking about how to break up that application, the logic of that application, which consists of presentation to the client, business logic that has to do with decisions that this enterprise has to make in order to service this request, and database access in order to get the data that is needed in order to do the work that is involved. In serving up the needs of a particular client. Lots of things that are needed in addition to writing about the application logic itself. And those are things like security, persistence, and so on. The power of object technology is the fact that So that's the thing that I wanted to start with and I wanted to give you the different design alternatives that exist in structuring these complex services using the object technology to reuse components instructed in structuring complex applications.</li> 
+</ul>
+
+
+<h2>9. Enterprise Java Beans Conclusion</h2>
+<ul>
+  <li>So this lesson showed the power of the object technology for structuring complex application servers. EJB, allowed developers to write business logic, without having to worry about crosscutting, concerns such as security, logging, persistence and so on. As a homework, what I would want you to do, is understand the design choices that we discussed in the lesson and analyze qualitatively the performance implications of those design choices, with respect to concurrency, pooling of resources, number of object classes, lines of code and so on. And read the paper that I've assigned to you, as part of the reading material for this course, in this topic, and relate the arguments they present in the paper against your own qualitative analysis. A word of caution though, EJB has evolved, considerably, from the time of this paper. But the principals that are discussed in this paper apply to the way complex entier applications are structured to this day.
+</li> 
+</ul>
 
 <!-- <h2></h2>
-
-<p align="center">
-   <img src="" alt="drawing" width="500"/>
-</p>
-
-<ul>
-  <li></li> 
-  <li></li> 
-  <li></li> 
-
-</ul>
-
-<h2></h2>
-
-<p align="center">
-   <img src="" alt="drawing" width="500"/>
-</p>
-
-<ul>
-  <li></li> 
-  <li></li> 
-  <li></li> 
-
-</ul>
-
-
-<h2></h2>
-
-<p align="center">
-   <img src="" alt="drawing" width="500"/>
-</p>
-
-<ul>
-  <li></li> 
-  <li></li> 
-  <li></li> 
-
-</ul>
-
-
-<h2></h2>
-
-<p align="center">
-   <img src="" alt="drawing" width="500"/>
-</p>
-
-<ul>
-  <li></li> 
-  <li></li> 
-  <li></li> 
-
-</ul>
-
-
-<h2></h2>
-
-<p align="center">
-   <img src="" alt="drawing" width="500"/>
-</p>
-
-<ul>
-  <li></li> 
-  <li></li> 
-  <li></li> 
-
-</ul>
-
-<h2></h2>
-
-<p align="center">
-   <img src="" alt="drawing" width="500"/>
-</p>
-
-<ul>
-  <li></li> 
-  <li></li> 
-  <li></li> 
-
-</ul>
-
-<h2></h2>
-
-<p align="center">
-   <img src="" alt="drawing" width="500"/>
-</p>
-
-<ul>
-  <li></li> 
-  <li></li> 
-  <li></li> 
-
-</ul>
-
-
-
-<h2></h2>
 
 <p align="center">
    <img src="" alt="drawing" width="500"/>
