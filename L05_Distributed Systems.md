@@ -3,7 +3,7 @@
 - [L05b: Lamport Clocks](https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/L05_Distributed%20Systems.md#l05b-lamport-clocks)
 - [L05c: Latency Limits](https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/L05_Distributed%20Systems.md#l05c-latency-limits)
 - [L05d: Active Networks](https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/L05_Distributed%20Systems.md#l05d-active-networks)
-- [L05e: Systems from Components](-)
+- [L05e: Systems from Components](https://www.nicepng.com/png/detail/11-117393_to-be-continued-meme-png-street-sign.png)
 
 
 # L05a: Definitions
