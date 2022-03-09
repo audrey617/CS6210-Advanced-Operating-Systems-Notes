@@ -616,10 +616,11 @@
 </ul>
  -->
 
+# L05e: Systems from Components
 
-
-
-
+<p align="center">
+   <img src="https://www.nicepng.com/png/detail/11-117393_to-be-continued-meme-png-street-sign.png" alt="drawing" width="500"/>
+</p>
 <!-- <h2></h2>
 
 <p align="center">
