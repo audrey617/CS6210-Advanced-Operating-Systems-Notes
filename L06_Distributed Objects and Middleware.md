@@ -216,20 +216,110 @@
 </li> 
 </ul>
 
-<!-- 
-<h2></h2>
-
+<h2>5. Bank Account Example</h2>
 <p align="center">
-   <img src="" alt="drawing" width="500"/>
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l6/21.JPG?raw=true" alt="drawing" width="500"/>
 </p>
 
 <ul>
-  <li></li> 
-  <li></li> 
-  <li></li> 
-
+  <li>Let's put this distributed object model of Java to work. And, the example that I'm going to construct is a bank account server. And, the server has obvious API's for accessing your bank account, you can deposit, you can withdraw, and you can ask for a balance. So, those are the API's that the server is going to provide as a service. Now, the question is. How best to implement it using Java. In particular, given that ,there is the remote object and the remote interface available as mechanisms in the distributed object model, what would be the best way to construct this service as a distributional object, accessible from clients anywhere in the network? Let's consider two possibilities.
+</li> 
 </ul>
  
+<h2>6. Reuse of Local Implementation</h2>
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l6/22.JPG?raw=true" alt="drawing" width="500"/>
+</p>
+
+<ul>
+  <li>So the first possibility, or the first choice is reusing a local implementation. So let's say that the developer has access to a local implementation of a class called account. And she then takes that class account and derives and extends it to create public methods in the API bank account, and creates a bank account implementation. So she started with a local implementation of a class account and extended it to implement the bank account. Now this bank account service that has been created, she has to make that visible outside, in the network, so that any client can access it. So this is where she uses the built-in class available in the distributed object model of Java called the remote Interface. And what she does is, using that built in remote class that's available in the distributed object model of Java, she makes the methods in the bank account class that she created visible on the network. As a result of this, so now she's created this interface derived from the remote interface she has created, this interface for her bank account object. And so this interface becomes now publicly available for anyone to access. So clients on the network can have access to this interface bank account. Now she instantiates this bank account implementation. . What happens when the bank account implementation is actually instantiated? The location of the bank account implementation object, the instantiation that she has done, is not visible to the client. All that is visible to the client is the interface. The actual location of the object is not something that is visible to the client, and therefore the implementer has to do the heavy lifting of finding a way to make the location of the service visible to the clients on the network. So in the first choice, all that we used was the built-in class and the distributed object model of Java, which is a remote interface to publish the interface for a facility that we created. In this case, the bank account and the methods in it. And once we publish it, that interface is available. Because we derived it from the remote interface, the int, the specific interface, bank account interface, is available for any client on the network. However, when we instantiate the object, the location of the object where that service is available is not something that is readily visible to the client. And so the heavy lifting has to be done by the implementer to make that object that had been instantiated visible on the network.
+</li> 
+</ul>
+
+<h2>7. Reuse of Remote</h2>
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l6/23.JPG?raw=true" alt="drawing" width="500"/>
+</p>
+
+<ul>
+  <li>Now a second choice is reusing the remote object class that's available in the Java distributed object model. As before, the developer writes the bank account object providing the methods for deposit, withdrawal and balance and publishes the methods that are in the object using the remote interface. So that, this bank account interface now becomes available for any client that wants to access that object. The reason this interface becomes available to the client is because you're extending this remote interface class that's available in the distributed object model of Java. However, note how the bank account implementation is actually derived. It is derived from the Java built in classes for remote object, and remote server. So, you extend the remote object and the remote server in order to get this bank account implementation object. Now, when you derived your bank account implementation object from the built in distributed object model of Java, namely the remote object and the remote server classes. Now when you instantiate your bank account implementation object, it becomes instantly visible to the network clients. You don't have to do any of the heavy lifting. So once the public methods for the bank account implementation are written by inheriting these built-in classes of Java, all the way starting from the remote interface, the remote object and the remote server. When the bank account implementation object is instantiated the server becomes instantly visible, magically visible to remote clients through the Java runtime system. That's the power of the distributed object model of Java. So the second choice of reusing remote object class in order to derive this implementation results in the heavy lifting being done by the Java magic. So, all of the heavy lifting needed to make this bank account implementation object visible to network clients is being done by the Java runtime. Now that I've given you the difference between the two choices, one using remote interface, and the other deriving your object from the remote object from the remote server. Time for a quiz.
+</li> 
+</ul>
+
+<h2>8. Implementation Preference</h2>
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l6/24.JPG?raw=true" alt="drawing" width="500"/>
+</p>
+
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l6/25.JPG?raw=true" alt="drawing" width="500"/>
+</p>
+
+<h2>9. Java RMI at Work (Server)</h2>
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l6/26.JPG?raw=true" alt="drawing" width="500"/>
+</p>
+
+<ul>
+  <li>So let's see Java RMI at work. On the server side, it's a three-step process to make the server object visible on the network. You instantiate the object. Once you instantiate the object, you create a URL, whatever you want to call the URL. And then you go to the Java runtime, and the facility that's available in the Java runtime For binding the URL that you created with the instance of the object that you created. The object that you instantiated; it binds it to this URL and it is now in the naming service of the Java runtime system. For clients to be able to discover the existence of this new service that you created and made it available on the network.
+</li> 
+</ul>
+
+<h2>10. Java RMI at Work (Client)</h2>
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l6/27.JPG?raw=true" alt="drawing" width="500"/>
+</p>
+<ul>
+  <li>Now let's look at the client side. Look at the ease with which any arbitrary client on the network can access the server object. What a client will do is, look up the service provider, by contacting a boot strap name server in the Java RMI system. And, it does a look up of the URL and when it does this look up, so this URL is published, once it is published, then it can look up this URL. And when it does this look up of this URL using the facility that's available in the Java RMI system, then a local access point for that object is created on the client side. And so now we've got the access to the object that is at the server through this local name account. And once I have that, then I can do invocations on the methods that is available in this server object by simply calling those methods. I can do a deposit. I can do a withdrawal. I can do a balance check. All of this, they look like normal procedure calls so far as the client is concerned. But each of this is really a call that is going out to the server wherever that server happens to be, and the Java Runtime system knows how to locate that server in order to do this invocation. That's the power of the Java RMI. The client does not know and does not care the location of the server. And if there a failures in any of these function executions, then remote exceptions will be thrown by the server through the Java run-time system back to the client. Of course with the networked nature of this client/server relationship, if a remote expression is thrown and the client sees that the invocation did not succeed, which is a reason the client saw an exception thrown. It may have no way of knowing at what point in the invocation the call actually failed. And this is one of the problems when you have services that you have to reach across the network and you have to handle the exception.
+</li> 
+</ul>
+
+<h2>11. RMI Implementation (RRL)</h2>
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l6/28.JPG?raw=true" alt="drawing" width="500"/>
+</p>
+
+<ul>
+  <li>Now that we understand the distributed object model of Java and how to build services using the distributed Java object model and publish it and make it accessible to the clients. let's look at how the RMI is actually implemented? At the core of the RMI implementation is this layer called Remote Reference Layer, RRL. And that's the place where a lot of magic happens. The client site stub, is going to initiate a remote method invocation call using this Remote Reference Layer, and all of the magic with respect to marshaling the arguments. In order to send it over the network and so on is handled entirely by this Remote Reference Layer. And similarly when the result comes back unmarshaling the results into the data structures, that the client understands is once again accomplished using this RRL layer. On the server side. The skeleton that exists is therefore unmarshaling the arguments that comes from the client. And in order to unmarshal the argument, the skeleton uses a Remote Reference Layer, because a Remote Reference Layer knows how to unmarshal the arguments that are coming in. And the the skeleton then makes the call up to the server that is implementing the remote object. Once the server is done with the service, the skeleton marshals the result, and once again goes through the Remote Reference Layer to send it over to the client. And when it comes back, the Remote Reference Layer and the stub work together to deliver the results in a digestible format to the client.</li> 
+  <li> marshaling and unmarshaling, they're also called serializing and deserialization in the Java world. Marshaling and unmarshaling are also called serializing and deserializing Java objects, and all of that is being done by the RRL layer. So basically, the objects that are being passed this arguments, they are serialized by the RRL, and deserialized. On the server end, and given to the server. And similarly, the result, which is also an object, is serialized using the Remote Reference Layer. And when it arrives on the client side, it is deserialized, and delivered as a result object back up to the client. Now where are the clients and the servers? Are they on the same machine, on a different machine? Of course we're talking about networked services, and, so the server's going to be remote. But the server could have several instances. There could be a single instance of a server, or there could be multiple instances of the server and the server may have ability for doing persistence and so on. Where is all that magic happening? Well, similar to the subcontract layer that we discussed in the spring system, the Remote Reference Layer is doing all the magic with respect to. Where the server is? How the server is handling request? Is it replicated? Is it a singleton server? All of these things are being handled through the Remote Reference Layer. So what that means is it allows for various invocation protocols between the client and the servers. And all of those things are buried in the Remote Reference Layer. And the actual clients and the servers can be impervious to those details. So, the Java run time stack, the RRL layer is a very crucial layer. And it has functionalities very similar to the subcontract mechanism and the spring system. And as I mentioned earlier Java RMI derives a lot from the subcontract mechanism. And, so there is not much surprise that there are similarities between the RRL layer and the subcontract mechanism. Having discussed RRL, let's go and talk about, the transport layer.
+</li> 
+</ul>
+
+<h2>12. RMI Implementation Transport</h2>
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l6/29.JPG?raw=true" alt="drawing" width="500"/>
+</p>
+
+<ul>
+  <li>The abstractions that the transport layer provides are endpoint, transport, channel, and connection. And I'll talk about each of these things in a little bit more detail. Endpoint you can think of as nothing but a protection domain or you can say it is a Java virtual machine. And it has a table of remote objects that it can access. And so this gives you a protection domain or a sandbox for execution of a server cord or a client cord can exist within the sandbox. That's what end point. Its basically a protection domain. Connection management, is the interesting piece that is what is about all the details of connecting these end points together. And in particular, the connection management of the transport layer of the Java Runtime system is responsible for setting up connections, tearing down connections, listening for incoming connections, and establishing the connection. And when a connection is established. Between two end points there's a distraction that I mentioned called transport comes into play. So, for instant between this end point, and this end point, thec connection manager decided to have udp transport. So a channel is established between this end point and this end point to do udp transport between these two end points. And so this is the functionality of the UDP transport that is incorporated in this transport layer. And similarly, between this endpoint and this endpoint, the connection manager decided to use a TCP channel, so the transport that is being used here is a TCP connection, both ends. We have a TCB connection at both ends to connecting this endpoint with this endpoint. Notice that a given endpoint, can have different transport for talking to different endpoints depending on a variety of parameters. What is the best way for this endpoint to talk to this endpoint may decide what kind of connection. This end point is going to establish with this end point. That is all part of connection management that is happening in the transport layer of the Java run time. And the connection manager is also responsible for locating the dispatcher for a remote method that is being invoked on this end point. So. A transport is listening on a channel. And when an invocation comes in, then this transport is responsible for identifying, or locating, the dispatcher on this domain, which will know how to carry out that invocation. And the connection managers also responsible for managing the liveness of the connection. Because, if any point goes away, it needs to know that and inform this domain that, oh this particular end point is gone. So, take the appropriate action. So that kind of liveness monitoring is part of connection management. So the last abstraction I mentioned is the notion of connection itself. So once a channel has been established. Then the transport can do IO on this channel using connections. So, the path for the transport layer is in connection management. It listens for an incoming request. When an incoming request comes in. It then establishes a channel, and the channel that is established for communication, which is a mutual agreement between these two endpoints. It choses a transport that is most appropriate for that and once the channel has been established, a connection. Is now made between this endpoint and this endpoint through this channel. And now these two endpoints can do I/O on the channel using the connection. So that's how the transport mechanism of RMI works. As we saw, the transport mechanism sits below the RRL layer. And so it allows all the object invocations to happen through the transport layer. And the RRL layer is the one that is deciding, what are the right transport to use depending on the location of the two endpoints, where the client is and where the server is. Depending on that, it might decide what would be the right transport to use. Whether it should use TCP or UDP and so on. And gives that command to the connection manager which is part of the transport layer of the software stack. So that the established channel can be established and then a connection can be used for actual transport. Of the implementation between the client and server. So in summary, the distributed object model of Java is a powerful vehicle for constructing network services and what we say in this lesson. Is a glimpse of the classes that are available in the distributed object model that makes the life of the developer easy in terms of creating network objects and making it visible for clients to use anywhere. And the power of the RRL layer in dynamically deciding how to make the client-server relationship. Similar to the sub contract mechanism that we saw in spring and we also saw the flexibility in the connection management. Allowing different kinds of transport exist between the client and the server depending on the location of the client and network conditions and so on.
+</li> 
+</ul>
+
+<h2>13. Java RMI Conclusion</h2>
+<ul>
+  <li>There are some more subtle issues involved in the implementation of the RMI system, including distributed garbage collection, dynamic loading of stubs on the client side, sophisticated sandboxing mechanisms on the client and the server sides to ward off security threats and so on. I encourage you to learn about these issues by reading the assigned paper and also surfing the Net. The main point I want to leave you with is that many ideas that start out as pie in the sky research becomes usable technology when the time is ripe.
+</li> 
+</ul>
+
+# L06c: Enterprise Java Beans
+<p align="center">
+   <img src="https://www.nicepng.com/png/detail/11-117393_to-be-continued-meme-png-street-sign.png" alt="drawing" width="500"/>
+</p>
+
+
+<!-- <h2></h2>
+
+<p align="center">
+   <img src="" alt="drawing" width="500"/>
+</p>
+
+<ul>
+  <li></li> 
+  <li></li> 
+  <li></li> 
+
+</ul>
+
 <h2></h2>
 
 <p align="center">
@@ -243,7 +333,7 @@
 
 </ul>
 
- 
+
 <h2></h2>
 
 <p align="center">
@@ -256,4 +346,72 @@
   <li></li> 
 
 </ul>
--->
+
+
+<h2></h2>
+
+<p align="center">
+   <img src="" alt="drawing" width="500"/>
+</p>
+
+<ul>
+  <li></li> 
+  <li></li> 
+  <li></li> 
+
+</ul>
+
+
+<h2></h2>
+
+<p align="center">
+   <img src="" alt="drawing" width="500"/>
+</p>
+
+<ul>
+  <li></li> 
+  <li></li> 
+  <li></li> 
+
+</ul>
+
+<h2></h2>
+
+<p align="center">
+   <img src="" alt="drawing" width="500"/>
+</p>
+
+<ul>
+  <li></li> 
+  <li></li> 
+  <li></li> 
+
+</ul>
+
+<h2></h2>
+
+<p align="center">
+   <img src="" alt="drawing" width="500"/>
+</p>
+
+<ul>
+  <li></li> 
+  <li></li> 
+  <li></li> 
+
+</ul>
+
+
+
+<h2></h2>
+
+<p align="center">
+   <img src="" alt="drawing" width="500"/>
+</p>
+
+<ul>
+  <li></li> 
+  <li></li> 
+  <li></li> 
+
+</ul> -->
