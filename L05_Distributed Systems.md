@@ -600,27 +600,27 @@
    <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l5/56.JPG?raw=true" alt="drawing" width="500"/>
 </p>
 
-<!-- <ul>
-  <li></li> 
-  <li></li> 
-  <li></li> 
-
+<ul>
+  <li>So let's talk about the feasibility of the vision of active networks. The reality is that router makers like Cisco are loath to open the network. So while the idea of active networks is fascinating, we can be frugal about the resources that we use in the Internet for different network flows and virtualize the physical infrastructure by slapping on. Our idea of the kind of network flow that I want for my packets, seems very attractive, but it's not going to be feasible given that we have to open up the network. So it's going to be feasible only at the edge of the network.</li> 
+  <li>Secondly, when we are using active networks, we are talking about executing code in a router to determine the routing decision at that node. Or in other words, we're doing software routing. Software routing cannot match the hardware routing, because at the core of the network, there's so much of traffic being handled that you really want to do this in hardware, and doing this at software speed is not going to match the hardware speed of packet processing in the core of the network. So once again, this argues that an active network is only feasible at the edge of the network.</li> 
+  <li>Finally there are social and psychological reasons why active networks is maybe a little bit hard to digest. It is hard for the user community to accept arbitrary code executing in a public routing fabric. If my traffic is flowing through the network and if the router is going to actually execute some code in order to do the processing of my packet, that worries me. Already, we talk a lot about privacy and the fact that in corporate networks, in university networks, we are losing a lot of privacy. People are watching what's going on. And now, saying that the routers are going to do something intelligent, smart processing packets, that might be a socially and psychologically unacceptable proposition.</li> 
+  <li>So these are reasons why it would make it difficult to sell the idea of active networks to the wide area internet. On the other hand, the idea of virtualizing the network flow is very appealing. And if you put together the two thoughts that I had, one is the idea that we can virtualize the network and the second that active networks is only feasible at the edge of the network, that brings up a very interesting proposition, which I am going to mention in my concluding remarks.
+</li> 
 </ul>
- -->
+
 <h2>12. Active Networks Conclusion</h2>
-<!-- <ul>
-  <li></li> 
-  <li></li> 
-  <li></li> 
-
+<ul>
+  <li>Active network was way ahead of its time, and there was not a killer app to justify this particular line of thought. Further, active networks focused more on safety and less on performance, so in the 90s, it seemed more like a solution looking for a problem. But difficulties with network management, rise of virtualization, the right hardware support, and data center and cloud computing have all given active networks a new lease of life in the form of Software Defined Networking or SDN for short. Specifically, cloud computing promotes a model of utility computing where multiple tenants, by that I mean businesses, can host their respective corporate networks simultaneously on the same computational resources of a data center. Not that this will ever happen, but imagine Coke and Pepsi, corporate networks running on the same data center resources. This means there is a need for perfect isolation of the network traffic of one business from another, even though each of the network traffic is flowing on the same physical infrastructure. This calls for virtualization of the physical network itself, hence the term software defined networking. You will learn more about SDN if you take a companion course on networking that is offered in this same program.
+</li> 
 </ul>
- -->
+
 
 # L05e: Systems from Components
 
 <p align="center">
    <img src="https://www.nicepng.com/png/detail/11-117393_to-be-continued-meme-png-street-sign.png" alt="drawing" width="500"/>
 </p>
+
 <!-- <h2></h2>
 
 <p align="center">
