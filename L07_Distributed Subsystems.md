@@ -1,5 +1,5 @@
 # Lesson outline
-- [L07a: Global Memory Systems](-)
+- [L07a: Global Memory Systems](https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/L07_Distributed%20Subsystems.md#l07a-global-memory-systems)
 - [L07b: Distributed Shared Memory](-)
 - [L07c: Distributed File Systems](-)
 
