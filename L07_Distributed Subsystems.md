@@ -3,7 +3,7 @@
 - [L07b: Distributed Shared Memory](-)
 - [L07c: Distributed File Systems](-)
 
-# L07a: Global Memory Systems
+# L07a: Global Memory Systems 
 <h2>1. Global Memory Systems Introduction</h2>
 <p align="center">
    <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l7/1.JPG?raw=true" alt="drawing" width="500"/>
@@ -157,12 +157,131 @@
   <li>In any distributed system, one of the goals is to make sure that any management work is not bringing down the productivity of that node. In other words, you want to make sure that management work is distributed and not concentrated on any one node and you know in the GMS system, since we are working with an active set of nodes. Over time the node that is active may become inactive and a node that was inactive may become and so on. So you don't want the management of age information to be assigned to any given node. But it is something that has to shift over time. And that's sort of the fundamental tenant of building any distributed system is to make sure that we distribute the management work so that no single node in the distributed system is overburdened. That's a general principle, and we'll see how that principle is followed in this particular system.</li> 
   <li>So we break the management both along the space axis and time axis into what is called epoch. There are two parameters that govern an epoch. One is T which is the maximum duration of an epoch. That is an epoch is in some sense a granularity of management work done by a node. And that management work done by a node is either time bound, maximum T duration, or space bound, maximum M replacements. So if in the working of the system, if M space replacements have happened, then that epoch is complete, so we go to a new epoch. There'll be a new manager for age management. Or if the duration T is complete, then again, the epoch is complete, and so we pick a new manager to manage the next epoch. We'll see in a minute how we pick the new manager. And T maybe on the order of a few seconds. And M, which is the number of replacements, maybe on the order of thousands of replacements.</li> 
   <li>So at the start of each epoch what happens is every node is going to send the age information to the initiator. That is every node is going to say what is the age of the pages that is resident at this node - all the local pages and all the global pages /what is the age information associated with the universe of all the pages that exist at this node. Remember that the smaller the age, the more relevant the page is. So the higher the age, the older the page. So, in picking a candidate, we're always going to pick an old page to replace. So, that's the age information that each of these node is sending to the initiator. So, N1 sends its set of pages, N2 sends its set of pages and so on. Everybody is sending to the manager node that I'm calling the initiator, the age information.</li> 
-  <li>What the initiator node is going to do is two things. It's going to find out what is the minimum age of all the M pages that are going to be replaced. Remember that smaller the age, the better. So what it is going to say is out of all the pages that exist in the entire cluster, what are the oldest M pages that are going to be replaced in the upcoming epoch, and for those M old pages, out of those M old pages, what is the minimum age? So any page with less than the minimum age are pages that are active and that are going to survive this upcoming epoch. Whereas, any page whose age is older than that minimum age, is part of this set of M pages that are going to be replaced in the upcoming epoch, and those are the replacement candidates. That's minimum age. So it computes the minimum age. And it also computes given the minimum age and given the distribution of the age demographics coming from N1, I know out of these pages coming from N1 what fraction of the pages that belong to N1 are going to be replaced in the upcoming epoch. And that is the weight parameter for this particular node. For instance, if it turns out that N1 has 10% of the candidate pages that are going to be replaced in the next epoch, then its weight is 0.1. If N2 is going to account for 30% of the replacements, 30% of the M replacements in the upcoming epoch. Then N2's weight is going to be W2 and so on. So what this initiative does is it computes this min age and it also computes the weight for each one of the nodes, and that's what is sent back to each node. So each node is going to see the min age and also the weight. Each load is not only receiving its own weight, that is its own fraction of the M pages that are going to be replaced, but it is also getting the fraction of the pages that are going to be replaced from each of its peer nodes in the entire cluster. And we'll see how this information is going to be used by each one of these nodes. And of course, we don't know the future, all that the initiator is doing. That is saying that it is expected replacement. W1 is expected share of replacement that's going to happen in N1. W2 is expected share of replacement that's going to happen in N2 and so on. And when the next epoch starts actually. That can be different, depending on what happens in these nodes. But, that's the best that we can do is use the past to predict the future. That's what the initiates doing. It is using the past, the age information that it got from all the notes, in order to predict the future in terms of where these N replacements are going to happen. What is the minimum age of the pages that are going to be replaced in the next epoch. So that's what is being done by the initiator.
+  <li>What the initiator node is going to do is two things. It's going to find out what is the minimum age of all the M pages that are going to be replaced. Remember that smaller the age, the better. So what it is going to say is out of all the pages that exist in the entire cluster, what are the oldest M pages that are going to be replaced in the upcoming epoch, and for those M old pages, out of those M old pages, what is the minimum age? So any page with less than the minimum age are pages that are active and that are going to survive this upcoming epoch. Whereas, any page whose age is older than that minimum age is part of this set of M pages that are going to be replaced in the upcoming epoch, and those are the replacement candidates. That's minimum age. So it computes the minimum age. And it also computes given the minimum age and given the distribution of the age demographics coming from N1, I know out of these pages coming from N1 what fraction of the pages that belong to N1 are going to be replaced in the upcoming epoch. And that is the weight parameter for this particular node. For instance, if it turns out that N1 has 10% of the candidate pages that are going to be replaced in the next epoch, then its weight is 0.1. If N2 is going to account for 30% of the replacements, 30% of the M replacements in the upcoming epoch. Then N2's weight is going to be W2 and so on. So what this initiative does is it computes this min age and it also computes the weight for each one of the nodes, and that's what is sent back to each node. So each node is going to see the min age and also the weight. Each load is not only receiving its own weight, that is its own fraction of the M pages that are going to be replaced, but it is also getting the fraction of the pages that are going to be replaced from each of its peer nodes in the entire cluster. And we'll see how this information is going to be used by each one of these nodes. And of course, we don't know the future, all that the initiator is doing. That is saying that it is expected replacement. W1 is expected share of replacement that's going to happen in N1. W2 is expected share of replacement that's going to happen in N2 and so on. And when the next epoch starts actually. That can be different, depending on what happens in these nodes. But, that's the best that we can do is use the past to predict the future. That's what the initiates doing. It is using the past, the age information that it got from all the notes, in order to predict the future in terms of where these N replacements are going to happen. What is the minimum age of the pages that are going to be replaced in the next epoch. So that's what is being done by the initiator.
 </li> 
 </ul>
-<!-- <h2></h2>
+
+<h2>11. Geriatrics! (cont)</h2>
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l7/12.JPG?raw=true" alt="drawing" width="500"/>
+</p>
+
+<ul>
+  <li>I mentioned that this management function that this initiator is doing, you don't want it to be statically assigned to one node, because that would be a huge burden, and besides this node will suddenly become very active, and if that happens, then you must time in the computations that are going to happen here to do this management function. Now intuitively if you think about it, if a particular node, lets say node N2 has a weight of point eight, what does that mean? What that means is that in the upcoming Epoch, 80% of the M pages are going to be replaced from the node N2, in other words, N2 is hosting a whole bunch of senior citizens, so it's a node that's not very active. Right? If an inactive node, then the replacement's candidates are probably not going to come from that guy and in predicting the future the initiator is saying that well, most of the replacements are going to come from here, so it's weighted very high. So this weight information for all the nodes is coming to every one of these guys. So intuitively if we think about it, the guy that has the highest weight is probably the least active. Why not make him the manager? So the initiator for the next Epoch is going to be the node with the maximum weight. Now how do you determine that? Well, every one of these nodes is receiving not only the min age of the candidate pages that are going to be replaced in the next epoch but also the weight distribution that says what is the percentage of these replacements that are going to happen in each one of these nodes. So locally each one of these guys can look at the Wi vector that it got back from the initiator and say, "I know, given that node N3 has the maximum rate, that's going to be the initiative of the next epoch." So locally you can make the determination so that for the next epoch, in order to send the age information, you know locally who to send it to.</li> 
+  <li>Let's look at how this minimum age information is going to be used by each node. Remember that min age represents the minimum age of the M oldest pages. The smaller the age, the more recent that page is. And so those are the active pages. So if you look at this as the age distribution of all the pages, then if you draw a line here, then the pages to the left of the minimum age line are the active pages, and the pages to the right of this is the M oldest pages that are the candidate pages going to be replaced in the next epoch. This is the information that we're going to use in the way we manage page replacements at every node.</li> 
+  <li>So let's see what the action is at a node when there is a page fault. If upon a page fault I have to evict a page y, then what I'm going to do is to look at the age of this page y. If the age of this page y is more than the minimum wage. Then I know it's going to be replaced. Even if I sent it to a peer node, it's going to be replaced because that is part of the candidate M pages that are going to be replaced in the upcoming epoch. And therefore locally I'll make a decision that page y has an age older than minimum age, and therefore, I'm going to simply discard it. Don't worry about sending it to a peer. Remember that, in the description of how a page fault is handled, I said that, when you have a page fault in the node, I pick one of the replacement candidates, and I send it to a peer node to store it in the global cache of the peer node. Well, we don't want to do that. If that page is going to be eventually replaced during this upcoming epoch, meaning it has to be thrown out onto the disk. In that case, you might as well discard it right now. So if the age of the page that you're evicting from your node happens to be greater than MinAge, simply discard it.</li> 
+  <li>On the other hand, if the page happens to be less than the MinAge, then you know that it is part of the active set of pages for the entire cluster, you cannot throw it away. You send it to Peer Node Ni. How do you pick Ni? This is where the weight distribution comes in. I know the weight of the nodes. At the end of this computation, the manager sent me the weight distribution for the upcoming epoch of all the nodes. So I can pick a node to send this page to based on the weight distribution. Of course I could say, well, send it to the guy that has the highest weight because that's the guy that is likely to replace, but remember that there's only an estimate of what is going to happen in the future. So, you don't want to hard code that. Instead, we're going to use some information drawn from these weights. We're going to factor that weight information Into making a choice as to which peer we want to send this eviction page to. Chances are that the node, that has a higher weight is a likely candidate that'll pick. But it will not always be the node with the highest weight. Because if that decision is made by everybody, then we are going to have a situation where if the prediction was not exactly accurate, we would be making wrong choices.</li> 
+  <li>Basically you can see that this age management, geriatric management, is approximating a global LRU. Not exactly a global LRU, because global LRU computing that on every page fault is too expensive, so we don't want to do that. Instead, we are doing an approximation to global LRU by computing this information at the beginning of an epoch, and using that information locally in order to make decisions. So we think globally in order to get all the age information, and compute the minimum age and compute the weight for all the nodes as to how much of the fraction of the replacements are going to come from each one of these nodes. But once that computation has been done, for the duration of the epoch, all the decisions that are taken at a particular node is local decisions in terms of what we want to do, with respect to a page that we are choosing as an eviction candidate. Do we discard it, or do we store it in a peer, global cache? This might sound like a political slogan but, the important thing, in any distributed system, is as much as possible to use local information in decision making. So think globally but act locally. So that's the key and that's what is ingrained in this description of the algorithm.
+</li> 
+</ul>
+
+
+<h2>12. Implementation in Unix</h2>
 
 <p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l7/13.JPG?raw=true" alt="drawing" width="500"/>
+</p>
+
+<ul>
+  <li>So from algorithm description, we go to implementation. Now this is where rubber meets the road in systems research. In any good systems research, the prescription is as follows: You identify a pain point. Once you identify the pain point. You think of what may be a clever solution to that. Then a lot of heavy lifting actually happens in taking that solution, which may be a very simple solution, but implementing that is the hard part. if you take this particular lesson that we're looking at. The solution idea is fairly simple. The idea is that instead of using the disk as a paging device, use the cluster memory. But implementing that idea requires quite a bit of heavy lifting, and one might say that in systems research these technical details of taking an idea and working out the technical details of implementing that idea is probably the most important nugget. Even if the idea itself is not enduring, the implementation tricks and techniques that are invented in order to do their implementation of their idea maybe reusable knowledge for other systems research. So that's a key takeaway in any systems research and this true for this one as well.</li> 
+  <li>In this particular case, the authors of GSM used a DEC (Digital Equipment Corporation) operating system as the base system. The operating system is called OSF/1 operating system. And there are two key components in the OSF/1 memory system, which is what we're talking about here.</li> 
+  <li>First component: The first one is the virtual memory system, and this is the one that is responsible for mapping process virtual address space to physical memory, and worrying about page faults that happen when a process is trying to access the stack and heap and so on. So that it can bring those missing pages perhaps from the disk. And these pages are sometimes referred to as anonymous pages because a page is housed in a physical page frame and when a page is replaced, that same physical page frame may host some other virtual page and so on. So the virtual memory system is devoted to managing the page faults that occur for process virtual address space, in particular the stack and the heap.</li> 
+  <li>Second component:The unified buffer cache is the cache that is used by the file system. And remember the file system is also getting stuff from the disk. But the other system wants to cache it in physical memories so that it is faster, so the unified buffer cash is serving as the extraction for the disk resident files when it gets into physical memory and user processes are going to do explicit access to files. When they do that, they're actually accessing unified buffer cache. So reads and writes of files go to this unified buffer cache. In addition to that, Unix systems offer the ability to map a file into memory, which is called memory mapped files. And if you have a memory mapped file, you can also have page faults to a file that has been mapped into memory. So the unified buffer cache is responsible for handling page faults to map files, as well as explicit read and write calls that an application process may make to the file system.</li> 
+  <li>Normally this is the picture of how the memory system hangs together in any typical implementation of an operating system. You have the virtual memory manager, you have the unified buffer cache, you have the disk, and region writes from the virtual memory manager go to the disk, and similarly reads and writes from the unified buffer cache, go to the disk and when a physical page frame is freed, you through it into the free list. So that it is available for future use by either the virtual memory manager or the unified buffer cache. And the Pageout Daemon, its role is to look at every once in a while what are pages that can be swapped out to the disk so that you make room for page faults to be handled without necessarily running an algorithm to free up pages.</li> 
+  <li>So that's the structure of a memory management system, and what the authors of GMS did was to integrate GMS into the operating system, and this is where I said that there is heavy lifting to be done, because you are modifying the operating system to integrate an idea that you had for global memory system.
+</li> 
+</ul>
+
+
+<h2>13. Implementation in Unix (cont)</h2>
+
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l7/14.JPG?raw=true" alt="drawing" width="500"/>
+</p>
+
+<ul>
+  <li>This calls for modifying both the virtual memory part as well as the UBC (unified buffer cache) part of the original system to handle the needs of the global memory system. And particular what you notice is that the VM and the unified buffer cache, when it wanted a missing page, it used to go to the disk. But here what we're going to do is we're going to make it go to the GMS Because GMS knows whether a particular page, that is missing in the address space of a process, is present in some remote GMS and similarly if a page is missing from the file cache, it knows whether that page is perhaps in the remote GMS. So that's why we modify the virtual memory manager and unified buffer cache manager to get their calls for getting and putting pages.</li> 
+  <li>Getting page is when there is a page fault I need to get that page. I would go to the disk normally, but now I go to GMS. That GMS worry about getting it for me. Similarly if a page is missing in the unified buffer cache, I go to the GMS to say get me that page for me, and he will then do the work of finding out whether it is in remote GMS or if it is not anywhere in the cluster as we've seen in some of the cases. It could be under disk, it will get it from the disk.</li> 
+  <li>Notice writes to disk is unchanged. Originally, whenever the VM manager decides to write to the disk, it's because a page is dirty. It writes to the disk. That part we don't want to mess with, because we are not affecting the reliability of the system in any way. Writes remain unchanged. Only when you have a page fault, you have to get it from the disk, you don't go to the disk anymore, but you come to GMS, and GMS then is integrated into the system so that it figures out where to get the missing page from.</li> 
+  <li>Remember that the most important thing that we have to do in implementing this global LRU at approximation to global LRU is collecting age information. That's pretty tricky. And the case of file cache is pretty straightforward, because it is explicit from the process where it is making regenerate calls, we can insert code as part of integrating GMS into this unified buffer cache, to see what pages are being accessed based on the region rights that are happening to the unified buffer cache. Because these calls are explicit from the application, going into the operating system and therefore, we can intercept those calls as part of integrating DMS to collect age information for the pages that are housed in the unified buffer cache.</li> 
+  <li>VM on the other hand is very complicated. Because memory access, that a process does, is happening in hardware on the CPU. The operating system does not see the individual memory access that a user program is making, so how does GMS collect aid information for the anonymous, that's why these pages are called anonymous pages. In this case, the pages are not anonymous because we know exactly what pages are being reached in by a particular read or write by a file system, but the reads and writes that a user process is making to its virtual address space are the pages that are anonymous so far as the operating system is concerned. So, how does the operating system collect the age information? In order to do that, the authors of GMS what they did, was to have a daemon part of the memory manager in the OSF/1 implementation. The daemon's job is to dump information from the TLB. If you recall, TLB, the translation lookaside buffer, contains the recent translations that have been done on a particular node. So the TLB contains information about the recently accessed pages on a particular processor. Periodically, say every minute, it dumps the contents of the TLB into a data structure that the GMS maintains so that it can use that information in deriving the age information for all the anonymous pages that are being handled by the VM. So that is how GMS collects the age information at every node. So this is where I meant, the technical details are very important. Because this idea of how to gather age information is something that might be useful if you're implementing a completely different facility.</li> 
+  <li>Similarly, when it comes to the pageout daemon. The pageout daemon, normally, what it would do is, when it is throwing out pages. If they are dirty pages, he'll write it on to the disk. And if it is clean pages, he can simply discard it. But now, when it has a clean page, it wants to discard a clean page, a pageout daemon. We'll give it to GMS, because GMS will say, well, don't throw it out. I'll put it into cluster memory so that it is available later on for retrieval rather than going to the disk.</li> 
+  <li>So this is how GMS is integrated into this whole picture, interacting with the Unified Buffer Cache, interacting with the VM Manager, interacting with the Pageout Daemon and the Free List Maintenance as well in terms of allocating and freeing frames on every node.
+</li> 
+</ul>
+
+
+<h2>14. Data Structures</h2>
+
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l7/15.JPG?raw=true" alt="drawing" width="500"/>
+</p>
+
+<ul>
+  <li>Some more heavy lifting. Let's talk about the distributed data structures that GMS has in order to do this virtual memory management across the entire cluster. First thing that GMS has to do, is to convert a virtual address, which is a local thing so far as a single processor's concerned. And convert that virtual address into a global identifier, or what we'll call as a universal ID (uID). And the way we derive the universal ID from the virtual address is fairly straightforward, if you think about it. We know which node this virtual address emanated from, IP address. We know which disk partition contains a copy of the page that corresponds to the virtual address. That we know. What are the i-node data structure that corresponds to this page? And what is the offset? So if you put all of these entities together, you get a universal ID that uniquely identifies. A virtual address. This is the offset within a page. So given a virtual address, the first three parts uniquely identify the page, and the fourth part identifies the offset within that page for that virtual address. And this we can derive it from the virtual memory system as well as the UBC.</li> 
+  <li>There are three key data structures: PFD, GCD and POD. These three data structures are the workhorses that make this cluster wide memory management possible. Let's talk about each one of these things.</li> 
+  <li>PFD is like a page table. Normally in a page table what you do is you give it a virtual address and the page table says oh, I know what is the physical frame that backs this particular virtual address. That is the translation between a virtual page number and a physical page frame that hosts that virtual page is contained in a page table. Similar to that is PFD, it's called the page frame directory. It has a mapping between a UID, because your virtual address has been converted to a UID. Given a UID, it says, what is a page frame that backs that particular UID? That's this data structure. Because we're doing cluster-wide memory management, the page itself can be in one of four different states. It could be in the local part of that node. And if it is in a local part of a node. Then that page could be a private page or it could be a shared page. These are two possibilities, there is living in the local part of the physical memory of a node. If it is in the global part, we know by definition, global part is only hosting clean pages, so the content of global cache is always going to be private pages and so the state of the page that happens to be the global cache of a particular node is guaranteed to be a private state. And the last possibility is that it's not in the physical memory of a node, but it is on the disk. So the page frame directory just like a page table says that either this page that you are looking for go from VA to UID, that page is in physical memory and it is one of these three states or its not in the physical memory, it's on the disk.
+</li> 
+</ul>
+
+<h2>15. Data Structures (cont)</h2>
+
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l7/15.JPG?raw=true" alt="drawing" width="500"/>
+</p>
+
+<ul>
+  <li>>GCD: Now given a UID I know that some PFD in the entire cluster has the mapping for the UID saying what is the physical frame number that corresponds to it if it happens to be on that node or it's on the disk. That information is contained in some PFD in the entire cluster. So, if I have a page fault. I convert my VA to UID then which PFD will I go look up? I could broadcast to everybody and say, how do you have it? That will be very efficient. You don't want to do that, or we can say that there is some way of magically mapping, given a UID which node will have the PFD for me to look up. And find out the backing physical page. But we don't want to do a static binding of UID to the node that manages that UID. Because if we make a static mapping, then it pushes the burden on one node to take that, if some page has become really hot and everybody wants to use that. What we want to do is distribute this management function, just like the age management, we did not want to concentrate it on a single node. We want to distribute the management of giving this mapping between UID and which node has the PFD that can tell me information about the missing page. And that data structure is this Global Cache Directory, GCD. GCD is a hash table, it's a cluster-wide hash table, so it's a distributed data structure. And the rule that GCD performs is given a UID, it will tell you which node has the PFD that corresponds to this UID. That's the role of this data structure, it's a partition hash table, so given a UID, I can say well. I go to the GCD, and the GCD will say, what is the PFD that has this UID? Because of the partition hash table, even though a part of this GCD is on every node, every node may not be locally able to determine where the PFD is. Given a UID, it can go, it has to know which GCD it has to consult. In order to know which node has the PFD that corresponds to this UID.</li> 
+  <li>POD: So, we need another data structure that tells us, given a UID, which node has the GCD that corresponds to this UID. And that is the page ownership directory. So, the page ownership directory says, given a UID. Which node has the DCD that corresponds to this UID. And this data structure the page ownership directory is replicated on all the nodes. It's an identical replica that is on all the nodes. So, when I have a page for it first thing that I'm going to do, is go to my POD and that is. A replicated data structure and it's completed information, up to date information. So I go to this POD and asked this question. Given this new id, how do I find out the global cache directory that has information about the PFD that can help me to map my virtual address to a physical address. Remember that we could have simply gone from here(PFD) to here(POD), but that would have been a static mapping, and this one level of indirection is giving a way by which we don't have to statically map. A PFD to a UID, but this intermediate step, allows us to move the responsibility of hosting a particular PFD to different nodes, using this intermediary which is a distributive hash table. I said that this page ownership directory is replicated data structure. Can it change? Well it can change over time because what this page ownership directory is saying is the following. The UID space is something that spans the entire cluster. If you take the virtual addresses of all the possibilities of the entire cluster. That universe of all the virtual addresses is this UID space because it is being mapped from a a virtual address of a single process to this UID space and this spans the whole cluster and what we have done is we have partitioned that UID space. Into set of regions of ownership and that's what is called the page ownership. So every node is responsible for a portion of the UID space and that is this global cache directory. Now if the LAN never revolves. In other words, if the set of nodes on the LAN is fixed. Then the page ownership director also remains the same. But if nodes, if new nodes are added and deleted and so on, that's when the page ownership directory is going to change. And if that happens, then we have to replicate again, we have to redistribute the page ownership directly. But this is not something that's going to happen too often. It's very rare that node is going to come down or new node is going to be inserted into a LAN. And therefore this page ownership directory does not change very often. And that's where it's replicated data structure that you can believe at every node. But if it changes, there is also a way of handling that. We'll see that in a minute.</li> 
+  <li>The path for page fall handling is if you have a page fall you convert VA to UID and once you have this UID then you can go to your page ownership directory that's on your node. And ask the question, please tell me who has the PFD that corresponds to this UID? And GCD is going to tell me "oh here is the note that contains the PFD for the UID that you're looking for". Then I can go to that PFD, and from that PFD, I can get the page that I am looking for which might be in that note or it might say "well it's not in my note any more. It's on the disk". So this is the pack for page four handling.
+</li> 
+</ul>
+
+<h2>16. Putting the Data Structures to Work</h2>
+
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l7/16.JPG?raw=true" alt="drawing" width="500"/>
+</p>
+
+<!-- <ul>
+  <li></li> 
+  <li></li> 
+  <li></li> 
+
+</ul> -->
+
+
+<h2>17. Putting the Data Structures to Work (cont)</h2>
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l7/17.JPG?raw=true" alt="drawing" width="500"/>
+</p>
+
+
+<!-- <ul>
+  <li></li> 
+  <li></li> 
+  <li></li> 
+
+</ul>
+ -->
+
+<h2>18. Putting the Data Structures to work (cont)</h2>
+
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l7/18.JPG?raw=true" alt="drawing" width="500"/>
+</p>
+
+<!-- <ul>
+  <li></li> 
+  <li></li> 
+  <li></li> 
+
+</ul>
+ -->
+
+<h2>19. Global Memory Systems Conclusion</h2>
+
+<!-- <p align="center">
    <img src="" alt="drawing" width="500"/>
 </p>
 
@@ -173,105 +292,7 @@
 
 </ul> -->
 
-
-<!-- <h2></h2>
-
-<p align="center">
-   <img src="" alt="drawing" width="500"/>
-</p>
-
-<ul>
-  <li></li> 
-  <li></li> 
-  <li></li> 
-
-</ul> -->
-
-
-<!-- <h2></h2>
-
-<p align="center">
-   <img src="" alt="drawing" width="500"/>
-</p>
-
-<ul>
-  <li></li> 
-  <li></li> 
-  <li></li> 
-
-</ul> -->
-
-
-<!-- <h2></h2>
-
-<p align="center">
-   <img src="" alt="drawing" width="500"/>
-</p>
-
-<ul>
-  <li></li> 
-  <li></li> 
-  <li></li> 
-
-</ul> -->
-
-
-
-<!-- <h2></h2>
-
-<p align="center">
-   <img src="" alt="drawing" width="500"/>
-</p>
-
-<ul>
-  <li></li> 
-  <li></li> 
-  <li></li> 
-
-</ul> -->
-
-
-<!-- <h2></h2>
-
-<p align="center">
-   <img src="" alt="drawing" width="500"/>
-</p>
-
-<ul>
-  <li></li> 
-  <li></li> 
-  <li></li> 
-
-</ul> -->
-
-
-<!-- <h2></h2>
-
-<p align="center">
-   <img src="" alt="drawing" width="500"/>
-</p>
-
-<ul>
-  <li></li> 
-  <li></li> 
-  <li></li> 
-
-</ul> -->
-
-
-<!-- <h2></h2>
-
-<p align="center">
-   <img src="" alt="drawing" width="500"/>
-</p>
-
-<ul>
-  <li></li> 
-  <li></li> 
-  <li></li> 
-
-</ul> -->
-
+# L07b: Distributed Shared Memory
 
 <!-- <h2></h2>
 
