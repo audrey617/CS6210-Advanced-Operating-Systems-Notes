@@ -243,149 +243,252 @@
    <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l7/16.JPG?raw=true" alt="drawing" width="500"/>
 </p>
 
-<!-- <ul>
-  <li></li> 
-  <li></li> 
-  <li></li> 
-
-</ul> -->
-
+<ul>
+  <li>So now that we understand the data structures, let's put the data structures to work. Let's first look at what happens on a page fault.</li> 
+  <li>On a page fault, the node first coverts the virtual address to a UID and once it converts it to the UID it goes to the page ownership directory. And as I mentioned, the page ownership directory is something that I can trust. It'll tell me, given this UID I'll tell you who the owner of this page is. And you go to him because he has the GCD data structure for this. So, node A finds out the identity of the owner for this UID, and that happens to be node B.</li> 
+  <li>So it sends the UID over to node B. Node B, because it is the owner for this UID, it looks up its GCD data structure and says, oh, the PFD that can translate this UID which actually represents this virtual address is actually contained in this particular node, node C. So, that's the content of this data structure, given a UID what is the node ID that contains the PFD. Remember that PFD is equivalent of a page table in the normal system and therefore that's the node that I want to send this UID to so that we can do the translation for this virtual address.</li> 
+  <li>So node B sends the UID over to node C, and node C contains the PFD that has the mapping between the UID and the page frame number that is backed by this node for this UID, retrieves the page. It's a hit. Sends it over to node A. Node A is happy. It can then map this virtual address into its internal structure and the page fault service is complete and it can resume the process that was blocked for this page fault.</li> 
+  <li>You can see that, potentially, when a page fault happens I can have three level of network communication. Of course the first look up of the POD is local to my node because this POD data structure is replicated on every node. So from the UID, I can find the owner for the UID. But then I have to send a network message over to the node that contains the GCD for this UID. And then he'll then send it to the node that has this page so that that page can come back. Now this network communication I am willing to tolerate because it is equivalent to performing the role of what the disk would have done. And maybe it is much better than going to a disk in order to get the missing page. So, it is happening only on page fault and since it is on a page fault, this network communication is okay. But, this is an extra network communication. Fortunately, the common case is a page fault is servicing the request of a local process on node A, and so the page is a non-shared page and if it is a non-shared page most likely the UID space that corresponds to the missing page is also managed by this node. In other words, both the POD and the GCD corresponding to a particular UID is mostly on this node itself. And this is true for non-shared pages, and so A and B are exactly the same node. So there is no network communication to go from the POD to GCD to find out the PFD. So hopefully the only network communication that happens on every page fault is a network communication to go to this node that is serving the role of a disk and get the page from him. That's okay to incur because it probably is much lesser than going to the disk in order to do the page access. So the page fault service for the common case is going to be pretty quick. So the important message that I want you to get out of this is that even though these distributed data structures may make it look like you're going to have a lot of network communication, the important thing to note is that it happens only when there is a page fault. And since most of the page faults, the common case, is going to be non-shared pages. The data structure POD and GCD are probably co-resident on the same node. So, even though I've shown two different nodes here, A and B may be exactly the same node. And so looking up the PFD that currently is backing this particular UID is going to be local to this node and so we can directly go to the node that contains the PFD and make the page fault service pretty quick.
+</li> 
+</ul>
 
 <h2>17. Putting the Data Structures to Work (cont)</h2>
 <p align="center">
    <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l7/17.JPG?raw=true" alt="drawing" width="500"/>
 </p>
 
-
-<!-- <ul>
-  <li></li> 
-  <li></li> 
-  <li></li> 
-
+<ul>
+  <li>Now the interesting question is, once I go to the node that I think is going to give me the page that I'm looking for, or at least information about the page that I'm looking for. Whether it is, if it has it, it's going to give it to me, or if it doesn't have it, it's going to tell me that it is on the disk. But, in either case, I'm hoping I'll get exact information about this missing page from this node which is supposed to have the page foame directory, the PFD that corresponds with this UID. Is that possible that I go to this guy, and he says no, I don't have it. Yes, it is possible in two cases.</li> 
+  <li>One case is, let's say, while this guy was sending this request over, this guy has made a decision to evict that page that corresponds to this UID because it had to make space for itself. In that case, that UID may have been thrown away from the PFD. And if it has been thrown away from the PFD, what he would have done is to inform the guy who has the ownership for this UID, this node is the owner for this UID. If he evicts that page this guy has to tell this node that, "hey, you know what, I used to back this UID in my PFD but I got rid of it. And, and I got rid of it by sending it to some other node, let's say, node D". So that is something that I have to communicate to this GCD, but it's a distributed system. Things are happening asynchronously. He may not have communicated that yet, that information is not there in the GCD of this node. This is the owner for this UID space. But the owner doesn't yet know that the PFD that corresponds to a particular UID has moved to some other node out here somewhere. And if it has moved to some other node, he will know about eventually, but he doesn't have it at this point. That's why this request was routed here, and this guy says I don't have it. It can have a miss. That's one possibility.</li> 
+  <li>Second possibility is the uncommon case that the POD information that I had is stale. When can that happen? That is when the POD is being recomputed for the local area network as a whole, either because there are new additions or new deletions of nodes. And therefore we are recomputing the redistribution of the UID space and deciding which node is responsible for which UID. That can happen. And in that case also, it is possible that the information that I started with was incorrect. Because I went here thinking that he has the GCD, he didn't have it at that point, but it is changing. And eventually I'm going to find out. So if there is a mess, either case. The first case is, this guy replaced that page, or the second case is, my POD information misled me. Both cases, I'll have a miss. And I'll say, oh, it was a miss. And I know that is probably the uncommon case. I'm going to retry that, by looking up my POD again. And by that time, the POD may have been updated, I'll go to the right GCD this time. Or, the GCD would have been updated and so I'll go to the same GCD, but the GCD will have the more relevant information of which PFD is currently hosting it. So, I'll go to him in order to get the page that I'm looking for.</li> 
+  <li>The important point I want to leave you with is that the common case is when both the POD and GCD are coresident on the same node. And in that case, you don't have a network communication to look up the GCD, and also the miss happening when you do reach the PFD. That is also uncommon. It can because happen because of replacement that has happened on that node, or because the POD has changed. And this is something that is going to happen relatively infrequently compared to the activities that we're talking about in terms of page faults.
+</li> 
 </ul>
- -->
 
 <h2>18. Putting the Data Structures to work (cont)</h2>
-
 <p align="center">
    <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l7/18.JPG?raw=true" alt="drawing" width="500"/>
 </p>
 
-<!-- <ul>
-  <li></li> 
-  <li></li> 
-  <li></li> 
-
+<ul>
+  <li>The next thing I want to talk about is what happens in the system on Page Evictions. Remember that on Page Eviction, when a Node decides that it wants to throw out a page, it sends it in the algorithm that I described to the Node, which is candidly ignored for hosting that page, and it might use the weight information to make the decision, of which node to send that page that it is discarding from it's own node. When a page fault happens, the key thing is to make sure that we service the page fault so that we get the page. And restart the execution that has been stalled on this node. That's the important thing to do.</li> 
+  <li>The less important thing, but something that needs to happen in the universe of things that is being managed by GMS, is to also send the victim page from this node to the target node. That's part of the algorithm for eviction on page fault. However, we don't want to do it on every page fault, but we want to do it in an aggregated manner.</li> 
+  <li>For that reason every node has a paging daemon. And this is typical of virtual memory systems that when a page fault happens. That's not the time the virtual memory manager is running around trying to find the page free. It always has a stash of free page frames to allocate to service this particular page fault. As I mentioned earlier, the paging daemon in the virtual memory manager is integrated with the GMS system. And what the paging daemon is going to do is, when the free list falls below a threshold, then the paging daemon is going to do put page of the oldest pages on this node. And remember that in the integration of GMS with the virtual memory manager in the put page, I said that the Paging Daemon is also modified to work with the GMS. This is where the modification comes in. Normally what the Paging Daemon would've done is when the free list goes below threshold, it would take a bunch of pages, LRU candidate pages, and put it all onto the disc. But with the integration with GMS, what the paging demon is going to do is, for the same condition when the freelist falls below threshold, it's going to basically do putpage of the oldest pages that it has on this node. And when we do the put page, we're going to choose the candidate node. Where we going to do the putpage based on the weight information that we got as part of the geriatric management that we talked about in the beginning. And so we do a putpage of UID. Into this PFD of this node so that this guy will be the one that will be backing this particular UID. And once I do this, I also have to update the GCD to indicate that the new PFD for this particular UID is C. So this update message is being sent to the owner of this UID. That is this node, and the owner the guy that has the portion of the UID space that is managed by this node. So the GCD data structure contains the mapping of the UID to the node that contains the PFD for that particular UID. And so I send this update message saying please update the GCD to indicate that this particular UID is now backed by PFD that sites on note C. So that's the information I'm sending to this guy. And this is not being done on every page eviction, but it is done by the paging demon in a aggregated, coordinated manner. When the free list falls below a threshold.</li> 
+  <li>So we've covered a lot of ground from just sort of the principal behind the thought experiment. That is, using network memory as a paging device, rather than disc. Because the networks have gotten faster. And we came up with an algorithm for age management globally in the entire cluster, and how to have that age management done in a manner that doesn't burden any one node. But it picks the node that is lightest in terms of load at any point of time. And we also saw given the solution for cluster wide memory management for paging, how to go about implementing it. And all of the heavy lifting that needs to be done in order to take an idea and put it into practice.
+</li> 
 </ul>
- -->
+
 
 <h2>19. Global Memory Systems Conclusion</h2>
-
-<!-- <p align="center">
-   <img src="" alt="drawing" width="500"/>
-</p>
-
 <ul>
-  <li></li> 
-  <li></li> 
-  <li></li> 
-
-</ul> -->
+  <li>You'll see that in every systems research paper, there is heavy lifting to be done to take a concept to implementation. Working out the details and ensuring that all the corner cases are covered is a non-trivial intellectual exercise in building distributed subsystems. Like this one, the global memory system. What is enduring in a research exercise like this one? The concept of paging across the network is an interesting thought experiment, but it may not be feasible exactly for the environment in which the authors carried out this research, namely workstation clusters connected by a local area network. Each workstation in that setting is a private resource owned by an individual who may or may not want to share his resources, memory in particular. On the other hand, data centers today are powered by large scale clusters on the order of thousands of processes connected by a local area network. No node is individually owned in that setting. Could this idea of paging across the local area network be feasible in that setting? Perhaps. Even beyond the thought experiment itself what is perhaps more enduring are the techniques, distributed data structures and the algorithms, for taking the concept of implementation. In the next part of this lesson module, we will see another thought experiment to put cluster memory to use.
+</li> 
+</ul>
 
 # L07b: Distributed Shared Memory
 
-<!-- <h2></h2>
+<h2>1. Distributed Shared Memory Introduction</h2>
 
 <p align="center">
-   <img src="" alt="drawing" width="500"/>
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l7/19.JPG?raw=true" alt="drawing" width="500"/>
+</p>
+
+
+<ul>
+  <li>In an earlier part of this lesson module, we saw how to build a subsystem that takes advantage of idle memory in peer nodes on a local area network, namely, using remote memory as a paging device, instead of the local disk. The intuition behind that idea was the fact that networks have gotten faster. And therefore access to remote memory may be faster than access to an electromechanical local disk.</li> 
+  <li>Continuing with this lesson, we will look at another way to exploit remote memories, namely, software implementation of distributed shared memory. That is, create an operating system abstraction that provides an illusion of shared memory to the applications, even though the nodes in the local area network do not physically share memory.</li> 
+  <li>So distributed shared memory asks the question, if shared memory makes life simple for application development in a multiprocessor, can we try to provide that same abstraction in a distributed system, and make the cluster look like a shared memory machine?
+</li> 
+</ul>
+
+
+<h2>2. Cluster as a Parallel Machine (Sequential Program)</h2>
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l7/20.JPG?raw=true" alt="drawing" width="500"/>
 </p>
 
 <ul>
-  <li></li> 
+  <li>Now suppose the starting point is a sequential program. How can we exploit the cluster? We have multiple processors, how do we exploit the cluster if the starting point is a sequential program? One possibility is to do what is called automatic parallelization. That is, instead of writing an explicitly parallel program, we write a sequential program. And let somebody else do the heavy lifting in terms of identifying opportunities for parallelism that exist in the program and map it to the underlying cluster. And this is what is called an implicitly parallel program. There are opportunities for parallelism, but the program itself is not written as a parallel program. And, now it is the onus of the tool, in this case an automatic parallelizing compiler, to look at the sequential program and identify opportunities for parallelism and exploit that by using the resources that are available in the cluster. </li> 
+  <li>High Performance Fortran is an example of a programming language that does automatic parallelization, but it is user-assisted parallelization in the sense that the user who is writing the sequential program is using directives for distribution of data and computation. And those directives are then used by this parallelizing compiler to say, oh, these are opportunities for mapping these computations onto the resources of a cluster. So it puts it on different nodes on the cluster and that way, it exploits the parallelism that is there in the hardware, starting from the sequential program and doing the heavy lifting in terms of converting the sequential program to a parallel program to extract performance for this application. This kind of automatic parallelization, or implicitly parallel programming, works really well for certain classes of program called data parallel programs. In such programs, for the most part, the data accesses are fairly static, and it is determinable at compile time. So in other words, there is limited potential for exploiting the available parallelism in the cluster if we resort to implicitly parallel programming.
+</li> 
+</ul>
+
+
+<h2>3. Cluster as a Parallel Machine (Message Passing)</h2>
+
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l7/21.JPG?raw=true" alt="drawing" width="500"/>
+</p>
+
+<ul>
+  <li>So we write the program as a truly parallel program, or in other words, the application programmer is going to think about his application and write the program as an explicitly parallel program. And there are two styles of writing explicitly parallel programs. And correspondingly, system support for those two tiles of explicitly pavalled programs.</li> 
+  <li>One is called message passing style of explicitly pavalled program. The run time system is going to provide a message passing laterally which has primitives for. An application thread to do sends and receives to its peers that are executing on other nodes of the cluster. So this message passing style of explicitly parallel program is true to the physical nature of the cluster. The physical nature of the cluster is the fact that every processor has its private memory. And this memory is not shared across all the processors. So the only way a processor can communicate with, another processor is by sending a message through the network that this processor can receive. This processor cannot directly reach into the memory of this processor. Because that is not the way a cluster is architected. So, the messaging passing library is true to the physical nature of the cluster that there is no physically shared memory.</li> 
+  <li>Lots of examples of message passing libraries that have been written to support explicit parallel programming. In a cluster they include MPI, message passing interface, MPI for short, PVM, CLF from digital equipment corporations. So these are all examples of message passing libraries that have been built with the intent of allowing application programmer to write explicitly parallel programs using this message passing style. And to this day, many scientific applications running on large scale clusters in national labs like Lawrence Livermore, and Argonne National Labs and so on, use this style of programming using MPI as the message passing fabric.</li> 
+  <li>The only downside to the message-passing style of programming is that it is difficult to program using this style. If you're a programmer who's written sequential programs, the transitions paths to writing an explicitly parallel program is easier if there is this notion of shared memory, because it is natural to think of shared data structures among different threads of an application. And that's the reason making the transition from sequential program to parallel programming, using for instance the Pthread library or SMP is fairly intuitive and easy pathway. On the other hand, If the programmer has to think in terms of coordinating the activities on different processes by explicitly sending and receiving messages from their peers. That is calling for a fairly radical change of thinking in terms of how to structure a program.
+</li> 
+</ul>
+
+
+<h2>4. Cluster as a Parallel Machine (DSM)</h2>
+
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l7/22.JPG?raw=true" alt="drawing" width="500"/>
+</p>
+
+<ul>
+  <li>This was the motivation for coming up with this abstraction of distributed shared memory in a cluster. The idea is that we want to give the illusion to the application programmer writing and explicitly parallel program that all of the memory that's in the entire cluster is shared. They are not physically shared, but the DSM library is going to give the illusion to the threads running on each one of these processes that all of this memory is shared. And therefore they have an easier transition path for instance, from going from a sequential program or going from a program that they've written on an SMP to a program that runs on the cluster, because they don't have to think in terms of message passing. But they can think in terms of shared memory, sharing pointers across the entire cluster, and so on. Also, since we are providing a shared memory semantic in the DSM library for the application program, there is no need for marshalling and unmarshalling arguments that are being passed from one processor to another and so on. All of that is being handled by the fact that there is shared memory. So when you make a procedure call, and that procedure call is touching some portion of memory that happens to be on a remote memory. That memory is going to magically become available to the thread that is making the procedure call. In other words, the DSM abstraction gives the same level of comfort to a programmer who's used to programming on a true shared memory machine when they moved to cluster. Because they can use same set of primitives, like locks and barriers for synchronization, and the Pthread style of creating threads, that will run on different nodes of the cluster. And that's the advantage of DSM style of writing an explicitly parallel program.
+</li> 
+</ul>
+
+
+<h2>5. History of Shared Memory Systems</h2>
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l7/23.JPG?raw=true" alt="drawing" width="500"/>
+</p>
+
+<ul>
+  <li>Now having introduced distributed shared memory, I want to give sort of a birds eye view of the history of shared memory systems over the last 20+ years. My intent is not to go into the details of everyone of these different systems, because that can take forever, but it is just to give you sort of the space occupied by all the efforts that have gone on in building shared memory systems both in hardware and in software. I encourage you to surf the web to identify papers and literature on these different systems that have been built over time, just to get a perspective on how far we have come in the space of building shared memory systems.</li> 
+  <li>Software DSM: A few thoughts on the software side, software DSM was very first thought of in the mid 80s. The Ivy system that was built at Yale University and the Clouds Operating System that was built at Georgia Tech and there were similar systems built at UPenn. This I would say is the beginning of Software Distributed Shared Memory.Later on, in the early' 90s, systems like Munin and TreadMarks were built. I would call them perhaps a second generation of Distributed Shared Memory systems.In the later half of the 90s, there were systems like Blizzard, Shasta, Cashmere and Beehive. That took some of the ideas from the early 90s even further.</li> 
+  <li>Structured DSM: And in parallel with the software DSM, I would say there was also a completely different track that was being pursued. And that is, providing structured objects in a cluster for programming. And systems such as Linda and Orca, were done in the early 90s. Stampede at Georgia Tech was done in concert with the Digital Equipment Corporation in the mid 90s and continued on, later on, into Stampede RT and PTS, and in fact, in a later lesson, we'll talk about Persistent Temporal Streams. And this particular axis of development of structured distributed shared memory is attractive because it gives a higher level abstraction than just memory to computations that needs to be built on a cluster.</li> 
+  <li>Hardware DSM: Early hardware shared memory systems such as BBN Butterfly and Sequent Symmetry appeared in the market in the mid 80s and, the synchronization paper that we saw earlier by Mellor-Crummey and Scott used BBN Butterfly and Sequent Symmetry as the experimental platform for the evaluation of the different synchronization algorithms. KSR-1 was another shared memory machine that was built in the early 90s. Alewife was a research prototype that was built at MIT, DASH was a research prototype that was built at Stanford and both of them looked at how to scale up beyond an SMP, and build a truly distributed shared memory machine. And commercial versions of that started appearing. SGI silicon graphics built SGI origin 2000 as a scalable version of a distributed shared memory machine. SGI Altix later on took it even further, thousands of processors exist in SGI Altix as a large-scale shared memory machine. IBM Bluegene is another example. And today, if you look at what is going on in the space of high performance computing. It is clusters of SMPs which have become the work horses in data centers.</li> 
+  <li>I very much want you to reflect on the progress that has been made in shared memory systems. And invite you to look at some of the details of machines that have been built in the past, either in the hardware or in software, so that you can learn the progress that has been made.
+</li> 
+</ul>
+
+
+<h2>6. Shared Memory Programming</h2>
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l7/24.JPG?raw=true" alt="drawing" width="500"/>
+</p>
+
+<ul>
+  <li>I've already introduced you to shared memory synchronization. Lock is a primitive and particularly the mutual exclusion lock is a primitive that is used ubiquitously in writing shared memory parallel programs to protect data structure so that one thread can exclusively modify the data and release the lock so that another thread can inspect the data later on and so on. And similarly, barrier synchronization is another synchronization primitive that is very popular in scientific programs and we have covered both of these in fairly great detail in talking about what the operating system has to do in order to have efficient implementation of locks as well as barriers. Now the upshot is, if you are writing a shared memory program, there are two types of memory accesses that are going to happen. One type of memory access is the normal reads and writes to shared data that is being manipulated by a particular thread. The second kind of memory access is going to be for synchronization variables that are used in implementing locks and barriers by the operating system itself. It may be the operating system, or it could be a user level threads library that is providing these mutual exclusion locks, or barrier primitives, but in implementing those synchronization primitives, those algorithms are going to use reads and writes to shared memory. So there are two types of shared memory accesses going on in the execution of a parallel program. One is access to normal shared data and the other is access to synchronization variables.
+</li> 
+</ul>
+
+
+<h2>7. Memory Consistency and Cache Coherence</h2>
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l7/25.JPG?raw=true" alt="drawing" width="500"/>
+</p>
+
+<ul>
+  <li>Recall that in one of our earlier lectures, we discussed memory consistency model and the relationship of memory consistency model to cache coherence, in the context of shared memory systems. Memory consistency model is a contract between the application programmer and the system. It answers the when question, that is, when a shared memory location is modified by one processor, when, that is how soon that change is going to be made visible to other processes that have the same memory location in their respective private caches. That's the question that is being answered by the memory consistency model. Cache coherence, on the other hand, is answering the how question, that is, how is the system, by system we mean the system software plus the hardware working together, implementing the contract of the memory consistency model? In other words, the guarantee that has been made by the memory consistency model, to the application programmer has to be fulfilled by the cache coherence mechanism. So coming back to writing a parallel program, when accesses are made to the shared memory, the underlying coherence mechanism has to ensure that all the processes see the changes that are being made to shared memory, commensurate with the memory consistency model.
+</li> 
+</ul>
+
+
+<h2>8. Sequential Consistency</h2>
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l7/26.JPG?raw=true" alt="drawing" width="500"/>
+</p>
+
+<ul>
+  <li>I want you to recall one particular memory consistency model that I've discussed with you before, that is sequential consistency. And in sequential consistency, the idea is very simple. The idea is that every process is making some memory accesses, all of these, let's say, are shared memory accesses. And from the perspective of the programmer, the expectation is that, these memory accesses are happening in the textual order that you see here and that's the expecation so far as this programmer is concerned. Similarly, if you see the set of memory accesses that are happening on a different process of p2. Once again, the expectation is that the order in which these memory accesses are happening are the textual order. Now, the real question is, what happens to the accesses that are happening on one processor with respect to the accesses that are happening on another processor if they are accessing exactly the same memory location? For instance, P1 is reading memory location a, P2 is writing to memory location a. What is the order between this read by P1 and this write by P2? This is where sequential consitency model says that the interleaving of memory accesses between multiple processors, here I'm showing you two, but you can have n number of those processors. Making accesses to shared memory all in parallel. When that happens you want to observe the textual program order for the accesses and the individual processes but the interleaving of the memory accesses coming from the different processors is arbitrary. So in other words, the sequential memory consistency model builds on the atomicity for individual read-write operations and says that, individual read-write operations are atomic on any given processor, and the program order has to be preserved. And, in order to think about the in, interleaving of the memory axises that are happening on different processors. That can be arbitrary and that should be consistent with the thinking of the programmer. I also gave you the analogy of a card shark to illustrate what is going on with a sequential consistency model. So the card shark is taking two splits of a card deck and doing a perfect merge shuffle of the two splits, and that's exactly what's going on with sequential consistency. If you can think of these memory accesses on an individual processor as the card split but instead of a two-way split you have an n-way split, and we are doing a merge way shuffle of all the n-ways. Splits off the memory accesses to get the sequentially consistent memory model.
+</li> 
+</ul>
+
+
+<h2>9. SC Memory Model</h2>
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l7/27.JPG?raw=true" alt="drawing" width="500"/>
+</p>
+
+<ul>
+  <li>With the sequentially consistent memory model, let's come back to a parallel program. So, a parallel program is making read write accesses to shared memory, some of them offer data, and some of them offer synchronization. Now, so far as the sequentially consistent memory model it does not distinguish between accesses coming from the processors as data accesses, or synchronization accesses. It has no idea, it only looks at the read write accesses coming from an individual processor and honoring them in the order in which it appears and making sure that they can merged across all these processors to preserve the SC guarantee. So the upshot is that there's going to be coherence action on every read write access that the model sees. If this guy writes to a memory location, then the sequentially consistent memory model has to ensure that this write is inserted into this global order somewhere. In order to insert that in the global order somewhere, it has to perform the coherence action with respect to all the other processors. That's the upshot of not distinguishing between normal data accesses and synchronization accesses that is inherent in the SC memory model.
+</li> 
+</ul>
+
+
+<h2>10. Typical Parallel Program</h2>
+
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l7/28.JPG?raw=true" alt="drawing" width="500"/>
+</p>
+
+<ul>
+  <li>Now, let's see what happens in a typical parallel program. In a typical parallel program that you might write, you probably get a lock, and you have, mentally, an association between that lock and the data structures that are governed by that lock. Or in other words, in writing your parallel program, you decided that access to variables a and b are governed by this lock. So if I wanted to read or write variables a and b, I'll get a lock and then I will mess with the variables that are governed by this lock. Once I'm done with whatever I want to do with these shared variables, I'll unlock indicating that I'm done. And this is my critical section. So within the critical section, and we're allowed to do whatever I want on these data structures that are governed by this particular lock, because that is an association I as the programmer has made in writing the parallel program. So if another processor let's say P2 gets the same lock. It's going to get the lock only after I release it. So only after I release the lock, this guy can get this lock because the semantics of the lock, it is a mutually exclusive lock. And therefore, only one person can have the lock at a time. And consequently, if you look at the structure of this critical section for P2, it gets a lock. And it is messing with the same set of data structures that I was messing with, over here. But, by design, we know that either P1 or P2 can be messing with the data structure at any point of time. And that's a guarantee that I know comes from the fact that I designed the pilot program. And the lock is associated with these data structures. So, in other words, p2 is not going to access any of the data that is inside this critical section until p1 releases the lock.</li> 
+  <li>We know this because we designed this program, but the SC memory model does not know about the association between these data structures and this lock. And, in particular, doesn't even know that memory accesses emanating from the processor due to this lock primitive is a different animal compared to the memory accesses coming from the processor as a result of accessing normal data structures.</li> 
+  <li>So the cash coherence mechanism that is provided by the system for implementing the memory consistency model is going to be doing more work than it needs to do because it's going to be taking actions on every one of these accesses, even though the coherence actions are not warranted for these guys until I release the lock. So what that means is that there's going to be more overhead for maintaining the coherence commensurate with the SC memory model, which means it's going to lead to a poorer scalability of the shared memory system. So in this particular example since P2 is not going to access any of these data structures until P1 has released the lock there's no need for coherence action for a and b until the lock is actually released.
+</li> 
+</ul>
+
+
+<h2>11. Release Consistency</h2>
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l7/29.JPG?raw=true" alt="drawing" width="500"/>
+</p>
+<ul>
+  <li>This is the motivation for a memory consistency model, which is called release consistency. I'm sure just from the keyword release some of you may have already formed a mental model of what I'm going to say. Basically, we're going to look at the structure of the program as follows that the Parallel program consists of several different  Parallel threads P1 is one such, and if it wants to mess with some shared data structures, it is going to acquire a lock, we'll call it A1, and in the mind of the programmer there is an association between this lock and the data structures governed by it. So, so long as they hold the lock, they can modify the data structure and r1 is the release of this lock. So every critical section you can think of as composed of and acquire followed by data accesses governed by the lock and then release. If the same lock is used by some other process at P2, and if the critical section of P1 preceded the critical section of P2 or in other words, P1's release operation P1, r1. The release operation and P1 happened before, this most be familiar to you from our discussion of Lampert's logical clock. P1 R1 happens before P2 R2, that is the acquire operation that is being done by P2 if this acquire operation for the same lock happened after the release by P1 R1. All we have to ensure is that all the coherence actions prior to this release of the lock by P1 has to be complete before we allow P2 to acquire this lock before we allow P2 to acquire the same lock L. That's the idea of release consistency. So we take the synchronization operations that are provided by the system whether it is hardware or software And we label them as either an acquired operation or a release operation. So, it's very straight forward when you think about mutual explosion law, acquiring the log primitive is an acquire operation. And the un log primitive is a release operation. So if there is a lock primitive and there is a PCD unlock primitive, so we have to ensure that all the coherence actions happen before I do the unlock so that when this guy gets the lock and accesses the data, the data that he is going to see are going to be data that is consistent with whatever modifications may have been made over here. That's the idea behind the least consistent memory operation. Other synchronization operations can also be mapped to acquiring release. If you think about barrier, arriving at a barrier is equivalent to an acquire, and leaving the barrier is equivalent to a release. So, before leaving the barrier, we have to make sure that any changes that we made to shared data structures is reflected through all the other processes through the cache coherence mechanism. Then we can leave the barrier. So, leaving the barrier is a release operation, in the case of barrier synchronization. So, what that means is that, if I do a shared memory access within this group of sections, and that shared memory access would normally result in some coherence actions on the interconnect reaching to the other processes and so on, and if we use the SC memory model, you will block processes if you want until That particular memory access is complete with respect to all the processors and the shared memory machine. But if we use the least consistent memory model, we do not have to block P1 in order for coherence actions to be complete to let the processor continue on with its computation. We only have to block a processor at a release point to make sure that any coherent actions that may have been initiated up until this point, are all complete before we perform this release operation. That's the key point that I want you to get out of this release consistent memory model. So the least consistent memory model allows exploitation of computation on P1, with communication that may be happening through the coherence mechanism for completing the coherence actions corresponding to the memory accesses that you're making inside the critical section.
+</li> 
+</ul>
+
+
+<h2>12. RC Memory Model</h2>
+
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l7/30.JPG?raw=true" alt="drawing" width="500"/>
+</p>
+
+<ul>
+  <li>So now we come back to our original parallel program and the parallel program is making normal data accesses and synchronization accesses. There are different threads running on all these processors. They're all making these normal data accesses and synchronization accesses. And if the underlying memory model is an RC memory model, it distinguishes between normal data accesses and synchronization accesses. And it knows that if there are normal read/write data accesses, it doesn't have to do anything in terms of blocking the processes. It may start initiating coherence actions corresponding to these data accesses, but it won't block the processor for coherence actions to be complete until it encounters a synchronization operation, which is of the release category. If a synchronization operation which is a release operation hits this RC memory model, it's going to say, ah-ha. In that case all the data accesses that I've seen from this guy, I want to make sure that they're all complete globally, communicated to all the processors. It's going to ensure that before allowing the synchronization operation to complete. So the coherence action is only when the lock is released.
+</li> 
+</ul>
+
+
+<h2>13. Distributed Shared Memory Example</h2>
+
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l7/31.JPG?raw=true" alt="drawing" width="500"/>
+</p>
+
+
+<!-- <ul>
+  <li>So let's understand how the RC memory model works with a concrete example. So let's say the programmer's intent is that one thread of his program is going to modify a structure A. And there is another thread that is going to wait for the modification, and then it is going to use the structure A. So this is the programmer's intent. Right? So P2 is going to wait for the modification, use it, and this guy is the guy that is modifying that particular structure A. And of course these are running different on processors, and therefore we don't know who may be getting to their code first. So let's say that P2 executes the code that corresponds to this semantic. That is, it wants to wait for the modification. So in order to do that, it has a flag, and this flag has a semantic that is, 0 indicating the modification is not done, and 1 when the modification is actually done. And to make sure that we don't do busy waiting, we use a mutual exclusion lock. We lock a synchronization variable, let's call it L. And if the flag is 0, then it is going to execute the equivalent of a pthread_cond_wait. You know, pthread_cond_wait has the semantic that you're waiting on a condition variable and you're also releasing the lock that is associated with this condition variable. So you execute this pthread wait call, and the semantic you know is that at this point, thread P2 is blocked here, the lock is released, and he's basically waiting for a signal on this condition variable c. Who's going to do that, well, of course P1 is the guy that is modifying the structure, so its the responsibility of P1 to signal him. So let's see what happens. So P1 is executing the code for modifying the data structure A, and once it is done with all the modification, then it is going to inform P2. So in order to inform P2, what it does is acquires this lock L, and it sets the flag to 1. And the flag is the one that I inspected over here to know that, oh, the modification is not yet done here, and I'm waiting on this condition variable. So, P1 sets the flag to 1 and signals on the condition variable, c. And, you know that signaling on the condition variable is going to wake up P2. And, of course, it cannot start executing here until P1 has released the lock, and once the lock has been released, that lock will be acquired implicitly by the operating system on behalf of P2, because that is a semantic of this condition wait here. So when I wake up, I'll go back, and as a defensive mechanism, I'll recheck the flag to ensure that the flag is now not 0, indicating that the modification has been done, so I'm now ready to get out of this critical section. I unlock L, come out of the critical section. Now I can use this modified data structure. So that's the semantic that I wanted, and I got that with this code fragment that I'm showing you here. So the important thing is, if you have an RC memory model, then all the modifications that I'm making here that are modifying shared data structures can go on in parallel. With all this waiting that may be going on here, I don't have to block the processor to do every one of these modifications. The only point at which I have to make sure that these modifications have been made globally visible is when I hit the unlock point in my code. So just before I unlock L, I have to make sure that all the read write accesses to shared variables that I've made here in my program have all been taken care of in terms of the coherence actions being communicated to all my peers. Only then, I have to unlock it. So, in other words, this code fragment is giving you pictorially the opportunity for exploiting computation in parallel with communication. If the model was an SC memory model, then for every read-write accesses that are being done in modifying this data structure A, there would have been coherence actions that would have gone on, and those coherence actions, each of them has to complete before you can do the next one, and so on. But with the RC memory model, what it is allowing you to do is, you can do the data structure modification you want, and the coherence actions inherent in those modifications may be going on in the background, but you can continue with your computation until you hit this unlock point. At this point, the memory model will ensure that all the coherence actions are complete before releasing the lock, because once the lock is released, this guy's going to get it, and immediately he'll start using the data structure that has been modified by me. So it is important that all the coherence actions be complete prior to unlocking. So that's the intent of the RC memory model. And that's how you can exploit computation going on in parallel with communication if the memory model is an RC memory model.
+</li> 
   <li></li> 
   <li></li> 
 
 </ul> -->
 
 
-<!-- <h2></h2>
-
+<h2>14. Advantage of RC over SC</h2>
 <p align="center">
-   <img src="" alt="drawing" width="500"/>
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l7/32.JPG?raw=true" alt="drawing" width="500"/>
 </p>
 
+<!-- 
 <ul>
-  <li></li> 
+  <li>So to summarize the advantage of RC over SC, is that, there is no waiting for coherence actions on every memory access. So you can overlap computation with communication. So the expectation is that you will get better performance in a shared memory machine if you use the RC memory model, compared to an SC memory model.
+</li> 
   <li></li> 
   <li></li> 
 
 </ul> -->
 
 
-<!-- <h2></h2>
-
+<h2>15. Lazy RC</h2>
 <p align="center">
-   <img src="" alt="drawing" width="500"/>
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l7/33.JPG?raw=true" alt="drawing" width="500"/>
 </p>
 
-<ul>
-  <li></li> 
+<!-- <ul>
+  <li>Now I'm going to introduce you to a lazy version of the RC memory model. And it's called LRC, stands for lazy RC. Now this is the structure of your pilot program so a thread acquires a lot, does the data accessing, releases the lock. Another thread may acquire the same lock. And if the critical section for P1 Precedes the critical section for P2, then the RC memory model requires that, at the point of release, you ensure that all the modifications that have been made on processor P1, that is, the coherence actions. That are commensurate with those data acceses, are all communicated to all the peer processes including P2. Then you release the lock. That's the semantic. And this is what is called eager release consistency, meaning that at the point of release you're insuring that the whole system is cache coherent The whole system is cache coherent at the point of release, then you release from the lock. And the cache coherence is with respect to the set of data accesses that have gone on on this process up to this point, that's what we are ensuring has been communicated and made consistent on all the processes. Now let's say that the timeline looks like this and P1's release happened at this point. And P2's acquire of the same lock happened at a much later point in time. That's the luck of the draw in terms of how the computation went, and so there is this time window between P1's release of the lock and P2's acquisition of the same lock. Now if you think about it there's an opportunity for procrastination. Now we saw that procrastination often helps in system design. We've seen this in mutual exclusion locks. If you insert delay between successive trials of trying to get the lock, that actually results in better performance. We saw that in processes scheduling too. Instead of eagerly scheduling the next available task Maybe you want to wait for a task that has more affinity to your processor. That results in performance advantage. So procrastination often is a good friend of system design. So here again there is an opportunity for procrastination. So Lazy RC is another instance where procrastination may actually help in optimizing the system performance. The idea is that, rather than performing all the coherence actions at the point of release. Don't do it, procrastinate. Wait till the acquire actually happens. At the point of acquire, take all the coherence actions before allowing this acquire to succeed. So the key point is that you're deafening the point at which you ensure that all the coherence actions are complete to the point of acquisition as opposed to the point of release. Even if all the coherence actions commensurate with the data accesses that have gone on up until this release point, are not yet complete when we hit the release, go ahead. Release the lock, but if the next lock acquisition happens, at that point, make sure that all the coherence actions are complete. So in other words, you get an opportunity to overlap computation with communication once again in this window of time between release of a lock, and the acquisition of the same lock.
+</li> 
   <li></li> 
   <li></li> 
 
 </ul> -->
 
 
-<!-- <h2></h2>
-
+<h2>16. Eager vs Lazy RC</h2>
 <p align="center">
-   <img src="" alt="drawing" width="500"/>
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l7/34.JPG?raw=true" alt="drawing" width="500"/>
 </p>
 
-<ul>
-  <li></li> 
-  <li></li> 
-  <li></li> 
-
-</ul> -->
-
-
-<!-- <h2></h2>
-
-<p align="center">
-   <img src="" alt="drawing" width="500"/>
-</p>
-
-<ul>
-  <li></li> 
-  <li></li> 
-  <li></li> 
-
-</ul> -->
-
-
-<!-- <h2></h2>
-
-<p align="center">
-   <img src="" alt="drawing" width="500"/>
-</p>
-
-<ul>
-  <li></li> 
-  <li></li> 
-  <li></li> 
-
-</ul> -->
-
-
-<!-- <h2></h2>
-
-<p align="center">
-   <img src="" alt="drawing" width="500"/>
-</p>
-
-<ul>
-  <li></li> 
+<!-- <ul>
+  <li>So the Vanilla RC is what is called the eager release consistent memory model and the new memory model is called LRC, or Lazy release consistent memory model. Let's see the pros and cons of LRC with respect to Vanilla RC, or Lazy RC with respect to Eager RC. So what I am showing you here are timelines of processor actions on three different processors, P1, P2, and P3. And this picture is showing you what happens in the Eager version of the RC model, in terms of communication among the processors. So when processor P1 has completed its critical section, does the release operation, at the release point what we're going to do is all the changes that we made, in this example I'm showing you to make it simple I'm showing you that in this critical section that I wrote in this variable x, so the changes to x is going to be communicated to all the processors, P2 and P3. It could be, depending on whether it is an invalidation based protocol or an update based protocol, what we are saying is we are communicating the coherence action to all the other processors. That's what these arrows are indicating. Now then P2 acquires the lock, and after it acquires the lock it does its own critical section. Again, let's say we're writing to the same variable X, and it releases the lock. And at the point of release once again we broadcast the changes that we made. Notice what is going on. P1 makes modifications, broadcasts it to everybody. But who really needs it? Well, only P2 needs it. But unfortunately the RC memory model is Eager, and it says I'm going to tell everybody that has a copy of X that I have modified X. And so it's going to tell it to P2. It's going to tell it to P3 as well. P3 doesn't care, because it's not using that variable yet, and P2 cares, and it of course is using that. But when it releases its critical section, it's once again going to do exactly the same thing that happened over here, and that is it's going to broadcast the changes it made to shared memory locations to all the other processes, in this case P1 and P2. And then, finally, P3 does its acquire, and then reads the variable. So, all these areas are showing you the coherence actions that are inherent in the completion of shared memory accesses that are happening in the critical section of programs. Now let's move over to the Lazy version. In the Lazy version, what we are doing is when we release a lock, we are not doing any global communication. We simply release a lock. Later on the next process that happens to acquire that same lock. The RC memory model. The first thing it's going to say is, oh, you want to get this lock? I have to go and make sure that I complete all the coherence actions that I've associated with that particular lock. In this case the previous lock holder had made changes to the variable x, so I'm going to pull it from this guy and then I can execute my critical section. And then when P3 executes its critical section, it's going to pull it from P2 and complete what it needs to do. So, the important thing that you see is that there is no broadcast anymore. It's only point-to-point communication that's happening between the processors that are passing the lock between one to the other. So, in other words, the number of arrows that you see are communication events. You can see that there's a lot more arrows here. Forget about the arrows that I introduced. But the black arrows that you see are the arrows that are indicating communications commensurate with the coherence actions needed for this set of critical section actions. And correspondingly, the black arrows here are showing the communication actions for the same set of critical section actions shown in both the top and the bottom half of this particular figure. You can see, there's a lot less communication happening with the Lazy model. It's also called a pull model, because what we're doing is at the point of acquisition, we're pulling the coherence actions that need to be completed over here. Whereas, this is the push model in the sense that we're pushing all the coherence actions to everybody at the point of release. Having introduced the Eager and the Lazy RC models, it's time for a quiz.
+</li> 
   <li></li> 
   <li></li> 
 
