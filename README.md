@@ -24,6 +24,6 @@ Repo Desc:
 
 - Week 8: [Distributed Objects and Middleware](https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/L06_Distributed%20Objects%20and%20Middleware.md)
 
-- Week 9-10: [Distributed Subsystems](-) TODO!
+- Week 9-10: [Distributed Subsystems](https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/L07_Distributed%20Subsystems.md) Working on it
 
 - Papers : [Note](https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/Note_papers.md) (Use Outline section to redirect)
