@@ -261,6 +261,17 @@
 <li>Now let's talk about how I go about releasing the lock. So if I have the lock. I have used it for a while and now I am ready to say,"well I am done with a lock, I can release it." What do I do? Well, I am going to send an unlock message to all the other guys. The first thing that I do, of course, is get rid of the entry that I have in my queue because I am done with the lock. I can remove it from my queue. Once I remove it from my queue, I am going to send an unlock message to everybody else. So the state of the queue indicates that the unlocked message hasn't reached yet. It is in transit. It is going to eventually reach these guys. And when the peers receive the unlocked message, they're going to basically remove the entry, the corresponding entry, from the respective queues. So P1's turn with using the lock is complete now. It has done its lock and has done its unlock and now other Processes in the system, if they're competing for the same lock, can use the same decision making process to figure out whether they are the winners for getting the lock next, and using it and entering the respective critical sections. </li> 
 </ul>
 
+
+<br>
+<br>
+<br>
+<p style="color:#FF0000">Note: Is there a chance that Pn thinks it has MUTEX Lock? </p>
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l5/note1.JPG?raw=true" alt="drawing" width="500"/>
+</p>
+<p> Had this question when studying this part. It was clarified in the office hour. The answer is NO. There are two conditions,not just looking at the Qn alone. every process (P1,P2,Pn) are sending the messages and they are in transit. Eventually, the state of Qn will be (P1,2) -> (Pn,5) -> (P2,10). In the previous example in the lecture and in this screenshot, for P1, the (P1,2) message is on the way to P2 and Pn, eventually they will reach and when they reaches. the Process will not make decision until the Process hears back from the acknowledgment. Now before we do that, when (Pn,5) arrived at P1, what will be the acknowledgment P1 would send? The recept/acknowledgment will have a timestamp great than 5 based on the Lamport's clock. So there will be two things going out from P1 to Pn: (p1,2) and acknowledgment (Pn,5+some time) and messages going out in order. The first message arrived from P1 to Pn should be (p1,2). Therefore, there is no way that Pn can think it has MUTEX Lock. </p>
+
+
 <h2>9. Distributed ME Lock Algorithm (cont)</h2>
 
 <p align="center">
