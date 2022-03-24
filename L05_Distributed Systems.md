@@ -265,7 +265,7 @@
 <br>
 <br>
 <br>
-<p><b>Note: Is there a chance that Pn thinks it has MUTEX Lock?</b></p>
+<p><b>OH Note: Is there a chance that Pn thinks it has MUTEX Lock?</b></p>
 <br>
 <p align="center">
    <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l5/note1.JPG?raw=true" alt="drawing" width="500"/>
@@ -381,8 +381,12 @@
 </li> 
 </ul>
 <br><br>
-<p><b>Note: Can we construct deterministic distributed algorithms using Lamport's clock which is inherently non-deterministic? The answer is yes! It is a tool to use partial order, come out total order, breaking tie when you have to </b></p>
+<p><b>OH Note: Can we construct deterministic distributed algorithms using Lamport's clock which is inherently non-deterministic? The answer is yes! It is a tool to use partial order, come out total order, breaking tie when you have to </b></p>
 <br><br>
+
+<p><b>OH Note: Lamport's ME algorithm hinges on 1)happened before relationship 2) messages going in-order between any two nodes 3)no loss of messages </b></p>
+<br><br>
+
 
 # L05c: Latency Limits
 <h2>1. Latency Limits Introduction</h2>
