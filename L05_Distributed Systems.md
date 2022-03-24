@@ -382,9 +382,8 @@
 </ul>
 <br><br>
 <p><b>OH Note: Can we construct deterministic distributed algorithms using Lamport's clock which is inherently non-deterministic? The answer is yes! It is a tool to use partial order, come out total order, breaking tie when you have to </b></p>
-<br><br>
-
-<p><b>OH Note: Lamport's ME algorithm hinges on 1)happened before relationship 2) messages going in-order between any two nodes 3)no loss of messages </b></p>
+<br>
+<p><b>OH Note: Lamport's ME algorithm hinges on 1) happened before relationship 2) messages going in-order between any two nodes 3) no loss of messages </b></p>
 <br><br>
 
 
