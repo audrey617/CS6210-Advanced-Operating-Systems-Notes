@@ -265,7 +265,8 @@
 <br>
 <br>
 <br>
-<b>Note: Is there a chance that Pn thinks it has MUTEX Lock?</b>
+<p><b><u>Note: Is there a chance that Pn thinks it has MUTEX Lock?</u></b></p>
+<br>
 <p align="center">
    <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l5/note1.JPG?raw=true" alt="drawing" width="500"/>
 </p>
