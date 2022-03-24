@@ -266,7 +266,6 @@
 <br>
 <br>
 <b>Note: Is there a chance that Pn thinks it has MUTEX Lock?</b>
-![#f03c15](https://via.placeholder.com/15/f03c15/000000?text=+) `Note: Is there a chance that Pn thinks it has MUTEX Lock?`
 <p align="center">
    <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l5/note1.JPG?raw=true" alt="drawing" width="500"/>
 </p>
