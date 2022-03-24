@@ -380,7 +380,9 @@
   <li>Lamport's clock serves as the theoretical underpinning, for achieving deterministic execution in distributed systems, despite the fact that there are nondeterminism existing due to vagaries of the network and due to drifts in the clocks and so on. It's a nice feeling that we can come up with conditions that need to be satisfied in order to make sure that we can have deterministic executions and avoid anomalous behaviors using Lamport's clock, both logical clocks where it is sufficient as well as the physical clock conditions. In the next part of this lesson module. We will discuss techniques for making the operating system, communication software stack efficient for dealing with network communication.
 </li> 
 </ul>
-
+<br><br>
+<p><b>Note: Can we construct deterministic distributed algorithms using Lamport's clock which is inherently non-deterministic? The answer is yes! It is a tool to use partial order, come out total order, breaking tie when you have to </b></p>
+<br><br>
 
 # L05c: Latency Limits
 <h2>1. Latency Limits Introduction</h2>
