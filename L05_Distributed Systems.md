@@ -387,9 +387,6 @@
 <p align="center">
    <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l5/35.JPG?raw=true" alt="drawing" width="500"/>
 </p>
-<ul>
-  <li>It takes me 1 minute to go from my office to the classroom, the hallway is wide enough for 5.</li> 
-</ul>
 
 <p align="center">
    <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l5/36.JPG?raw=true" alt="drawing" width="500"/>
