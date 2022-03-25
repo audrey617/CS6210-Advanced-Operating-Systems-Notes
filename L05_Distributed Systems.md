@@ -815,7 +815,7 @@ So, removing low level asks, employing hardware check sum and not doing check su
 <p> 4. IOA: From the same paper, below are examples of both abstractand concrete behavioral specifications of networks and protocols, using a variant of IOA as the specification language. The programming model is that of a state machine with event-condition-action rules. An abstract specification has a set of variables, a set of events that under certain conditions, modify these variables and allow interaction with the environment. For more information about IOA, check Book Lynch, Nancy. Distributed Algorithms, and the link https://groups.csail.mit.edu/tds/papers/Lynch/CWI89.pdf</p>
 
 <p align="center">
-   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l5/IOA.JPG?raw=true" alt="drawing" width="500"/>
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l5/IOA.JPG?raw=true" alt="drawing" width="700"/>
 </p>
 
 <h2>3. Digging Deeper From Spec to Implementation</h2>
