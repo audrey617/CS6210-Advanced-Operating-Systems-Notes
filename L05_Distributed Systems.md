@@ -541,14 +541,13 @@
       </ul>   
    </li>
 </ul>    
-
+<br><br>
 <p align="center">
    <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l5/43.JPG?raw=true" alt="drawing" width="500"/>
 </p>
 
 <ul>  
    <li>Of course we are greedy. Can we reduce it to one? Can we actually reduce the number of context switches Down to one. Let's think about this.</li>
-  <li> (Note, we will use first, second, third, fourth ctx from the four ctx flow in the below paragraph to point out which ctx the professor is talking about)</li>   
    <li><b>Reduce ctx from two to one: </b>
     <ul>
       <li>So we said that when this RPC call was made (in the first step C was made), the operating system on the client side said, "well, this is a blocking semantic, and therefore, this guy is not going to do any useful work, so I'm going to block him and wait for the results to come in". So this context switch that the operating system did on the client side was essentially to keep this client box from being underutilized, but do we really need to do the switch? Well, it really depends.</li>
