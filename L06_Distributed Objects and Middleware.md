@@ -47,7 +47,7 @@
 </ul>
 <h2>4. Spring Approach</h2>
 <p align="center">
-   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l6/4.JPG?raw=true" alt="drawing" width="500"/>
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l6/4.JPG?raw=true" alt="drawing" width="700"/>
 </p>
 
 <ul>
