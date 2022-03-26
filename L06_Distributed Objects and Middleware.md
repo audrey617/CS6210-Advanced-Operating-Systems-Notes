@@ -196,7 +196,7 @@
    <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l6/16.JPG?raw=true" alt="drawing" width="500"/>
 </p>
 <ul>
-  <li>In this lesson, we will continue to see examples of how, distributed object technology is influencing commercial offerings in the computer industry. First, we'll discuss java RMI, which has it's roots in the basic principles of distributed systems that we have been seeing so far. Before we start talking about Java RMI ,let's have a fun quiz to prime the pump.
+  <li>In this lesson, we will continue to see examples of how, distributed object technology is influencing commercial offerings in the computer industry. First, we'll discuss java RMI, which has its roots in the basic principles of distributed systems that we have been seeing so far. Before we start talking about Java RMI ,let's have a fun quiz to prime the pump.
 </li> 
 </ul>
 
@@ -225,7 +225,7 @@
    <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l6/20.JPG?raw=true" alt="drawing" width="500"/>
 </p>
 <ul>
-  <li>The nice thing about the Java remote object model is that much of the heavy lifting that an application programmer has to do in building a client-server system using RPC. Things like marshaling, unmarshaling, publishing the remote object on the network for the clients to access. They're all subsumed under the covers by the Java distributed object runtime. And this is where one can see the similarity between the subcontract mechanism in the spring system that we saw recently, which was the origin in some sense for the Java RMI.>Before we dig deeper, let me give you at a high level the distributed object model of Java.</li> 
+  <li>The nice thing about the Java remote object model is that much of the heavy lifting that an application programmer has to do in building a client-server system using RPC. Things like marshaling, unmarshaling, publishing the remote object on the network for the clients to access. They're all subsumed under the covers by the Java distributed object runtime. And this is where one can see the similarity between the subcontract mechanism in the spring system that we saw recently, which was the origin in some sense for the Java RMI. Before we dig deeper, let me give you at a high level the distributed object model of Java.</li> 
   <li>The term remote object in the object model of Java, refers to objects that are accessible from different address spaces. And the term remote interface is used in the distributed object model to say what are all the declarations. For methods in a remote object. </li> 
   <li>Once you have a remote object the interface, remote interface is saying what are all the declarations for methods that are existing in the remote object that are accessible from clients anywhere. That's what remote interface is.</li> 
   <li>And then the distributed object model of Java, the clients have to deal with RMI exceptions. So that's the failure semantics of the distributive model that the clients have to deal with exceptions that might happen when a remote method is invoked by a client.</li> 
