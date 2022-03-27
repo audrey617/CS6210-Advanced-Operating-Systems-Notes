@@ -1,12 +1,7 @@
 ## About the repository
 Course Name: Advanced Operating Systems
-
 Instructor: Kishore Ramachandran
-
 Time: Spring 2022
-
-Intro: [Course intro page](https://omscs.gatech.edu/cs-6210-advanced-operating-systems)
-
 Repo Desc: 
 <p>My notes for the review purpose. Based off of the transcripts of the lectures. Please feel free to leave a comment/comit if you spot errors in md.file or google docs.</p>
 
@@ -24,7 +19,7 @@ Repo Desc:
 
 - Week 8: [Distributed Objects and Middleware](https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/L06_Distributed%20Objects%20and%20Middleware.md)
 
-- Week 9-10: [Distributed Subsystems](https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/L07_Distributed%20Subsystems.md) Working on it
+- Week 9-10: [Distributed Subsystems](https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/L07_Distributed%20Subsystems.md)
 
 - Week 10.5: SPRING BREAK
 
