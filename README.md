@@ -20,4 +20,4 @@ Course Name: Gatech CS6210 Advanced Operating Systems; Instructor: Kishore Ramac
 
 - Week 10.5: SPRING BREAK
 
-- Papers : [Note](https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/Note_papers.md) (Use Outline section to redirect)
+- Week 11: Internet Computing
