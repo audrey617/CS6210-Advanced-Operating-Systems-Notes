@@ -540,9 +540,7 @@
 <p><b>Note: Regarding lazy & eager RC model</b></p>
 <p> Paper: Keleher, P., Cox, A. L., & Zwaenepoel, W. (1992). Lazy release consistency for software distributed shared memory. ACM SIGARCH Computer Architecture News, 20(2), 13-21.</p>
 <p>A system is release consistent if: 1) before an ordinary access is allowed to perform with respect to any other processor, all previous acquires must be performed 2)before a release is allowed to perform with respect to any other processor, all previous ordinary reads and writes must be performed 3) special accesses are sequentially consistent with respect to one another </p>
-<br>
 <p>Eager release consistency: A processors delays propagating its modification to shared data untile it comes to a release. At that time, it propagates the modifications to all other processors that cache the modified pages. No consistency related operations occur on an acquire. </p>
-<br>
 <p>Lazy release consistency: The propagation of modifications is further postponed until the time of the acquire. At this time,the acquiring processor determines which modifications it needs to see according to the definition of RC. It is an algorithm for implementing release consistency that lazily pulls modifications across the interconnect only when necessary. The simulation in the paper indicates that lazy release consistency reduces both the number of messages and the amount of data transferred between processors. These reductions are especially significant for programs that exhibit false sharing the make extensive use of locks.</p>
 <p align="center">
    <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l7/note1.JPG?raw=true" alt="drawing" width="500"/>
@@ -598,9 +596,55 @@
 <br>
 
 <h2>20. LRC with Multi Writer Coherence Protocol</h2>
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l7/39.JPG?raw=true" alt="drawing" width="500"/>
+</p>
+
+<ul>
+  <li>That brings us to a new coherence protocol, which is multiple writer protocol. So, the idea is we want to maintain coherence information at the granularity of pages. Because that is the granularity at which the operating system operates, and therefore, the DSM can be integrated with the operating system if the granularity of the coherence maintenance is at the level of a page. But, at the same time, we want to allow multiple writers to be able to write to the same page, recognizing that an application programmer may have packed lots of different data structures within the same page. So we are going to see how the multiple writer coherence protocol works, and in particular we're going to use that in concert with these lazy release consistency.The background for what I'm going to describe is covered in the paper that is assigned for you, which is the Treadmarks paper. I encourage you to read that paper to get all the details. But here, I'm going to give you a high level view of how LRC is integrated with multiple writer protocol in the Treadmarks system. </li> 
+  <li>The processor P1 acquires a lock and makes modifications. This notation that I'm using is to indicate that these pages, X, Y, and Z, actually they are data structures that are being modified, but we are maintaining coherence of the level of pages so we'll say that the data structures that we're modifying within this critical section are contained in pages X, Y and Z, and so those are the pages that are being modified within this critical section when processor P1 executes this piece of code. Now the operating system has no knowledge of the association between the lock, L, and the pages that have been modified. All that it knows, is that within the critical section these are the pages that were modified. That's what the operating system knows. And what we're going to do is, we're going to create a diff of the changes that were made to the pages X, Y and Z in this critical section. So we know at the beginning of this critical section what the contents of the page X, Y and Z is. And at the end of this critical section we're going to find out what is the difference that has been made, or what are the changes that have made and compute the diffs between the original page, and the modified page. Xd, Yd and Zd are the diffs to pages X, Y, and Z respectively as a result of executing this critical section.</li> 
+  <li>The coherence protocol we are going to use is LRC, or lazy release consistency. So the next time the same lock L is requested by some other process of P2 we're going to first invalidate the pages we know were modified by the previous lock holder, because this is information that is available to the DSN that at the point of unlock it knows that these were the pages that were modified by this critical section. It doesn't know what part of the pages are modified. That's contained in the diffs. But it knows that pages X, Y, and Z are associated with this lock L, and therefore, when P2 makes the lock request L, the DSN is going to first invalidate. If copies of pages X, Y, and Z are locally resident in the processor P2, then the DSM software is going to invalidate those pages X, Y, and Z at the point of lock acquisition. That's consistent with the lazy release consistency model. So, once we've invalidated these pages, then you can allow this guy to get the lock and start getting into its critical section. Now once it is in the critical section, it can do whatever it wants. But if it tries to access page X, at that point we know that page is invalid because we've done that at the beginning of this critical section, invalidated page X. And at this point, the DSM software also knows that the previous lock holder has the modifications that need to be made to the original page to get the current version of the page. The current version of the page is with some owner for this page. I mentioned this ownership based protocol in the DSM software. So the DSM software knows who the owner of the page is from the owner of the page I can get the original content of X. I'll do that, but I'll also go and get the diff that is created by the execution of the previous critical section by the previous lock holder. So the DSM software brings at the point of access to X, Xd and the original version of the page from the owner of the page, it can then create the current version of the page for use by P2.
+</li> 
+</ul>
+
+<h2>21. LRC with Multi Writer Coherence Protocol (cont)</h2>
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l7/40.JPG?raw=true" alt="drawing" width="500"/>
+</p>
+
+<ul>
+  <li>Some of you may have thought of this already, and that is, prior to P two getting its lock, it is possible that maybe another processor, say P three, also used the same lock. And so, when it executed its critical section, maybe in its critical section, it modified the page X again, and it creates its own diff, let's call it Xd prime. Because all of these locks are the same, When the DSM software knows that now there are two diffs associated with this lock, L, one diff is with the processor P1, and another diff is residing with processor P3, and therefore when processor P2 tries to access x The DSM software has not only to get the diff from P1, but it also needs to get the diff from P2 and apply it to the original, pristine version of the page that is with the owner of the page so that it can create the current version of the page. And it can extend this to any number of processors that may have made modifications, their own modifications, to this page under the provision of the lock L. All of those diffs are going to be applied in order for the process of P2 to access the page as the current page. If after accessing the page x and its execution P two. Touches let's say page Z at that point once again the diff software knows that, oh, I know that Z was modified by the previous lock holder Zd is the diff I know where to find it I'll bring the original copy of z from the owner of Z and apply the diffs to it before letting P2 access Z. So you can see, that even though the invalidation was done right at the beginning, we're procrastinating getting the this til the point of access. So this is what LRC allows you to do is just bring in what this guy needs. So for instance, inside this critical section maybe only X is accessed. Y and Z are not accessed at all, in which case, we never bring the diffs from P1 to P2 for Y and Z. On the other hand, it is possible that P2 as part of its execution of its critical section modifies another page Q, different from X, Y, and Z. So now, the DSM software knows that this particular lock is associated not just with X, Y, and Z, but it is also associated with Q. So future lock request for L will result in invalidating X, Y, Z, and Q because all of those may have been modified and the next critical section that wants to access this lock L has to get the current versions of all the pages that were ever associated with L.
+</li> 
+</ul>
+
+
+<h2>22. LRC with Multi Writer Coherence Protocol</h2>
 
 <p align="center">
-   <img src="" alt="drawing" width="500"/>
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l7/40.JPG?raw=true" alt="drawing" width="500"/>
+</p>
+
+<ul>
+  <li>So let's talk about the Multiple-Writer part of it. Note that it could be multiple user data structures present in a given page X. If that is the case, the programmer probably has different locks for accessing different portions of the data structures that happened to all fit within this page X. So it is conceivable that when all of this was going on. There was another processor, let's say P4, and a thread that is running on the processor P4 got a completely different lock, let's say L2. And it is accessing some data structure that happens to be in the same page X. This is perfectly fine. The DSM software Is not going to do anything in terms of the diffs that it has created with respect to the page X because of lock acquisition L. That's completely different set of actions compared to a different lock acquisition, say L2. So if in fact that other thread that is running on P4 executed in parallel with P1, got its lock, say L2, and modified X. When P2 gets its lock L, the liaison software is going to bring the dif only from the previous users of the same lock L. P4 was not using L. It was using L2 even though it accessed the same page. And modifying a different portion of that page. And therefore the DSM software is going to assume that that change made by P4 to X is irrelevant so far as P2's critical section is concerned. So that's the important thing, and that is where the multiple writer coherence protocol semantic comes in. That Simultaneously the same page could be modified by several different threads on several different processors. And that is perfectly fine, so long as they're using different locks. So the association between the set of changes to a page is only to specific lock which is being used to govern that critical section and this is the reason why this is called a Multiple-Writer Coherence Protocol. And we saw how this Multiple-Writer Coherence Protocol lives in concert with LRC to reduce the amount of communication that goes on in executing critical sections of an application.
+</li> 
+</ul>
+
+
+<h2>23. Implementation</h2>
+
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l7/41.JPG?raw=true" alt="drawing" width="500"/>
+</p>
+
+<ul>
+  <li></li> 
+</ul>
+
+
+<h2>24. Implementation (cont)</h2>
+
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l7/42.JPG?raw=true" alt="drawing" width="500"/>
 </p>
 
 <ul>
@@ -611,10 +655,10 @@
 </ul>
 
 
-<!-- <h2></h2>
+<h2>25. Non Page Based DSM</h2>
 
 <p align="center">
-   <img src="" alt="drawing" width="500"/>
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l7/43.JPG?raw=true" alt="drawing" width="500"/>
 </p>
 
 <ul>
@@ -622,105 +666,41 @@
   <li></li> 
   <li></li> 
 
-</ul> -->
+</ul>
 
 
-<!-- <h2></h2>
+<h2>26. Scalability</h2>
 
 <p align="center">
-   <img src="" alt="drawing" width="500"/>
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l7/44.JPG?raw=true" alt="drawing" width="500"/>
 </p>
+
 
 <ul>
   <li></li> 
   <li></li> 
   <li></li> 
 
-</ul> -->
+</ul>
 
 
-<!-- <h2></h2>
+<h2>27. DSM and Speedup</h2>
 
 <p align="center">
-   <img src="" alt="drawing" width="500"/>
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l7/45.JPG?raw=true" alt="drawing" width="500"/>
 </p>
-
 <ul>
   <li></li> 
   <li></li> 
   <li></li> 
 
-</ul> -->
+</ul>
 
 
-<!-- <h2></h2>
-
-<p align="center">
-   <img src="" alt="drawing" width="500"/>
-</p>
-
+<h2>28. Distributed Shared Memory Conclusion</h2>
 <ul>
   <li></li> 
-  <li></li> 
-  <li></li> 
-
-</ul> -->
-
-
-<!-- <h2></h2>
-
-<p align="center">
-   <img src="" alt="drawing" width="500"/>
-</p>
-
-<ul>
-  <li></li> 
-  <li></li> 
-  <li></li> 
-
-</ul> -->
-
-
-<!-- <h2></h2>
-
-<p align="center">
-   <img src="" alt="drawing" width="500"/>
-</p>
-
-<ul>
-  <li></li> 
-  <li></li> 
-  <li></li> 
-
-</ul> -->
-
-
-<!-- <h2></h2>
-
-<p align="center">
-   <img src="" alt="drawing" width="500"/>
-</p>
-
-<ul>
-  <li></li> 
-  <li></li> 
-  <li></li> 
-
-</ul> -->
-
-
-<!-- <h2></h2>
-
-<p align="center">
-   <img src="" alt="drawing" width="500"/>
-</p>
-
-<ul>
-  <li></li> 
-  <li></li> 
-  <li></li> 
-
-</ul> -->
+</ul>
 
 
 <!-- <h2></h2>
