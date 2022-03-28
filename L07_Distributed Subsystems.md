@@ -737,709 +737,187 @@
 </ul>
 
 
-<!-- <h2></h2>
+<h2>4. Lesson Outline</h2>
 
 <p align="center">
-   <img src="" alt="drawing" width="500"/>
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l7/50.JPG?raw=true" alt="drawing" width="500"/>
 </p>
 
+<ul>
+  <li>That brings us to this specific lesson that we're going to cover in this lecture. DFS wants to intelligently use the cluster memory for the efficient management of the metadata associated with the files. And for caching the file content cooperatively among the nodes of the cluster for satisfying future requests for files. In other words, what we would like to do, is since we know that a disk is slow, we would like to avoid going to the disk as much as possible. And retrieve the data from the memory of a peer in the network if in fact that peer has previously accessed the same file. And that's the idea behind cooperative caching of files. But in order to fully appreciate the question that we're asking and the answer that we're going to discuss in this lesson, it is important that you have a very good understanding of file systems. If you don't have it, don't worry. We have supporting lectures that will help you get up to speed, and you can get this knowledge by diving into a good under graduate textbook that covers this material well. And the textbook that is used in the undergraduate systems course CS 2200 at Georgia Tech is a good resource for that.
+</li> 
+</ul>
+
+
+<h2>5. Preliminaries (Striping a File to Multiple Disks)</h2>
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l7/51.JPG?raw=true" alt="drawing" width="500"/>
+</p>
+
+<ul>
+  <li>So to describe the ideas that are discussed in this distributed file system lesson, I have to introduce you to a lot of background technologies. The first background technology that I'm going to introduce you to is what is called RAID storage. RAID stands for redundant array of inexpensive disks. The idea is a given disk may have a certain IO bandwidth available. Now, if I can string together a number of disks in parallel, then cumulatively I can get much more IO bandwidth coming out of all of these disks. That's the idea of the RAID technology, which is redundant array of inexpensive disks. Since we have an array of disks, we are also increasing the probability of failures. And that is why in the RAID technology they also use an error correcting technology associated with RAID. And the basic idea, is that when you write a file, you're going to do the following: You take a file, let's say the file has four parts to it. What I'm going to do, is when I write this file, I'm going to write part one to this disk, part two to this disk, three to this and four to this. Because my data is on multiple disks, I'm also increasing the chance that there may be failures that can hurt me. And therefore, what we do is we compute a checksum for this particular data that I've stored on these disks and store that in a fifth disk. And this is what is called Error Correcting Code. So an Error Correcting Code allows errors to be detected when I read things from the disk and I see, oh, something is wrong I can correct it using this extra information that I'm writing on the fifth disk here. So that's the big picture of how striping a file to multiple disks works. Basically, what we do is we take a file and decide that if it is going to be striped over four disks, we stripe it on the four disks and we also write an error correcting code for the data that we have striped across these disks. So that if in fact there is an error that manifests itself in the future, with anyone of these disks that error can be corrected using this error correcting data that we have written to augment the original data. So failure protection is being achieved through this error correction code. That's the idea of striping a file in the RAID system, the drawback in the RAID technology is first of all the cost. The fact that we have to have multiple hardware drives in order to store a single file. And the second problem is what is called a small write problem and that is if my file is really really small, then I'm saying that a part of this file is going to be written on each one of these disks, and that's inefficient in terms of how you store data. And the reason why it is inefficient of course is the fact if it is a small file and I've striped it across multiple disks, in order to read this small file, I have to get data from all of these disks, and that's inefficient. And that's the thing that is detrimental about the hardware RAID in terms of handling a normal file system that may have a population of small files and large files, and so on and so forth. But the idea of having an array of disks to serve the file system is a good one, because it increases the overall I/O bandwidth that's available in the server. So, how can we solve the small write problem?</li> 
+</ul>
+
+
+<h2>6. Preliminaries (Log Structured File System)</h2>
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l7/52.JPG?raw=true" alt="drawing" width="500"/>
+</p>
+
+<ul>
+  <li>That brings me to another background technology that I have to explain to you and which is called log structured file system. The idea here is that when I make a change to file y meaning I either append to the file or make some modifications to it. What I'm going to do is rather than writing the file as is, I'm going to write the change that I made to the file as a log record. So, I have a log record that says, what are the changes I made to this file x. Similarly, I have a log record of all the changes I made to this file y. And this is being done in a data structure which I'll call log segment. And I'll keep this log segment data structure in memory, of course, to make it fast in terms of the file system operation. So with this log segment data structure, what I can do is, buffer the changes to multiple files in one contiguous log segment data structure. So this log segment data structure, I can write it out as a file, and when I write it out, I'm not writing a single file, but I'm actually writing a log segment which contains all the changes made to multiple files. And because the log segment is contiguous, I can write it sequentially on the disk and sequential writes are good in the disk subsystem. And what we want to do is, we want to gather these changes to files that are happening in my system in the log segment in memory, and every once in a while, flush the log segment to disk, once the log segment fills up to a certain extent, or periodically. And the reason, of course, is the fact that if it is in memory, you have to worry about reliability of your file system, if, in fact, the node crashes. And therefore, what we want to do is, we want to either write out these log segments periodically or when a lot of file activity is happening and the log segment fills up very rapidly. After it passes of threshold, then you write it out to the desk. So in other words, we use a space metric or a time metric to figure out when to flush the changes from the log segment into the disk. And this solves the small write problem because if y happens to be a small file. No problem, because we are not writing y as-is on to the disk. But what we are writing is this log segment that contains changes that have been made to y in addition to changes that have been made to a number of other files. And therefore, this log segment is going to be a big file. And therefore, we can use the RAID technology to stripe the log segments across multiple disks. And give the benefit of the parallel IO that's possible with the RAID technology. So this log structured file system solves the small write problem. And in log structured file system, there are only logs. No data files. You'll never write any data files. All the things that you're writing are these append only logs to the disk. And when you have a read of a file, the read of a file, if it has to go to the disk and fetch that file, then the file system has to reconstruct the file from the logs that it has stored on the disk. Of course, once it comes into the memory of the server, then in the file cache the file is going to remain as a file. But, if at any point, the server has to fetch the file from the disk, it's actually fetching the log segments. And then reconstructing the file from the log segments. That's important. Which means that, in a log structured file system, there could be latency associated with reading a file for the first time from the disk. Of course, once it is read from the disk and reconstructed, it is in memory. In the file cache of the server, then everything is fine. But the first time, you have to read it from the disk, it's going to take some time because you have to read all these log segments and reconstruct it and that's where parallel RAID technology can be very helpful, because you're aggregating all the bandwidth that's available for reading the log segments from multiple disks at the same time. And the other thing that you have to worry about, when you have a log structured file system, is that these logs represent changes that have been made to the files. So, for instance, I may have written a particular block of y and that may be the change sitting here. Next time, what I'm doing is perhaps I'm writing the same block of the file. In which case, the first strike that I did, that is invalid. I have got a new write of that same block. So, you see that over time, the logs are going to have lots of holes created by overwriting the same block of a particular file. So in a log structured file system, one of the things that has to happen is that the logs have to be cleaned periodically to ensure that the disk is not cluttered with wasted logs that have empty holes in them because of old writes to parts of a file that are no longer relevant. Because those parts of the file have been rewritten, overwritten by subsequent writes to the same file. So logs, as I've introduced you, is similar to the disks that you've seen in the DSM system with the multiple writer protocol that we talked about in a previous lecture. You may have also heard the term, journalling file system, there is a difference between log structured file system, and journalling file system. Journalling file systems has both log files as well as data files, and what a journalling file system does, is it applies the log files to the data files and discards the log files. The goal is similar in a journaling file system, and the goal is to solve the small write problem, but in a journaling file system, the logs are there only for a short duration of time before the logs are committed to the data files themselves. Whereas in a log structured file system, you don't have data files at all, all that you have are log files and reads have to deconstruct the data from the log files.
+</li> 
+</ul>
+
+
+<h2>7. Preliminaries Software (RAID)</h2>
+
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l7/53.JPG?raw=true" alt="drawing" width="500"/>
+</p>
+
+<ul>
+  <li>The next background technology that I'm telling about is software RAID. I mentioned that hardware RAID has two problems. The first problem being small writes and we said we can get rid of the small write problem by using log structure file systems. But the hardware RAID also has another problem and that is it is employing multiple hardware drives. And hardware RAID, generally speaking, is very expensive proposition. On the other hand, in a local area network, we have lots of compute power distributed over the LAN and every node on the LAN has associated with it are disks. So could we not use the disks that are available on local data network for doing exactly the same thing that we did with hardware RAID? And that is, stripe a file across the disks of all the nodes that are in the local area network. So that's the idea behind the Zebra file system that was built at UC Berkeley, which was the first one to experiment with this software RAID technology. It combines both lock structure file system and the RAID technology, lock-structured file system in order to get rid of the small write problem, and the RAID technology to get the parallelism you want in a file server to be able to read from the disks in parallel, so that you can reduce the latency for serving client requests. The idea here is that you're going to use commodity hardware available as nodes connected to disks on a local area network. And since LFS, lock structured file system, is good for getting rid of the small write problem, we are going to employ LFS as the technology for the file server. So in this case, what we have are not data files but we have log segments that have to be written out to the disk in an LFS. And what we're going to do is we're going to stripe the log segment on multiple nodes of the disks in software and that is the RAID technology. So if this is a log segment that represents the changes made to several different files on a particular client node, then the software RAID, what it will do, is then take this log segment and stripe it. Part one of the log segment on this node, part two on this, part three on this, part four on this and the ECC that corresponds to these four parts of the log segments into a fifth drive. That's the idea in software RAID. Exactly similar to the hardware RAID except software is doing this striping of the log segment on multiple nodes available in a local area network.
+</li> 
+</ul>
+
+
+<h2>8. Putting Them All Together Plus More</h2>
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l7/54.JPG?raw=true" alt="drawing" width="500"/>
+</p>
+
+<ul>
+  <li>Now it's time to put together the background technology that I introduced to you, plus some more, and describe to you a particular distributor file system called XFS which is also built at UC Berkeley. XFS builds on the shoulders of periodic technologies. The first one, the log based striping that I just mentioned to you from the Zebra file system. And another technology called co-operative cashing which is also a prior UC Berkley project. And in addition to these two technologies, XFS also has introduced several new nuances in order to make the distributor file system truly scalable and get towards what is called serverlessness, or in other words, no reliance on a central server. And those techniques include dynamic management of data and metadata. Subsetting of the storage servers, and we'll talk about all of these techniques in much more detail in the rest of this lecture.</li> 
+</ul>
+
+
+<h2>9. Dynamic Management</h2>
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l7/55.JPG?raw=true" alt="drawing" width="500"/>
+</p>
+<ul>
+  <li>To motivate the need for dynamic management of data and metadata, it's useful to look at the structure of a traditional NFS server which is centralized. In a traditional centralized NFS server what you have is the data blocks are residing on the disks. So in the memory of the server, the contents include the metadata for the files like the iNote structures. And file cache which is files that have been brought in from the disk are stored in the memory in what is called the file cache. So that future requests for the same files can be served from the memory of the server rather than going to the disk. And the server also keeps the client caching directory. That is, who on the local area network are currently accessing files that is the propriety of this particular server. And in a Unix file system the server is unconcerned about the semantics of file sharing. In other words, the assumption is that the server is caching for each client completely independently. And therefore if clients happened to share a file that is completely the problem of the clients, and the server is not concerned about that. So all of these contents that I just described to you, metadata, file cache, client caching directory. All of these are in the memory of a particular server. And if the server happens to be housing hot files used by a lot of users that is being served by this particular server. Then that's bad news for the server in terms of scalability, because it has to worry about the requests simultaneously coming from lots of clients for these hot files. And so it is constrained by the bandwidth that's available to access the files from the disk. It is constrained by the amount of memory space it's got, for caching files, and the metadata of the files, and so on. At the same time, there could be another server that also has adequate bandwidth to the storage, and, and memory space. But unfortunately it may be housing cold files. And therefore, there are not many clients for this server. So you can immediately see that the sort of centralization of the traditional file system results in hot spots. And that's the thing that we're trying to avoid in a distributed file system, and that's where dynamic management comes into play. So in XFS, it provides the same functionality as a centralized NFS Server, but it is distributed and the metadata management is dynamic. And that is, in a centralized file server, the mapping between the manager node for a file and the location of the file is the same. Or in other words, if the file happens to reside on the disk of this server, then this server is the guy that is going to handle the metadata management for this file as well. On the other hand, in XFS, metadata management is dynamically distributed. So, let's say that you have F1, F2, and F3 are the hot files. In that case, metadata management for files F2 and F3 can be done by some other node, say S3. And this server may have the cache for the file. So, in other words, all the data structures that we've talked about that has to reside in the memory of a particular server like metadata, file cache, and the caching information about who's having the files and so on. All of that can be distributed with dynamic management of data and metadata, which is the idea in XFS. And I'll shortly explain how exactly this dynamic management is facilitated by the implementation of XFS. So, in any systems research, there is always first the idea and then there's implementation. So the idea in XFS is that we want to manage the data and metadata management dynamically, and we'll see how that is done. And also, what we want to do is we don't want the cache for the files to be only at the server. What we would like to be able to do is, if a file is accessed by several different nodes, then they're living in the client caches of the different nodes. If a file is residing in the cache of a peer node, then it makes sense that if a new request comes from the same file, then getting that file from a peer cache may be much more efficient than getting it from the disk. And that way we can also conserve the total amount of memory that's available on the servers and use it more frugally by exploiting the memories that are available in the clients, so that the caching of the files can be done cooperatively among the clients. And that's the other nugget in the technical contribution of XFS, is the cooperative client caching.
+</li>  
+</ul>
+
+
+<h2>10. Log Based Striping and Stripe Groups</h2>
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l7/56.JPG?raw=true" alt="drawing" width="500"/>
+</p>
+
+<ul>
+  <li>I mention that XFS uses log based striping in software. So let's understand that technology in a little bit more detail. You have clients on the local area network that are writing to files. When a client makes a change to a file. The changes that are made by this client to files are written to an append only log. And this append only log is a data structure. This log segment is a data structure in the memory of the client in the distributed file system and this append only data structure contains ,the changes made to files on this client node. And for instance, this could be a change for a particular file X, this could be a change for another file Z and so on, and so forth. And this is an append only data structure that is residing at this client. Similarly, there is a log segment that is available at this client. For the changes made to files on this node, and when this log segment fills up beyond a certain capacity, you decide on a certain threshold, and once that threshold number of fragments have been written in this log segment, then you decide that it's time now to write to the disk. So you take these log fragments,and compute the parity, which is the check sum or ECC, whatever you may want to call it, and this becomes the log segment that I want to write to the disk. And you take this and stripe it across storage servers. So you take this,particular log fragment along with its ECC and stripe it on storage servers so that it is now available on the storage system and as I mentioned, you want to do this periodically in order to avoid the chance of ？？ Data loss due to failures of a particular node, and that's what you're doing every periodically. Same thing is happening on this so if you look at the storage server, you see that the storage server has the log segments that have been written by this client, and the log segment that has been written by the log segment that has been written by this client. All of this, gets into the storage servers, and the other thing that you want to do is, you don't want every log segment to be written on all the disks available on the local area network, you don't want to do that. This again is concerned with solving the small rate problem, and therefore, what we want to do is subset the storage servers, and say if, let's say i have 100 storage servers available on the local area network. I might decide that every log segment is going to write its log over a small fraction of that maybe 10 servers. And this client may similarly choose a subset of storage servers to write it on. The subset of storage servers that is used for striping a given log segment is called a stripe group, for that particular log segment.
+</li> 
+</ul>
+
+<h2>11. Stripe Group</h2>
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l7/57.JPG?raw=true" alt="drawing" width="500"/>
+</p>
+
+<ul>
+  <li>So, using the stripe group for a long segment avoids first of all the small-ray pitfall. So for instance here, we might decide for certain log segments x, y, and z the stripe group is this. And for another set of log segments, say p, q, and r the stripe group is this. And for another set of log segments, L, M, and N, the stripe group is this. So we're subsetting the servers into these stripe groups, and what that allows is parallel client activities. If the log segments X,Y, and Z, belong to a particular client. And if the log segments P, Q, and R, belong to, a different client, and L, M, and N, belong to, a different client then you can see that the client activity corresponding to this, this particular stripe group can go on and parallel with this. And similarly this activity can go on and parallel with other stripe groups that exist in the system and so on. And so it increases the availability of the server in saying that not all the servers has to be working on the same client request. Different subset of servers are working on different client requests and that results in higher throughput for overall client processing. And also. When it comes to cleaning the logs, remember that I mentioned earlier that every once in a while, you have to clean the logs because the logs may have been overwritten by new rights to files on a particular client machine, in which case there are logs that Have to be recycled. And if you don't recycle them, you're filling up the discs with junk. And therefore, every once in a while, we have to go and clean up the log. And so efficient log cleaning is again facilitated by the fact that you have different stripe groups, so you can assign different. Cleaning service for different stripe groups that increases the parallelism in the management of all the things that need to be done in a distributed file system. An increased availability also means that you can survive multiple server failures. So let's say that these two disks fail for some reason. You can still serve the clients who are being served by this particular strip group. That's the idea of sub-setting the server group for striping so that you increase the availability and allow incremental satisfaction of the user community in spite of failures that may be happening in the system as a whole.</li> 
+</ul>
+
+
+<h2>12. Cooperative Caching</h2>
+
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l7/58.JPG?raw=true" alt="drawing" width="500"/>
+</p>
+<ul>
+  <li>Next lets talk about how XFS uses the memory's available in the clients for cooperatively caching the files and reducing the stress on the management of data files. In XFS as supposed to traditional Unix file system, they also worry about the coherence of files. I mentioned earlier that in Unix file system, the file server assumes that it is serving each client independently, and therefore it doesn't worry about sharing a file, if a particular file happens to be access by multiple users at the same time, the server doesn't worry about the coherence of that file. But on the other hand in XFS the file system worries about cache coherence and I have already introduced the idea of cache coherence in the context of multi processes and distributed shared memory. So you are familiar with the terminology single writer, multiple reader meaning that a particular file. We have, at any point of time, only a single writer. There cannot be multiple writers to the same file, but it can have multiple readers at the same time. And the unit of cache coherence that XFS maintains is at the level of file blocks, not an entire file. But at the level of individual file blocks. So if you look at, a manager for a file, the guy that is responsible for the metadata management for the file. It has information about the files for which it is the manager. Let's say it has a file f1 for which it has a mana, it is a manager. Then the metadata in the memory of this manager will have information about the current state of that file. For instance, this particular entry says that a file f1 managed by this manager is being read concurrently by two different clients, c1 and c2. So there are two different clients, c1 and c2, and they have copies of this file that they have retrieved from this manager at some point of time, which means that the client caches, c1 and c2, contain the contents of this file. Now for simplicity, I'm showing this as a file, but in fact the granularity at which the coherence and information about files is kept is at a file block level. So at a block level the manager says a particular block of a file is in the cache of client C1 and in the cache of client C2. And yet I'm using the word cache to mean that it is in the memory. Of these clients. So the semantics that is observed for cache coherence, a single writer, multiple readers. So if client c3 makes a request to the manager for writing to this file, f1, and again, I have to mentioned that, the request is going to be at the granularity of a file block, but for simplicity, I'm showing it as a write request for this file f1. But you understand that the granularity at which this request is being made is for writing a particular block of that file. So the manager gets this write request. It looks up the metadata for that particular file. And it sees that this file is now currently read-shared by two different clients, c1 and c2. This guy wants to write to the file. That results in a conflict, a read/write conflict, and what the manager is going to do is basically say, well, if somebody wants to write to that file I have to tell the guys that currently have the file. They cannot have it anymore. So just as in the case of cash coherence in a multi-processor. This manage is going to send an invalidation message for the file F1 to C1. And to C2, and they are going to acknowledge to the manager saying that yes, we have invalidated our local copies of the files, and once the manager gets that indication back from the clients, at that point the manager can tell the client C3 that Okay, now you have got dibs on writing to this file. That's the protocol that is being observed in ???. To keep the copies of the files consistent so at the end of this exchange C3 will have the right to, right to this particular file. Now how long does it have that privilege? Well the write request when it is granted the client gets the token And the manager, at any point of time, can revoke the token that was given to C3. And this in particular will happen when a future read for the same file comes to the manager. At that point, the manager will go to C3 and say, I'm revoking the token from you. You cannot write to that file anymore. You can read it because the request that I got is only a read request and therefore you can keep the file, but you cannot write to it anymore. If you want to write it again, then you have to make a request again. This is the protocol that is observed. And of course, if a particular client is writing to a file, and another client also wants to write to the same file, at that point the manager once again is going to invoke the token, invalidate the file at this client, pull back the contents of the file, and then distribute it to a future requester who wants to write to the same file. That's how cache coherence works. And using the fact that copies of the file is existing in multiple clients excepts as exploits that fact to do cooperative caching. What that means is that if a client is currently having a copy of the file, lets say, after this interchange. C3 has a copy of the file. There is also writing to A future read request comes. When it comes, that read request can be satisfied by getting the contents of the file from the cache of C3. And that is what cooperative caching is all about, where instead of going to the disk to retrieve the file ?? We can actual get the file content from the cache of one of the clients that happens to have a copy of the file.
+</li> 
+</ul>
+
+
+<h2>13. Log Cleaning</h2>
+
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l7/59.JPG?raw=true" alt="drawing" width="500"/>
+</p>
+
+<ul>
+  <li>I mentioned log cleaning that has to be done. Now as client activities go on, log segments evolve on the disk. So for instance, if on a particular client node some blocks were written to the log segment, a log segment may fill up like this. And now it is sitting on the disk. So the blocks that are containing this log segment corresponds to write to file blocks one, two, and five. And these file blocks may belong to different files, but it is okay. So, so far as the file system is concerned, segment one is a contiguous file. It is a log segment, but it is a file. And that's the one that is residing on the disk. On the client node, this particular block one may get overwritten due to activity on the client. So now we have a new content for that same file block one, one double prime. And once this new content has been created, this is no longer valid, and so block one is overwritten, which means we have to kill the old block that was in this segment. So there's a new segment in which we wrote the contents of the new file block, one double prime, and we have to go back to this old segment and kill this particular copy of that block, which is a stale copy of that same block. So we don't need that anymore. So you can that see as client activities progress we are going to create holes in the segments. Remember that these segments are persistent data structures on the disk. This segment was valid at some point of time. But once that particular block one was overwritten on the client node, this segment contains the latest and the current copy of that same file block. And therefore we nuke this particular file block and so we create hole in this log segment. And subsequently, let's say that the client writes to other file blocks, three and four. So the log segment two contains one double prime, three prime, and four prime are the blocks that it contains. And segment one contains two prime and five prime. One prime is not relevant anymore because it has been overwritten by one double prime. Activities continue on the client box and a third segment is created. And that third segment contains two double prime. That is, this block number two is overwritten by new contents, two double prime. And when this happens the file system has to create another hole by nuking this two prime to indicate that this block is not relevant anymore, because there is a more recent version of the block in segment three. So the block two is overwritten, killing the old block. Now you see that as client activities progress in the entire distributed system, we are creating a number of these segments, log segments on the disk, and these log segments may progressively have holes in them because they have been overwritten by new contents, by activities on the client machine. And this is what log cleaning is all about. It has to do with cleaning up the disk and getting rid of all of this junk so that we don't fill up the disk with unnecessary junk. So for example, what we want to do is recognize that we have three segments here, and the segments have holes in them. And what we are going to do is, we're going to aggregate all the live blocks from all of these segments in to a new segment. So we've got five from this segment that is still alive, and from this segment we've got one double prime, three prime, and four prime that are still alive. And from this segment we've got two double prime that is still alive. So we have coalesced all of the live blocks from the existing segments into one new segment. Now once we have aggregated this into one new segment, all of the old log segments can be garbage collected and that's what log cleaning is all about. And this is very similar if you think about it to the way we described cleaning up the diff files that are created in the DSM system, Treadmarks. And the same thing is happening except that these data structures are on the disk we are conserving the space on the disk by getting rid of all the old log segments and garbage collecting them and saving this space once we've aggregated all the live blocks in these segments into a new segment. So this is what log cleaning is all about and in a distributed file system, there is a lot of garbage that is being created all across the storage service. And we don't want this to be done by a single manager. We would ideally like it to be done in a distributed manner. This is another step towards a true distributed file system by making this log cleaning activity also a distributed activity. So log cleaner's responsibilities include the following. It has to find the utilization status of the old log segments. Then it has to pick some set of log segments to clean, and once it picks a certain number of log segments to clean, it has to read all the live blocks that it finds in these log segments that it has chosen for cleaning, write it into a new log segment. And once it has done that, it can garbage collect all of those log segments. So this is the cleaning activity that an LFS cleaner has to do and in XFS they distribute this log cleaning activity as well. Now remember that this log cleaning activity is happening concurrently with writing to files on the nodes in the distributed system. So there are lots of subtle issues involved in managing this log cleaning in parallel with new activity that may be creating new log segments, or writing to existing log segments. I encourage you to read the paper that I've assigned to you, the XSF paper, to get a good feel for all the subtleties that are involved in managing log cleaning concurrently with writing to the files. So in XFS they may make the clients also responsible for log cleaning. There is no separation between client and server. Any node can be a client or a server depending on what it is doing and each client, meaning a node that is generating a log segments, it is responsible for the segment utilization information for the files that they are writing. After all the activity is happening at the client end in terms of creating new files, and new file writes are manifesting as creating blocks and log segments in XFS. And so the clients are responsible for knowing the utilization of the segments that are resident at that client node. And since we have divvied up the entire space of servers into stripe groups, each stripe group is responsible for cleaning activity that is in that set of servers. And every stripe group has a leader, and the leader in that stripe group is responsible for assigning cleaning services to the members of that stripe group. Recall that the manager is responsible for the integrity of the files because it is doing metadata management. And, requests for reading and writing files are going to come to the manager. On the other hand, the log cleaning responsibility is going to the leader of a stripe group, and the manager is the one that is responsible for resolving conflicts that may arise between client updates that want to change some log segments and cleaner functions that want to garbage collect some log segments. Those conflicts are resolved by the manager. These again are subtle details which I want you to read carefully in the paper.
+</li> 
+</ul>
+
+
+<h2>14. Unix File System</h2>
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l7/60.JPG?raw=true" alt="drawing" width="500"/>
+</p>
+
+<ul>
+  <li>Next let's talk a little bit about the implementation details of XFS. First of all, in any Unix file system there are these i-node data structures which give you a mapping between the file name and the data blocks on the disk. So given a file name and the offset that you want to get into that file, the file system has a way of looking up a data section called i-node and deciding where exactly on the disc of the data blocks that you're looking for. This is happening in any Unix file system.</li> 
+</ul>
+
+<h2>15. XFS Data Structures</h2>
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l7/61.JPG?raw=true" alt="drawing" width="500"/>
+</p>
+
+
+<ul>
+  <li>XFS data structures for implementing a truly distributed file system are much more involved. Let's talk little bit about that, first of all, I mentioned that the metadata management is not static. Even though, the file that you are looking for may be resident in particular node, the manager for that file may not be at that same node. The client action when it is looking for a file, it starts with a file name and this is a data structure that is a replicated data structure at every node in the entire distributed system. So any client node, when it starts with a file name. It consults this manager map data structure to know who's the metadata manager for this particular file name. And the manger node action is fairly involved. So, the client comes to the manager with a file name. And when you come to the manager with a file name, the manager looks up the first data structure, called the file directory. And that file directly has the i-node number. And that i-node number is the starting point for looking up the contents of that file. Now lets talk about all the data structures that are used by the manager node. On the manager node, when the client presents the file name, the manager node uses a data structure called a file directory. To map that file name to an i-number. And from the i-number, it uses another data structure called i-map data structure to get the i-note address for this particular file name. The i-node address is the i-node address for the log segment associated with this file name. And using this strip group map, which is telling. How this particular file is striped. It can locate the storage server that contains the log segment ID, that is associated with this file name. I mentioned earlier, that every log segment is actually striped on a whole bunch of disks, a stripe group. What of the stripe group associated with this particular log segment? That's the information that it gets from the stripe group map. Once it has the set of storage servers that contain this log segment, it can go to the set of storage servers to get the data blocks associated with this particular file name. That's the entire road map of what the manager will have to do. To go from the file name to actual data blocks that corresponds to that file name. Now this sounds like a lot of work being done, fortunately caching helps in making sure that this long path is not taken for every file access. We will see that, in terms of how reads and writes happen. In the XFS file system. Just to recap the data structures, file name to i-number mapping is contained in this data structure, FileDir. The mapping between the i-number and the i-node address for the log segment ID, that is contained in this i-map. Given the i-node address, I can consult the stripe group map to know which storage server actually has the i-node for this file name that is a large segment that corresponds to this file name. I can get that. And once I get that, then I can find out the stripe group that is associated with this log segment, and that'll say what are all the storage servers that I have to contact in order to get the contents of that log segment. Then I can go to those storage servers and get all the data blocks that correspond to a particular log segment. So that's the road map.
+</li> 
+</ul>
+
+
+<h2>16. Client Reading a File Own Cache</h2>
+
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l7/62.JPG?raw=true" alt="drawing" width="500"/>
+</p>
 <ul>
   <li></li> 
   <li></li> 
   <li></li> 
 
-</ul> -->
-
-
-<!-- <h2></h2>
-
+</ul>
 <p align="center">
-   <img src="" alt="drawing" width="500"/>
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l7/63.JPG?raw=true" alt="drawing" width="500"/>
 </p>
-
 <ul>
   <li></li> 
   <li></li> 
   <li></li> 
 
-</ul> -->
-
-
-<!-- <h2></h2>
-
+</ul>
 <p align="center">
-   <img src="" alt="drawing" width="500"/>
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l7/64.JPG?raw=true" alt="drawing" width="500"/>
 </p>
-
 <ul>
   <li></li> 
   <li></li> 
   <li></li> 
+</ul>
 
-</ul> -->
+<ul>
+  <li>As I said, fortunately, every file read is not going to result in going through so many hoops to get the data blocks. This is where caches come into play. So when you start with a filename and, and an offset on a client node, you look up the directory. And from that, you get an index and an offset. So, this is a data structure which is in the client memory, and once you get the index in the offset, and if this file has been accessed before, it's most likely in its own unique cache. This is a file cache of the file system, and if it is in your cache, then you get the data block. In other words, going from the file name to the data block that is associated with the file is all happening through the client memory because of local caching. And there's a fastest path for file access and hopefully there's a common case. Now it is possible that a file is shared. Or the same file is being read by different clients at different points in time, but in either case, there is a possibility that a particular file has been accessed by a client and therefore in the cache of that client, and so the next possibility is that you start with a directory You don't find it in you local cache. And if you don't find it in your local cache, then you have to go to the manager node in order to get a copy of the file. So this is where the manager map data structure, which is a replicated data structure, is available in the memory of every client and so given the index number and the offset. I can go and look up the manager map data structure and that tells me who's the manager that I have to contact to get this particular file. So this might involve a network cop because the manager node is different from the local node. Then I have to go to the manager node across a network. And when I get to the manager node, the manager node may say, oh you know what, this particular file, has been accessed by a different client. I know that because my metadata says that some of the client has got this, in their cache. So, the manager will tell the client that currently is holding a copy of the file in its cache. To please send the data over to the first guy that requested it. Now, the data that I requested is coming not from my local cache, but it is coming from the cache of a peer. And that's much better than going to the disk and putting it out of the disk, because network speeds are much faster than accessing the disk. So this is the second best path for file access. Sure, there is network communication involved here because, the first thing I that have to do is I have to hop over the network to get to the manager node if in fact I am not the manager node myself for this particular file that I'm looking for. That is a network hop. And there could be another network hop if the manager says, oh, this particular file is cached in a different node. In that case, there is another network hop to go to the client that currently containing that particular file. And once we get to that, there may be another network hop in order to send the data over to the requester. So potentially there could be three network hops in order to get The file that I'm looking for, but it could be less than that depending on the core location of the manager and the node that is requesting it or the manager and the node that contains a copy of that file itself. So this is the second best path for file access. But there is also the pathologically 'real long way' of accessing a particular file, and that path is shown here, using all of the data structures that I mentioned earlier that is available at the manager. You start with a file name, look up the directory, get the index number and the offset. It's not in your cache. You go to the manager by looking up the manager map data structure that's in my local memory. I go the manager and the manager then looks up its metadata for this file, finds that nobody has it in the cache So it has to pull it from the desk. If it has to pull it from the desk, then it has to look up its imap data structure, the imap data structure, and the stripe group map data structure in order to find out the location of the I node that corresponds to the log segment that I am looking for. That look up happens through the imap data structure, stripe group map data structure, then I can to the storage server and get the index node of the log segment ID for the requested data block of this client. Once I have that, then the manager has to look up the stripe group map to see what storage servers. Have this log segment striped, and out of that which storage server should I contact for the particular portion of the file that you're looking for? And that storage server will be contacted and that storage server is going to give the data block that is requested by the client. So you can see that in this long path, there is network hop as well as accessing the storage servers to pull the data blocks. It is possible that the index node for the log segment ID associated with this file has been previously accessed by this manager. In which case, it doesn't have to go to the storage server to get the Index node for the large segment, because it'll be present in the memory of the manager as part of its caching strategy. And therefore it can bypass these two network hops because directly from this strip group map it can figure out what the long segment ID is locally cached so that it can then go to this stripe group map data structure and figure out. Where on the disk the data blocks for that log segment is actually secured, so we might be able to get rid of at least two of these network hops if you're lucky and this particular log segment has been accessed before by this manager, it'll be in the memory of the manager. And therefore we can avoid these two network hubs. But the worst case scenario, if this particular log segment is never being accessed before then the long way to get to the data block that you're requesting is going through the data structures in the manager, network hub, storage look up, and get the data and give it to the client.
+</li> 
+</ul>
 
 
-<!-- <h2></h2>
+<h2>17. Client Writing a File</h2>
 
 <p align="center">
-   <img src="" alt="drawing" width="500"/>
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l7/65.JPG?raw=true" alt="drawing" width="500"/>
 </p>
 
 <ul>
-  <li></li> 
-  <li></li> 
-  <li></li> 
-
-</ul> -->
+  <li>Writing to a file by a client is fairly straightforward. What the client is doing is actually aggregating all the writes that is going on into this Log Segment Data Structure, which is in its memory. And at some point, it decides that it wants to flush this Log Segment. And put it on the disk. And when it decides to do that, it knows the Stripe Group, this particular Log Segment it belongs to, and so it is going to take this Log Segment and stripe it on the Storage Servers that are part of the Stripe Group. So once it does this write to its Stripe Group. The client will notify the manager on the lock segments that are being flushed to the disc so that the manager has up-to-date information about the status of the files it manages. So XFS is a research prototype of a Distributed File System. There have been other instances of Distributed File Systems such as. The Android File System and the Coder File System that were built at CMU and in fact the Android File System served a community of Users in the CMU campus in a little lesson we will return to discussing Distributed File Systems again. Specifically we'll look at Andrew File System and discuss the issue of security and privacy for User Files in a Distributed System. But I want to leave you with some closing thoughts on the Exophus File System. First of all, Log based striping, and particularly sub-setting the Storage Servers over which you'll stripe the Log. That's a Technical Innovation. The second Technical Innovation is combining Cooperative Caching with Dynamic Management of Data and Metadata. And the last technical nugget is the distributive Log cleaning, making sure that the responsibility for cleaning up the Logs on the Disk is not. Left to one Node, but it is actually distributed and especially taking advantage of the fact that the clients, who are the mutators for the file system, meaning they are the guys that are writing to the file system, they can keep a count of the changes that they are making. To the Log Segments and use that information in the Log Cleaning effectively.
+</li> 
+</ul>
 
 
-<!-- <h2></h2>
-
-<p align="center">
-   <img src="" alt="drawing" width="500"/>
-</p>
-
+<h2>18. Distributed File Systems Conclusion</h2>
 <ul>
-  <li></li> 
-  <li></li> 
-  <li></li> 
-
-</ul> -->
-
-
-<!-- <h2></h2>
-
-<p align="center">
-   <img src="" alt="drawing" width="500"/>
-</p>
-
-<ul>
-  <li></li> 
-  <li></li> 
-  <li></li> 
-
-</ul> -->
-
-
-<!-- <h2></h2>
-
-<p align="center">
-   <img src="" alt="drawing" width="500"/>
-</p>
-
-<ul>
-  <li></li> 
-  <li></li> 
-  <li></li> 
-
-</ul> -->
-
-
-<!-- <h2></h2>
-
-<p align="center">
-   <img src="" alt="drawing" width="500"/>
-</p>
-
-<ul>
-  <li></li> 
-  <li></li> 
-  <li></li> 
-
-</ul> -->
-
-
-<!-- <h2></h2>
-
-<p align="center">
-   <img src="" alt="drawing" width="500"/>
-</p>
-
-<ul>
-  <li></li> 
-  <li></li> 
-  <li></li> 
-
-</ul> -->
-
-
-<!-- <h2></h2>
-
-<p align="center">
-   <img src="" alt="drawing" width="500"/>
-</p>
-
-<ul>
-  <li></li> 
-  <li></li> 
-  <li></li> 
-
-</ul> -->
-
-
-<!-- <h2></h2>
-
-<p align="center">
-   <img src="" alt="drawing" width="500"/>
-</p>
-
-<ul>
-  <li></li> 
-  <li></li> 
-  <li></li> 
-
-</ul> -->
-
-
-<!-- <h2></h2>
-
-<p align="center">
-   <img src="" alt="drawing" width="500"/>
-</p>
-
-<ul>
-  <li></li> 
-  <li></li> 
-  <li></li> 
-
-</ul> -->
-
-
-<!-- <h2></h2>
-
-<p align="center">
-   <img src="" alt="drawing" width="500"/>
-</p>
-
-<ul>
-  <li></li> 
-  <li></li> 
-  <li></li> 
-
-</ul> -->
-
-
-<!-- <h2></h2>
-
-<p align="center">
-   <img src="" alt="drawing" width="500"/>
-</p>
-
-<ul>
-  <li></li> 
-  <li></li> 
-  <li></li> 
-
-</ul> -->
-
-
-<!-- <h2></h2>
-
-<p align="center">
-   <img src="" alt="drawing" width="500"/>
-</p>
-
-<ul>
-  <li></li> 
-  <li></li> 
-  <li></li> 
-
-</ul> -->
-
-
-<!-- <h2></h2>
-
-<p align="center">
-   <img src="" alt="drawing" width="500"/>
-</p>
-
-<ul>
-  <li></li> 
-  <li></li> 
-  <li></li> 
-
-</ul> -->
-
-
-<!-- <h2></h2>
-
-<p align="center">
-   <img src="" alt="drawing" width="500"/>
-</p>
-
-<ul>
-  <li></li> 
-  <li></li> 
-  <li></li> 
-
-</ul> -->
-
-
-<!-- <h2></h2>
-
-<p align="center">
-   <img src="" alt="drawing" width="500"/>
-</p>
-
-<ul>
-  <li></li> 
-  <li></li> 
-  <li></li> 
-
-</ul> -->
-
-
-<!-- <h2></h2>
-
-<p align="center">
-   <img src="" alt="drawing" width="500"/>
-</p>
-
-<ul>
-  <li></li> 
-  <li></li> 
-  <li></li> 
-
-</ul> -->
-
-
-<!-- <h2></h2>
-
-<p align="center">
-   <img src="" alt="drawing" width="500"/>
-</p>
-
-<ul>
-  <li></li> 
-  <li></li> 
-  <li></li> 
-
-</ul> -->
-
-
-<!-- <h2></h2>
-
-<p align="center">
-   <img src="" alt="drawing" width="500"/>
-</p>
-
-<ul>
-  <li></li> 
-  <li></li> 
-  <li></li> 
-
-</ul> -->
-
-
-<!-- <h2></h2>
-
-<p align="center">
-   <img src="" alt="drawing" width="500"/>
-</p>
-
-<ul>
-  <li></li> 
-  <li></li> 
-  <li></li> 
-
-</ul> -->
-
-
-<!-- <h2></h2>
-
-<p align="center">
-   <img src="" alt="drawing" width="500"/>
-</p>
-
-<ul>
-  <li></li> 
-  <li></li> 
-  <li></li> 
-
-</ul> -->
-
-
-<!-- <h2></h2>
-
-<p align="center">
-   <img src="" alt="drawing" width="500"/>
-</p>
-
-<ul>
-  <li></li> 
-  <li></li> 
-  <li></li> 
-
-</ul> -->
-
-
-<!-- <h2></h2>
-
-<p align="center">
-   <img src="" alt="drawing" width="500"/>
-</p>
-
-<ul>
-  <li></li> 
-  <li></li> 
-  <li></li> 
-
-</ul> -->
-
-
-<!-- <h2></h2>
-
-<p align="center">
-   <img src="" alt="drawing" width="500"/>
-</p>
-
-<ul>
-  <li></li> 
-  <li></li> 
-  <li></li> 
-
-</ul> -->
-
-
-<!-- <h2></h2>
-
-<p align="center">
-   <img src="" alt="drawing" width="500"/>
-</p>
-
-<ul>
-  <li></li> 
-  <li></li> 
-  <li></li> 
-
-</ul> -->
-
-
-<!-- <h2></h2>
-
-<p align="center">
-   <img src="" alt="drawing" width="500"/>
-</p>
-
-<ul>
-  <li></li> 
-  <li></li> 
-  <li></li> 
-
-</ul> -->
-
-
-<!-- <h2></h2>
-
-<p align="center">
-   <img src="" alt="drawing" width="500"/>
-</p>
-
-<ul>
-  <li></li> 
-  <li></li> 
-  <li></li> 
-
-</ul> -->
-
-
-<!-- <h2></h2>
-
-<p align="center">
-   <img src="" alt="drawing" width="500"/>
-</p>
-
-<ul>
-  <li></li> 
-  <li></li> 
-  <li></li> 
-
-</ul> -->
-
-
-<!-- <h2></h2>
-
-<p align="center">
-   <img src="" alt="drawing" width="500"/>
-</p>
-
-<ul>
-  <li></li> 
-  <li></li> 
-  <li></li> 
-
-</ul> -->
-
-
-<!-- <h2></h2>
-
-<p align="center">
-   <img src="" alt="drawing" width="500"/>
-</p>
-
-<ul>
-  <li></li> 
-  <li></li> 
-  <li></li> 
-
-</ul> -->
-
-
-<!-- <h2></h2>
-
-<p align="center">
-   <img src="" alt="drawing" width="500"/>
-</p>
-
-<ul>
-  <li></li> 
-  <li></li> 
-  <li></li> 
-
-</ul> -->
-
-
-<!-- <h2></h2>
-
-<p align="center">
-   <img src="" alt="drawing" width="500"/>
-</p>
-
-<ul>
-  <li></li> 
-  <li></li> 
-  <li></li> 
-
-</ul> -->
-
-
-<!-- <h2></h2>
-
-<p align="center">
-   <img src="" alt="drawing" width="500"/>
-</p>
-
-<ul>
-  <li></li> 
-  <li></li> 
-  <li></li> 
-
-</ul> -->
-
-
-<!-- <h2></h2>
-
-<p align="center">
-   <img src="" alt="drawing" width="500"/>
-</p>
-
-<ul>
-  <li></li> 
-  <li></li> 
-  <li></li> 
-
-</ul> -->
-
-
-<!-- <h2></h2>
-
-<p align="center">
-   <img src="" alt="drawing" width="500"/>
-</p>
-
-<ul>
-  <li></li> 
-  <li></li> 
-  <li></li> 
-
-</ul> -->
-
-
-<!-- <h2></h2>
-
-<p align="center">
-   <img src="" alt="drawing" width="500"/>
-</p>
-
-<ul>
-  <li></li> 
-  <li></li> 
-  <li></li> 
-
-</ul> -->
-
-
-<!-- <h2></h2>
-
-<p align="center">
-   <img src="" alt="drawing" width="500"/>
-</p>
-
-<ul>
-  <li></li> 
-  <li></li> 
-  <li></li> 
-
-</ul> -->
-
-
-<!-- <h2></h2>
-
-<p align="center">
-   <img src="" alt="drawing" width="500"/>
-</p>
-
-<ul>
-  <li></li> 
-  <li></li> 
-  <li></li> 
-
-</ul> -->
-
-
-<!-- <h2></h2>
-
-<p align="center">
-   <img src="" alt="drawing" width="500"/>
-</p>
-
-<ul>
-  <li></li> 
-  <li></li> 
-  <li></li> 
-
-</ul> -->
-
-
-<!-- <h2></h2>
-
-<p align="center">
-   <img src="" alt="drawing" width="500"/>
-</p>
-
-<ul>
-  <li></li> 
-  <li></li> 
-  <li></li> 
-
-</ul> -->
-
-
-<!-- <h2></h2>
-
-<p align="center">
-   <img src="" alt="drawing" width="500"/>
-</p>
-
-<ul>
-  <li></li> 
-  <li></li> 
-  <li></li> 
-
-</ul> -->
-
-
-<!-- <h2></h2>
-
-<p align="center">
-   <img src="" alt="drawing" width="500"/>
-</p>
-
-<ul>
-  <li></li> 
-  <li></li> 
-  <li></li> 
-
-</ul> -->
-
-
-<!-- <h2></h2>
-
-<p align="center">
-   <img src="" alt="drawing" width="500"/>
-</p>
-
-<ul>
-  <li></li> 
-  <li></li> 
-  <li></li> 
-
-</ul> -->
-
-
-<!-- <h2></h2>
-
-<p align="center">
-   <img src="" alt="drawing" width="500"/>
-</p>
-
-<ul>
-  <li></li> 
-  <li></li> 
-  <li></li> 
-
-</ul> -->
-
-
-<!-- <h2></h2>
-
-<p align="center">
-   <img src="" alt="drawing" width="500"/>
-</p>
-
-<ul>
-  <li></li> 
-  <li></li> 
-  <li></li> 
-
-</ul> -->
-
-
-<!-- <h2></h2>
-
-<p align="center">
-   <img src="" alt="drawing" width="500"/>
-</p>
-
-<ul>
-  <li></li> 
-  <li></li> 
-  <li></li> 
-
-</ul> -->
-
-
-<!-- <h2></h2>
-
-<p align="center">
-   <img src="" alt="drawing" width="500"/>
-</p>
-
-<ul>
-  <li></li> 
-  <li></li> 
-  <li></li> 
-
-</ul> -->
-
-
-<!-- <h2></h2>
-
-<p align="center">
-   <img src="" alt="drawing" width="500"/>
-</p>
-
-<ul>
-  <li></li> 
-  <li></li> 
-  <li></li> 
-
-</ul> -->
-
-
-
-
-
+  <li>Today, network file systems are an important component of any computing environment, be it a corporate setting or university setting. There are companies that have sprung up such as NetApp solely to pedal scalable NFS products. In this lesson, going beyond NFS we learned a lot of concepts pertaining to the design and implementation of distributed file systems, in particular how to make the implementation scalable by removing centralization and utilizing memory that's available in the nodes of a local area network intelligently. Such techniques for identifying and removing bottlenecks are the reusable nuggets that we can take and apply to the design and implementation of other distributed subsystems in additions to file systems themselves. Overall, in the set of papers that we studied in this lesson module spanning, GSM, DSM and DFS, we discussed the design and implementation of subsystems that found creative ways to fully utilize memory that's available in the nodes of a local area network.
+</li> 
+</ul>
 
 <!-- <h2></h2>
 
