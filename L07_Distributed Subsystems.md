@@ -700,50 +700,41 @@
 </ul>
 
 # L07c: Distributed File Systems
+<h2>1. The First NFS</h2>
+<ul>
+  <li>All of us routinely use file systems. Quite often, not the one that is on our local machine, be it a desktop or laptop, but one that is on a local area network, connecting us to a workplace or university. NFS, which stands for Network File System. And just like the word xerox is used often as a verb to denote copying, NFS has become a generic name to signify any file system that we access remotely.</li> 
+</ul>
+
 <p align="center">
-   <img src="https://www.nicepng.com/png/detail/11-117393_to-be-continued-meme-png-street-sign.png" alt="drawing" width="500"/>
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l7/46.JPG?raw=true" alt="drawing" width="500"/>
 </p>
 
-<!-- <h2></h2>
-
 <p align="center">
-   <img src="" alt="drawing" width="500"/>
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l7/47.JPG?raw=true" alt="drawing" width="500"/>
+</p>
+
+
+<h2>2. NFS</h2>
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l7/48.JPG?raw=true" alt="drawing" width="500"/>
 </p>
 
 <ul>
-  <li></li> 
-  <li></li> 
-  <li></li> 
+  <li>Network file systems has evolved overtime, but the idea is still the same. You have clients that are distributed all over the local area network and you have file servers sitting on the local area network and these file servers are central, so far as each client is concerned. Of course, the system administrator may partition these servers and say that there is one server designated for a certain class of users.</li> 
+  <li>For instance, if you take a university setting, you might have one server serving all the faculty's needs, and maybe another server serving all the student needs, but so far as a single client is concerned, it is still a centralized view, access to a central server over a local area network. Now, since the disk being electromagnetic is slow, the server will cache the files that it retrieves from the disk in memory, so that it can serve the clients better by serving it out of the file cache that is in memory rather than going to the disk all the time. So this is a typical structure of a network file system.</li> 
+  <li>A centralized server, which is the model used in NFS, is a serious source of bottleneck for scalability. A single server has to field the client requests coming from the group of users that it is serving and manage all the data and metadata for all the files that are housed on this particular server. And the data and the metadata of files are persistent data structures, and therefore, the file server has to access these data structures over the I/O bus, which is available for talking to the disk subsystem. So, with a centralized server like this, there is limited bandwidth that's available for the server to get the data and the metadata in and out of the disk. And the file system cache is also limited, because it is confined to the memory space that's available in a given server. So, instead of this centralized view of the file system, can we implement the file system in a distributed manner? What does that mean?
+</li> 
+</ul>
 
-</ul> -->
 
-
-<!-- <h2></h2>
-
+<h2>3. DFS</h2>
 <p align="center">
-   <img src="" alt="drawing" width="500"/>
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l7/49.JPG?raw=true" alt="drawing" width="500"/>
 </p>
-
 <ul>
-  <li></li> 
-  <li></li> 
-  <li></li> 
-
-</ul> -->
-
-
-<!-- <h2></h2>
-
-<p align="center">
-   <img src="" alt="drawing" width="500"/>
-</p>
-
-<ul>
-  <li></li> 
-  <li></li> 
-  <li></li> 
-
-</ul> -->
+  <li>The vision with a distributed file server is that there is no central server any more. Each file is distributed across several servers. What does it mean to avoid the unscalability of a central server? We want to take a file and distribute it across several different nodes in the local area network.</li> 
+  <li>Since the DFS is implemented across all the disks in the network, if a client wants to read or write a file then it actually is contacting all the servers potentially, to get the data that is looking for. And which means that since each file is distributed across all of these different servers, the idle bandwidth that's available cumulatively across all of these servers can be used to serve the needs of every individual client. Also, this allows distributing the management of the metadata that is associated with the files among the server nodes that are available. Furthermore, we have more memories available in all of these servers cumulatively, which means that we have a bigger memory footprint available for implementing a file cache, including all of the server memories, plus the memories that may be there in the clients as well. And that's where we can actually go towards cooperative caching among the clients as well. So, in the extreme, we can treat all the nodes in the cluster, whether we call them s1 or c1, we can look at all of the nodes and say, they're all the same with interchangeable roles as clients or servers. That is, we can actually make this DFS a serverless file system. If we allow the responsibility of managing the files, serving the files, cashing the files, equally distributed among all the nodes of the cluster here so the nodes are interchangeable between clients and servers.</li> 
+</ul>
 
 
 <!-- <h2></h2>
