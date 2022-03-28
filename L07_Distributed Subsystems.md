@@ -515,30 +515,57 @@
    <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l7/34.JPG?raw=true" alt="drawing" width="500"/>
 </p>
 
-<!-- <ul>
-  <li>So the Vanilla RC is what is called the eager release consistent memory model and the new memory model is called LRC, or Lazy release consistent memory model. Let's see the pros and cons of LRC with respect to Vanilla RC, or Lazy RC with respect to Eager RC. So what I am showing you here are timelines of processor actions on three different processors, P1, P2, and P3. And this picture is showing you what happens in the Eager version of the RC model, in terms of communication among the processors. So when processor P1 has completed its critical section, does the release operation, at the release point what we're going to do is all the changes that we made, in this example I'm showing you to make it simple I'm showing you that in this critical section that I wrote in this variable x, so the changes to x is going to be communicated to all the processors, P2 and P3. It could be, depending on whether it is an invalidation based protocol or an update based protocol, what we are saying is we are communicating the coherence action to all the other processors. That's what these arrows are indicating. Now then P2 acquires the lock, and after it acquires the lock it does its own critical section. Again, let's say we're writing to the same variable X, and it releases the lock. And at the point of release once again we broadcast the changes that we made. Notice what is going on. P1 makes modifications, broadcasts it to everybody. But who really needs it? Well, only P2 needs it. But unfortunately the RC memory model is Eager, and it says I'm going to tell everybody that has a copy of X that I have modified X. And so it's going to tell it to P2. It's going to tell it to P3 as well. P3 doesn't care, because it's not using that variable yet, and P2 cares, and it of course is using that. But when it releases its critical section, it's once again going to do exactly the same thing that happened over here, and that is it's going to broadcast the changes it made to shared memory locations to all the other processes, in this case P1 and P2. And then, finally, P3 does its acquire, and then reads the variable. So, all these areas are showing you the coherence actions that are inherent in the completion of shared memory accesses that are happening in the critical section of programs. Now let's move over to the Lazy version. In the Lazy version, what we are doing is when we release a lock, we are not doing any global communication. We simply release a lock. Later on the next process that happens to acquire that same lock. The RC memory model. The first thing it's going to say is, oh, you want to get this lock? I have to go and make sure that I complete all the coherence actions that I've associated with that particular lock. In this case the previous lock holder had made changes to the variable x, so I'm going to pull it from this guy and then I can execute my critical section. And then when P3 executes its critical section, it's going to pull it from P2 and complete what it needs to do. So, the important thing that you see is that there is no broadcast anymore. It's only point-to-point communication that's happening between the processors that are passing the lock between one to the other. So, in other words, the number of arrows that you see are communication events. You can see that there's a lot more arrows here. Forget about the arrows that I introduced. But the black arrows that you see are the arrows that are indicating communications commensurate with the coherence actions needed for this set of critical section actions. And correspondingly, the black arrows here are showing the communication actions for the same set of critical section actions shown in both the top and the bottom half of this particular figure. You can see, there's a lot less communication happening with the Lazy model. It's also called a pull model, because what we're doing is at the point of acquisition, we're pulling the coherence actions that need to be completed over here. Whereas, this is the push model in the sense that we're pushing all the coherence actions to everybody at the point of release. Having introduced the Eager and the Lazy RC models, it's time for a quiz.
+<ul>
+  <li>So the Vanilla RC is what is called the eager release consistent memory model and the new memory model is called LRC or Lazy release consistent memory model. Let's see the pros and cons of LRC with respect to Vanilla RC, or Lazy RC with respect to Eager RC.What I am showing you here are timelines of processor actions on three different processors, P1, P2, and P3. </li> 
+  <li>This (top) picture is showing you what happens in the Eager version of the RC model in terms of communication among the processors. So when processor P1 has completed its critical section, does the release operation, at the release point what we're going to do is all the changes that we made, in this example I'm showing you to make it simple, I'm showing you that in this critical section that I wrote in this variable x, so the changes to x is going to be communicated to all the processors P2 and P3. It could be depending on whether it is an invalidation based protocol or an update based protocol, what we are saying is we are communicating the coherence action to all the other processors. That's what these arrows are indicating. Now then P2 acquires the lock, and after it acquires the lock it does its own critical section. Again, let's say we're writing to the same variable x, and it releases the lock. And at the point of release once again we broadcast the changes that we made. Notice what is going on. P1 makes modifications, broadcasts it to everybody. But who really needs it? Well, only P2 needs it. But unfortunately the RC memory model is Eager, and it says "I'm going to tell everybody that has a copy of x that I have modified x." And so it's going to tell it to P2. It's going to tell it to P3 as well. P3 doesn't care, because it's not using that variable yet, and P2 cares, and it of course is using that. But when it releases its critical section, it's once again going to do exactly the same thing that happened over here, and that is it's going to broadcast the changes it made to shared memory locations to all the other processes, in this case P1 and P2 (Actually should be P1 & P3). And then, finally, P3 does its acquire and then reads the variable. So, all these arrows are showing you the coherence actions that are inherent in the completion of shared memory accesses that are happening in the critical section of programs.</li> 
+  <li>Now let's move over to the Lazy version. In the Lazy version, what we are doing is when we release a lock, we are not doing any global communication. We simply release a lock. Later on, the next process that happens to acquire that same lock. The RC memory model. The first thing it's going to say is, "oh, you want to get this lock? I have to go and make sure that I complete all the coherence actions that I've associated with that particular lock. In this case the previous lock holder had made changes to the variable x, so I'm going to pull it from this guy and then I can execute my critical section." And then when P3 executes its critical section, it's going to pull it from P2 and complete what it needs to do. So, the important thing that you see is that there is no broadcast anymore. It's only point-to-point communication that's happening between the processors that are passing the lock between one to the other. So, in other words, the number of arrows that you see are communication events. You can see that there's a lot more arrows here. Forget about the arrows that I introduced. But the black arrows that you see are the arrows that are indicating communications commensurate with the coherence actions needed for this set of critical section actions. And correspondingly, the black arrows here are showing the communication actions for the same set of critical section actions shown in both the top and the bottom half of this particular figure.</li> 
+  <li>You can see, there's a lot less communication happening with the Lazy model. It's also called a pull model, because what we're doing is at the point of acquisition, we're pulling the coherence actions that need to be completed over here. Whereas, this is the push model in the sense that we're pushing all the coherence actions to everybody at the point of release. Having introduced the Eager and the Lazy RC models, it's time for a quiz.
+</li> 
+</ul>
+
+
+<h2>17. Pros and Cons of Lazy and Eager</h2>
+
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l7/35.JPG?raw=true" alt="drawing" width="500"/>
+</p>
+
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l7/36.JPG?raw=true" alt="drawing" width="500"/>
+</p>
+
+<br>
+<br>
+<p><b>Note: Regarding lazy & eager RC model</b></p>
+<p> Paper: Keleher, P., Cox, A. L., & Zwaenepoel, W. (1992). Lazy release consistency for software distributed shared memory. ACM SIGARCH Computer Architecture News, 20(2), 13-21.</p>
+<p>A system is release consistent if: 1) before an ordinary access is allowed to perform with respect to any other processor, all previous acquires must be performed 2)before a release is allowed to perform with respect to any other processor, all previous ordinary reads and writes must be performed 3) special accesses are sequentially consistent with respect to one another </p>
+<br>
+<p>Eager release consistency: A processors delays propagating its modification to shared data untile it comes to a release. At that time, it propagates the modifications to all other processors that cache the modified pages. No consistency related operations occur on an acquire. </p>
+<br>
+<p>Lazy release consistency: The propagation of modifications is further postponed until the time of the acquire. At this time,the acquiring processor determines which modifications it needs to see according to the definition of RC. It is an algorithm for implementing release consistency that lazily pulls modifications across the interconnect only when necessary. The simulation in the paper indicates that lazy release consistency reduces both the number of messages and the amount of data transferred between processors. These reductions are especially significant for programs that exhibit false sharing the make extensive use of locks.</p>
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l7/note1.JPG?raw=true" alt="drawing" width="500"/>
+</p>
+<br>
+<br>
+
+<h2>18. Software DSM</h2>
+
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l7/37.JPG?raw=true" alt="drawing" width="500"/>
+</p>
+<ul>
+  <li>So far, we've seen three different memory consistency models. One is the sequential consistent memory model, the release consistent memory model. And, strictly speaking, I would say, the eager version and the lazy version are just variants of the same memory model, namely the release consistent memory model.</li> 
+  <li>Now we're going to transition and talk about software distributed shared memory, and how these memory models come into play in building software distributed shared memory. So we're dealing with a computational cluster, that is, in the cluster, each node of the cluster has its own private physical memory, but there is no physically shared memory. And therefore, the system, meaning the system software, has to implement the consistency model to the programmer. In a tightly coupled multiprocessor, coherence is maintained at individual memory access level by the hardware. Unfortunately, that fine grain of maintaining coherence at individual memory access level will lead to too much overhead in a cluster. Why? Because on every load or store instruction that is happening on any one of these processors, the system software has to butt in, and implement the coherence action in software through the entire cluster. And this is simply infeasible. So what do we do to implement software distributed shared memory?</li> 
+  <li>So, first part is to implement this sharing and coherence maintenance at the level of pages. So the granularity of coherence maintenance is at the level of a page. Now, even in a simple processor or in a true multiprocessor, the unit of coherence maintenance is not simply a single word that a processor is doing a load or a store on. Because in order to exploit spatial locality, the block size used in caches in processors tend to be bigger than the granularity of memory access that is possible from individual instructions in the processor. So we're taking this up a level and saying, if you're going to do it all in software, let's keep the granularity of coherence maintenance to be an entire page. And you're going to maintain the coherence of the distributed shared memory in software by cooperating with the operating system that is running on every node of the processor. So what we're going to do is, we're providing a global virtual memory abstraction to the application program running on the cluster. So the application programmer views the entire cluster as a globally shared virtual memory. Under the cover, what the DSM software is doing is, it is partitioning this global address space into chunks that are managed individually on the nodes of the different processors of the cluster. From the application point of view, what this global virtual memory abstraction is giving is address equivalence. And that is, if I access a memory location x in my program, that means exactly the same thing, whether I access the memory location x from processor 1, processor 2, and so on and so forth. That's the idea in providing a global virtual memory abstraction. And the way the DSM software is going to handle maintenance of coherence is by having distributed ownership for the different virtual pages that constitute this global virtual address space. So you can think of this global virtual address space as constituted by several pages, and we're going to say some number of these pages are owned by processor 1. Some number of these pages are owned by processor 2. Some number by processor 3, and so on. So we split the ownership responsibility into individual processors. Now what that means, is that the owner particular page is also responsible for keeping complete coherence information for that particular page and taking the coherence actions commensurate with that page. And the local physical memories are available in each one of this processors is being used for hosting portions of the global virtual memory space in the individual processors commensurate with the access pattern that is being displayed by the application on the different processors. So for instance, if processor 1 accesses this portion of the global virtual memory space, then this portion of the address space is mapped into the local physical memory of this processor. So that a thread that is running on this processor can access this portion of the global address space. And it might be that same page is being shared with some other processor n over here. In that case, a copy of this page is existing in both this processor, as well as this processor. Now it is up to the processor that is responsible for the ownership of this particular page to worry about the consistency of this page, that is now resident in multiple locations. For instance, if this node, let's say, is the owner for this page. Then this node will have metadata that indicates that this particular page is currently shared by both p 1 and p n. So that is the directory that is associated with the portion of the global virtual memory space that is being owned and managed by this particular processor. So statically, we are making an association between a portion of the address space and the owner for that portion of the address space in terms of coherence maintenance for that portion of the global virtual memory space.
 </li> 
   <li></li> 
   <li></li> 
 
-</ul> -->
+</ul>
 
 
-<!-- <h2></h2>
-
-<p align="center">
-   <img src="" alt="drawing" width="500"/>
-</p>
-
-<ul>
-  <li></li> 
-  <li></li> 
-  <li></li> 
-
-</ul> -->
-
-
-<!-- <h2></h2>
+<h2></h2>
 
 <p align="center">
    <img src="" alt="drawing" width="500"/>
@@ -549,21 +576,7 @@
   <li></li> 
   <li></li> 
 
-</ul> -->
-
-
-<!-- <h2></h2>
-
-<p align="center">
-   <img src="" alt="drawing" width="500"/>
-</p>
-
-<ul>
-  <li></li> 
-  <li></li> 
-  <li></li> 
-
-</ul> -->
+</ul>
 
 
 <!-- <h2></h2>
