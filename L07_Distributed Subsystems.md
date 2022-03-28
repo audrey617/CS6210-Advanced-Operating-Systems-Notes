@@ -934,19 +934,6 @@
 
 <h2>18. Distributed File Systems Conclusion</h2>
 <ul>
-  <li>Today, network file systems are an important component of any computing environment, be it a corporate setting or university setting. There are companies that have sprung up such as NetApp solely to pedal scalable NFS products. In this lesson, going beyond NFS we learned a lot of concepts pertaining to the design and implementation of distributed file systems, in particular how to make the implementation scalable by removing centralization and utilizing memory that's available in the nodes of a local area network intelligently. Such techniques for identifying and removing bottlenecks are the reusable nuggets that we can take and apply to the design and implementation of other distributed subsystems in additions to file systems themselves. Overall, in the set of papers that we studied in this lesson module spanning, GSM, DSM and DFS, we discussed the design and implementation of subsystems that found creative ways to fully utilize memory that's available in the nodes of a local area network.
+  <li>Today, network file systems are an important component of any computing environment, be it a corporate setting or university setting. There are companies that have sprung up such as NetApp solely to peddle scalable NFS products. In this lesson, going beyond NFS we learned a lot of concepts pertaining to the design and implementation of distributed file systems, in particular how to make the implementation scalable by removing centralization and utilizing memory that's available in the nodes of a local area network intelligently. Such techniques for identifying and removing bottlenecks are the reusable nuggets that we can take and apply to the design and implementation of other distributed subsystems in additions to file systems themselves. Overall, in the set of papers that we studied in this lesson module spanning GSM, DSM and DFS, we discussed the design and implementation of subsystems that found creative ways to fully utilize memory that's available in the nodes of a local area network.
 </li> 
 </ul>
-
-<!-- <h2></h2>
-
-<p align="center">
-   <img src="" alt="drawing" width="500"/>
-</p>
-
-<ul>
-  <li></li> 
-  <li></li> 
-  <li></li> 
-
-</ul> -->
