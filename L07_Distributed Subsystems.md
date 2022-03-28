@@ -536,6 +536,7 @@
 
 <br>
 <br>
+<p><b>-------------------------------------------------------------------------------</b></p>
 <p><b>Note: Regarding lazy & eager RC model</b></p>
 <p> Paper: Keleher, P., Cox, A. L., & Zwaenepoel, W. (1992). Lazy release consistency for software distributed shared memory. ACM SIGARCH Computer Architecture News, 20(2), 13-21.</p>
 <p>A system is release consistent if: 1) before an ordinary access is allowed to perform with respect to any other processor, all previous acquires must be performed 2)before a release is allowed to perform with respect to any other processor, all previous ordinary reads and writes must be performed 3) special accesses are sequentially consistent with respect to one another </p>
