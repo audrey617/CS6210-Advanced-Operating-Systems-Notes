@@ -776,6 +776,9 @@
   <li>So logs, as I've introduced you, is similar to the disks that you've seen in the DSM system with the multiple writer protocol that we talked about in a previous lecture. You may have also heard the term, journalling file system, there is a difference between log structured file system, and journalling file system. Journalling file systems has both log files as well as data files, and what a journalling file system does, is it applies the log files to the data files and discards the log files. The goal is similar in a journaling file system, and the goal is to solve the small write problem, but in a journaling file system, the logs are there only for a short duration of time before the logs are committed to the data files themselves. Whereas in a log structured file system, you don't have data files at all, all that you have are log files and reads have to deconstruct the data from the log files.
 </li> 
 </ul>
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l7/oh1.JPG?raw=true" alt="drawing" width="800"/>
+</p>
 
 
 <h2>7. Preliminaries Software (RAID)</h2>
@@ -801,7 +804,15 @@
   <li>Now it's time to put together the background technology that I introduced to you, plus some more, and describe to you a particular distributor file system called XFS which is also built at UC Berkeley. XFS builds on the shoulders of periodic technologies. The first one, the log based striping that I just mentioned to you from the Zebra file system. And another technology called co-operative caching which is also a prior UC Berkley project. And in addition to these two technologies, XFS also has introduced several new nuances in order to make the distributor file system truly scalable and get towards what is called serverlessness, or in other words, no reliance on a central server. And those techniques include dynamic management of data and metadata. Subsetting of the storage servers, and we'll talk about all of these techniques in much more detail in the rest of this lecture.</li> 
 </ul>
 
-
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l7/oh2.JPG?raw=true" alt="drawing" width="800"/>
+</p>
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l7/oh3.JPG?raw=true" alt="drawing" width="800"/>
+</p>
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l7/oh4.JPG?raw=true" alt="drawing" width="800"/>
+</p>
 <h2>9. Dynamic Management</h2>
 <p align="center">
    <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l7/55.JPG?raw=true" alt="drawing" width="500"/>
