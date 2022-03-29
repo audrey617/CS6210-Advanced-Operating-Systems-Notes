@@ -805,13 +805,13 @@
 </ul>
 
 <p align="center">
-   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l7/oh2.JPG?raw=true" alt="drawing" width="800"/>
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l7/oh2.JPG?raw=true" alt="drawing" width="600"/>
 </p>
 <p align="center">
-   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l7/oh3.JPG?raw=true" alt="drawing" width="800"/>
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l7/oh3.JPG?raw=true" alt="drawing" width="600"/>
 </p>
 <p align="center">
-   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l7/oh4.JPG?raw=true" alt="drawing" width="800"/>
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l7/oh4.JPG?raw=true" alt="drawing" width="600"/>
 </p>
 <h2>9. Dynamic Management</h2>
 <p align="center">
@@ -904,12 +904,9 @@
   <li>XFS data structures for implementing a truly distributed file system are much more involved. Let's talk little bit about that, first of all, I mentioned that the metadata management is not static. Even though, the file that you are looking for may be resident in particular node, the manager for that file may not be at that same node. The client action when it is looking for a file, it starts with a file name and this is a data structure that is a replicated data structure at every node in the entire distributed system. So any client node, when it starts with a file name. It consults this manager map data structure to know who's the metadata manager for this particular file name. And the manger node action is fairly involved. So, the client comes to the manager with a file name. And when you come to the manager with a file name, the manager looks up the first data structure, called the file directory. And that file directly has the i-node number. And that i-node number is the starting point for looking up the contents of that file. Now lets talk about all the data structures that are used by the manager node. On the manager node, when the client presents the file name, the manager node uses a data structure called a file directory. To map that file name to an i-number. And from the i-number, it uses another data structure called i-map data structure to get the i-note address for this particular file name. The i-node address is the i-node address for the log segment associated with this file name. And using this strip group map, which is telling. How this particular file is striped. It can locate the storage server that contains the log segment ID, that is associated with this file name. I mentioned earlier, that every log segment is actually striped on a whole bunch of disks, a stripe group. What of the stripe group associated with this particular log segment? That's the information that it gets from the stripe group map. Once it has the set of storage servers that contain this log segment, it can go to the set of storage servers to get the data blocks associated with this particular file name. That's the entire road map of what the manager will have to do. To go from the file name to actual data blocks that corresponds to that file name. Now this sounds like a lot of work being done, fortunately caching helps in making sure that this long path is not taken for every file access. We will see that, in terms of how reads and writes happen. In the XFS file system. Just to recap the data structures, file name to i-number mapping is contained in this data structure, FileDir. The mapping between the i-number and the i-node address for the log segment ID, that is contained in this i-map. Given the i-node address, I can consult the stripe group map to know which storage server actually has the i-node for this file name that is a large segment that corresponds to this file name. I can get that. And once I get that, then I can find out the stripe group that is associated with this log segment, and that'll say what are all the storage servers that I have to contact in order to get the contents of that log segment. Then I can go to those storage servers and get all the data blocks that correspond to a particular log segment. So that's the road map.
 </li> 
 </ul>
-
-<br>
 <br>
 <p><b>-------------------------------------------------------------------------------</b></p>
-<p><b>Note:From OH, Mmap data structure contains i-number to manager node mapping determined statically. We hope it can be determined dynamically but it is not</b></p>
-<br>
+<p><b>OH Note: Mmap data structure contains i-number to manager node mapping is determined statically. We hope it can be determined dynamically but it is not</b></p>
 
 <h2>16. Client Reading a File Own Cache</h2>
 
