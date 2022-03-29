@@ -905,6 +905,11 @@
 </li> 
 </ul>
 
+<br>
+<br>
+<p><b>-------------------------------------------------------------------------------</b></p>
+<p><b>Note:From OH, Mmap data structure contains i-number to manager node mapping determined statically. We hope it can be determined dynamically but it is not</b></p>
+<br>
 
 <h2>16. Client Reading a File Own Cache</h2>
 
