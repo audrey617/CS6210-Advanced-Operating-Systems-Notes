@@ -123,18 +123,6 @@
 </p>
 
 <ul>
-  <li></li> 
-  <li></li> 
-  <li></li> 
-
-</ul>
-
-<h2>1. PTS Introduction</h2>
-<p align="center">
-   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l10/10.JPG?raw=true" alt="drawing" width="600"/>
-</p>
-
-<ul>
   <li>In the previous lesson, we studied an operating system scheduler adaptation for providing accurate timing for upper layers of software, especially needed for real time multi-media applications. Now we move up in the food chain. The focus in this lesson is in the middleware that sits in between commodity operating systems and novel multimedia applications that are realtime and distributed.</li> 
 </ul>
 
