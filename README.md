@@ -18,8 +18,14 @@ Course Name: Gatech CS6210 Advanced Operating Systems; Instructor: Kishore Ramac
 
 - Week 9-10: [Distributed Subsystems](https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/L07_Distributed%20Subsystems.md)
 
-- Week 10.5: SPRING BREAK
+- Week 11: SPRING BREAK
 
-- Week 11: [Internet Computing](https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/L09_Internet%20Computing.md)
+- Week 12: [Internet Computing](https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/L09_Internet%20Computing.md)
 
-- Week 12: [RT and Multimedia](https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/L10_RT%20and%20Multimedia.md)
+- Week 13: [RT and Multimedia](https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/L10_RT%20and%20Multimedia.md)
+
+- Week 14: Failures and Recovery
+
+- Week 15: Security
+
+- Week 16: Project Due & Exam
