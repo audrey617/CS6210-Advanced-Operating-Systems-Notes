@@ -104,6 +104,13 @@
 </li> 
 </ul>
 
+<br>
+<br>
+<p>office hour</p>
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l9/note1.JPG?raw=true" alt="drawing" width="500"/>
+</p>
+
 <h2>10. Replication vs Partitioning</h2>
 <p align="center">
    <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l9/11.JPG?raw=true" alt="drawing" width="500"/>
