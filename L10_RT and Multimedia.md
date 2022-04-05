@@ -51,6 +51,8 @@
 
 
 <h2>4. Firm Timer Design</h2>
+Firm timer paper: Goel, A., Abeni, L., Krasic, C., Snow, J., & Walpole, J. Supporting Time-Sensitive Applications on a Commodity OS.
+
 <p align="center">
    <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l10/4.JPG?raw=true" alt="drawing" width="600"/>
 </p>
