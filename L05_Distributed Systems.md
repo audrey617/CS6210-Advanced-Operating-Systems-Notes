@@ -295,6 +295,17 @@
 </li> 
 </ul>
 
+<br>
+<br>
+<br>
+<p><b>Extra topic. May not related to this course. Piazza & OH: Basically the question is how do we handle situations where the message never arrives (I.E. packet loss, system crashes before sending, etc)?</b></p>
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l5/add1.JPG?raw=true" alt="drawing" width="500"/>
+</p>
+<p>https://raft.github.io</p>
+<p>https://lamport.azurewebsites.net/pubs/lamport-paxos.pdf</p>
+<p>https://lamport.azurewebsites.net/pubs/paxos-simple.pdf</p>
+<p>https://levelup.gitconnected.com/practical-understanding-of-flp-impossibility-for-distributed-consensus-8886e73cdfe5</p>
 
 <h2>10. Messages</h2>
 <p align="center">
