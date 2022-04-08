@@ -275,7 +275,7 @@
 
 <br>
 <br>
-<br>
+<p><b>-------------------------------------------------------------------------------</b></p>
 <p><b>OH Note: Is there a chance that Pn thinks it has MUTEX Lock?</b></p>
 <br>
 <p align="center">
@@ -294,8 +294,8 @@
   <li>So, we can informally talk about the correctness of the distributed mutual exclusion lock algorithm. The correctness is based partially on some assumptions and partially on the construction. The construction is that the Q's totally ordered by Lamport's logical clocks and the PID to break the ties. But that's part of the construction of the algorithm. But it is also based on some assumptions that we make and the assumption is that messages between any two processes arrive in order. So messages don't crisscross each other but if I send a message and I send another message, the first message is going to reach the destination first, second message is going to reach the destination second. And that's what is meant by saying that messages arrive in order at every node in the distributed system. And the second assumption is that there is no loss of messages. So every message that is sent is definitely received in order. So these are two fundamental assumptions that are responsible for this algorithm being correct. Now that you have seen Lamport's mutual exclusion lock algorithm, time for another quiz.
 </li> 
 </ul>
-
 <br>
+<p><b>-------------------------------------------------------------------------------</b></p>
 <p><b>Extra Note: May not related to this course. From Piazza.Basically the question is how do we handle situations where the message never arrives (I.E. packet loss, system crashes before sending, etc)?</b></p>
 <p align="left">
    <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l5/add1.JPG?raw=true" alt="drawing" width="500"/>
@@ -400,7 +400,9 @@
   <li>Lamport's clock serves as the theoretical underpinning, for achieving deterministic execution in distributed systems, despite the fact that there are nondeterminism existing due to vagaries of the network and due to drifts in the clocks and so on. It's a nice feeling that we can come up with conditions that need to be satisfied in order to make sure that we can have deterministic executions and avoid anomalous behaviors using Lamport's clock, both logical clocks where it is sufficient as well as the physical clock conditions. In the next part of this lesson module. We will discuss techniques for making the operating system, communication software stack efficient for dealing with network communication.
 </li> 
 </ul>
-<br><br>
+<br>
+<br>
+<p><b>-------------------------------------------------------------------------------</b></p>
 <p><b>OH Note: Can we construct deterministic distributed algorithms using Lamport's clock which is inherently non-deterministic? The answer is yes! It is a tool to use partial order, come out total order, breaking tie when you have to </b></p>
 <br>
 <p><b>OH Note: Lamport's ME algorithm hinges on 1) happened before relationship 2) messages going in-order between any two nodes 3) no loss of messages </b></p>
@@ -827,17 +829,20 @@ So, removing low level Acks, employing hardware checksum and not doing checksum 
    <li>I've given you the big picture of the design cycle, now it is time to go into the weeds
 </li> 
 </ul>
+
 <br>
-<p> <b> Note - Regarding the mentioned I/O automata & Nuprl</b></p>
-<p> 1. Paper reference: Liu, Xiaoming, et al. "Building reliable, high-performance communication systems from components." ACM SIGOPS Operating Systems Review 33.5 (1999): 80-92.</p>
-<p> 2. Nuprl: From Building reliable, high-performance communication systems from components paper, Nuprl is able to “understand” both the IOA specifications and the OCaml code, and can rewrite the code for the purpose of optimization.</p>
+<br>
+<p><b>-------------------------------------------------------------------------------</b></p>
+<p> <b> Note: Regarding the mentioned I/O automata & Nuprl</b></p>
+<p> 1. Paper: Liu, Xiaoming, et al. "Building reliable, high-performance communication systems from components." ACM SIGOPS Operating Systems Review 33.5 (1999): 80-92.</p>
+<p> 2. Nuprl: Nuprl is able to “understand” both the IOA specifications and the OCaml code, and can rewrite the code for the purpose of optimization.</p>
 <p> 3. Specifications: Specifications of communication systems range along an axis from specifying the behavior of a system to specifying its properties. When specifying the behavior, we describe how the system reacts to events. For example, we may specify that the system sends an acknowledgment in response to a data message. When specifying properties, we describe logical predicates on the possible executions of the system. An example of a property is that messages are always delivered in the order in which they were sent (FIFO). Specification of the behavior of both protocols and micro-protocols is done using I/O automata (IOA).The properties describe the system at the highest level. Since the properties do not specify how to implement a protocol, they are easy to compose. Behavioral specification provides the connection to the code by describing how to implement the properties. Behavioral specifications can be either concrete or abstract. Concrete specifications can be directly mapped onto executable code, while abstract specifications are nondeterministic descriptions that use global variables, and are therefore not executable. A concrete specification only involves state and events local to a single participant in the protocol (or signature in IOA terminology). A concrete specification is derived from the abstract specification by a process called refinement. This involves designing a protocol that implements the abstract requirements. The difference between a concrete specification and an implementation is small: in an implementation, the programmer also needs to detect which conditions are true, and specify the order in which the corresponding actions should be executed.</p>
-<p> 4. IOA: From the same paper, below are examples of both abstractand concrete behavioral specifications of networks and protocols, using a variant of IOA as the specification language. The programming model is that of a state machine with event-condition-action rules. An abstract specification has a set of variables, a set of events that under certain conditions, modify these variables and allow interaction with the environment. For more information about IOA, check Book Lynch, Nancy. Distributed Algorithms, and the link https://groups.csail.mit.edu/tds/papers/Lynch/CWI89.pdf</p>
+<p> 4. IOA: Below are examples of both abstractand concrete behavioral specifications of networks and protocols, using a variant of IOA as the specification language. The programming model is that of a state machine with event-condition-action rules. An abstract specification has a set of variables, a set of events that under certain conditions, modify these variables and allow interaction with the environment. For more information about IOA, check Book Lynch, Nancy. Distributed Algorithms, and the link https://groups.csail.mit.edu/tds/papers/Lynch/CWI89.pdf</p>
 
 <p align="center">
    <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l5/IOA.JPG?raw=true" alt="drawing" width="700"/>
 </p>
-
+<br>
 <h2>3. Digging Deeper From Spec to Implementation</h2>
 
 <p align="center">
