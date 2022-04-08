@@ -486,7 +486,7 @@
    <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l5/39_1.JPG?raw=true" alt="drawing" width="500"/>
 </p>
 <ul>
-  <li>First let's look at how we can reduce the overhead and marshaling the arguments and the data copying.</li> 
+  <li>First let's look at how we can reduce the overhead on marshaling the arguments and the data copying.</li> 
   <li>Just to jog your memory, marshaling refers to the fact that the semantics of the RPC call being made between the client and the server. It's something that the operating system doesn't have any clue about. So in other words, the arguments that are actually passed between the client and the server has semantic meaning only between the client and the server. The operating system has no knowledge of it. Therefore marshaling is the term that is used to say, "let's accumulate all of the arguments that is there in the call and make one contiguous network packet out of it, so that we can give it to the kernel and the kernel can send it out."</li> 
   <li>That's what is being described as marshaling, and the biggest source of overhead in marshaling is the data copying that's going to happen, and I'll explain that in a minute.</li> 
   <li>Potentially, in doing the marshaling, there could be three copies involved. Where are these three copies coming aboard?
