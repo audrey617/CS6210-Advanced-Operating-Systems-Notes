@@ -296,8 +296,6 @@
 </ul>
 
 <br>
-<br>
-<br>
 <p><b>Extra Note: May not related to this course. From Piazza.Basically the question is how do we handle situations where the message never arrives (I.E. packet loss, system crashes before sending, etc)?</b></p>
 <p align="left">
    <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l5/add1.JPG?raw=true" alt="drawing" width="500"/>
