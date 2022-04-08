@@ -228,7 +228,7 @@
 
 <h2>8. Distributed ME Lock Algorithm</h2>
 <p align="center">
-   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l5/22.JPG?raw=true" alt="drawing" width="500"/>
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l5/22_1.JPG?raw=true" alt="drawing" width="500"/>
 </p>
 <ul>
   <li>Now let's put Lamport's clock to work for implementing a distributed mutual exclusion lock algorithm, and it is going to be very similar to the car-sharing example that I showed you before. And also you will notice that we've talked about locks in a shared memory multiprocessor where we have shared memory to implement the lock. But now in a distributed system we don't have shared memory. And we have to implement a mutual exclusion lock using Lamport's Logical Clock. So, essentially what is going to happen is that any process that needs to acquire this lock is going to send the message to all the processes. And of course the intent to get a lock may emanate simultaneously from several processes. That's perfectly feasible. The algorithm is as follows.</li> 
@@ -244,8 +244,18 @@
    </li>  
    <li>So that's how the protocol works. Every request is sent to all the other processors and every process when it receives a request, it puts it ordered by Lamport's clock in its own local queue. And then acknowledges the request with an ACK message.</li> 
    <li>What happens when there is a tie? Well, when we have a tie, we break the tie by giving priority to the process that has a lower process ID so that's how this algorithm works, so that every process can unambiguously make a decision as to where to place an incoming request in the queue. So an example of the state of the queue is as shown. </li> 
+</ul>
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l5/22_2.JPG?raw=true" alt="drawing" width="500"/>
+</p>
+<ul>
    <li>The thing that should jump out at you immediately is that the state of the queue is not the same in all the processes. For instance, Process 1's queue contains its request that it generated at time 2, but I don't see it yet in the other queues. Is this possible that the queue can be inconsistent with one another? Of course, it is possible. The reason is that when a process generates a request, puts it in its queue and then sends a message out. This message is going to take some time to reach the other nodes in the distributed system. So, it sent the message and after it sent the message, it got requests from other processes and it has put it in its queue. And it is possible that this message, all the messages may not take the same amount of time to traverse a network. We have no idea what's going on in the network and therefore it so happens that P1's message is still in transit. Whereas the request messages from P2 and Pn have already made it everywhere, and it is in the queues of all the Processes, P1's message, unfortunately, is taking a slow route through the network and is still in transit. And in fact, P1 has subsequently received P2's and Pn's messages and put them into its local queue. It is just that P1's message hasn't reached its peers yet and that's how you get this situation.</li> 
-  <li>So the whole purpose of this exercise is to unambiguously get the mutual exclusion lock for some process competing for it simultaneously. Now how does a process know that it has the lock? So I have to make the decision that I have the lock. How do I make that decision? Two things have to be true to think that I have gotten the lock. 
+</ul>
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l5/22.JPG?raw=true" alt="drawing" width="500"/>
+</p>
+<ul>
+   <li>So the whole purpose of this exercise is to unambiguously get the mutual exclusion lock for some process competing for it simultaneously. Now how does a process know that it has the lock? So I have to make the decision that I have the lock. How do I make that decision? Two things have to be true to think that I have gotten the lock. 
      <ul>
       <li>The first thing is that my request has to be at the top of the queue. So now you see the messages that I talked about, that is P1's message to P2 and Pn not having reached the destination. Eventually, they reach their destination. And they have acknowledged it. As a result of that the queues are consistent now. P1's request is at the top and it also has received acknowledgments from everybody else. This is the first condition the way you can decide that you have the lock unambiguously in the entire distributed system.</li>
       <li>The second thing is I've received acknowledgments from all the other nodes in the system. In this case, all the other nodes were not requesting this lock so they've sent me acknowledgments. And I've received all the acknowledgments and there is no other request that is ahead of me. I've also received lock requests from P2 and Pn and they are later than mine and that's how they've been ordered in the queue. </li>
