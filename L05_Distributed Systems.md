@@ -835,7 +835,7 @@ So, removing low level Acks, employing hardware checksum and not doing checksum 
 <p><b>-------------------------------------------------------------------------------</b></p>
 <p> <b> Note: Regarding the mentioned I/O automata & Nuprl</b></p>
 <p> 1. Paper: Liu, Xiaoming, et al. "Building reliable, high-performance communication systems from components." ACM SIGOPS Operating Systems Review 33.5 (1999): 80-92.</p>
-<p> 2. Nuprl: Nuprl is able to “understand” both the IOA specifications and the OCaml code, and can rewrite the code for the purpose of optimization. See 4.1 section of the paper regarding the optimization methodology. Not covered in this lecture</p>
+<p> 2. Nuprl: Nuprl is able to “understand” both the IOA specifications and the OCaml code, and can rewrite the code for the purpose of optimization. See 4.1 section of the paper regarding the optimization methodology.</p>
 <p> 3. Specifications: </p>
 <p> 1) Specifications of communication systems range along an axis from specifying the behavior of a system to specify its properties. When specifying the behavior, we describe how the system reacts to events. For example, we may specify that the system sends an acknowledgment in response to a data message. When specifying properties, we describe logical predicates on the possible executions of the system. An example of a property is that messages are always delivered in the order in which they were sent (FIFO).</p>
 <p> 2) Specification of the behavior of both protocols and micro-protocols is done using I/O automata (IOA).The properties describe the system at the highest level. Since the properties do not specify how to implement a protocol, they are easy to compose.</p>
