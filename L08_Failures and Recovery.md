@@ -162,9 +162,6 @@ All of this will help make the design and implementation of a persistent virtual
 <ul>
   <li>So if you look at the redo log, it has a transaction header, and in between the transaction header and end mark are all the changes that have been made in that particular critical section by the developer. And for each of the address changed within that critical section, what is the new data that corresponds to the changes that have been made to that page? Similarly what is the new data for this range, new data for this range. That's the structure of this redo log record that has been created and forced to the disk. Now, when we resume from the crash, we need to make sure that the external data segments Are updated with all the changes that have been made and recorded in the redo log but have not yet been applied to the external data segments. So crash recovery is the whole reason for LRVM. And what we're going to do when we resume from crash is read the redo log starting from the tail Of the entire log segment, and that's where the reverse displacements come into play. And once you've read the log from the disk, apply to the external data segments where it has to go to. All of that information is contained in the redo log record in terms of the transaction, what is the address range that is being modified, what is the external data segment that particular address range corresponds to, All that information is contained in the redo log record. So you can take that and apply to the external data segment. And once you've done that, you can throw away the log. So that's how crash recovery works.
 </li> 
-  <li></li> 
-  <li></li> 
-
 </ul>
 
 
