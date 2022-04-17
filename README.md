@@ -28,4 +28,4 @@ Course Name: Gatech CS6210 Advanced Operating Systems; Instructor: Kishore Ramac
 
 - Week 15: Security
 
-- Week 16: Project Due & Exam
+- Week 16: Exam
