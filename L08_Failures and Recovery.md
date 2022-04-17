@@ -1,7 +1,7 @@
 # Lesson outline
-- [L08a: Lightweight Recoverable Virtual Memory](https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/L09_Internet%20Computing.md#l09a-giant-scale-services)
-- [L08b: RioVista](https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/L09_Internet%20Computing.md#l09b-mapreduce)
-- [L08c: Quicksilver](https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/L09_Internet%20Computing.md#l09c-content-delivery-networks)
+- [L08a: Lightweight Recoverable Virtual Memory](https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/L08_Failures%20and%20Recovery.md#l08a-lightweight-recoverable-virtual-memory)
+- [L08b: RioVista](https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/L08_Failures%20and%20Recovery.md#l08b-riovista)
+- [L08c: Quicksilver](https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/L08_Failures%20and%20Recovery.md#l08c-quicksilver)
 
 
 # L08a: Lightweight Recoverable Virtual Memory
