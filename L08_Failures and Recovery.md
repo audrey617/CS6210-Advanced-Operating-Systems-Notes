@@ -9,7 +9,7 @@
 
 <h2>1. Lightweight Recoverable Virtual Memory Introduction</h2>
 <p align="center">
-   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l8/1.JPG?raw=true" alt="drawing" width="700"/>
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l8/1.JPG?raw=true" alt="drawing" width="600"/>
 </p>
     
 <ul>
@@ -20,7 +20,7 @@
 
 <h2>2. Persistence</h2>
 <p align="center">
-   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l8/2.JPG?raw=true" alt="drawing" width="700"/>
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l8/2.JPG?raw=true" alt="drawing" width="600"/>
 </p>
 
 <ul>
@@ -50,7 +50,7 @@ All of this will help make the design and implementation of a persistent virtual
 <h2>3. Server Design</h2>
 
 <p align="center">
-   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l8/3.JPG?raw=true" alt="drawing" width="700"/>
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l8/3.JPG?raw=true" alt="drawing" width="600"/>
 </p>
 
 <ul>
@@ -65,7 +65,7 @@ All of this will help make the design and implementation of a persistent virtual
 <h2>4. RVM Primitives</h2>
 
 <p align="center">
-   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l8/4.JPG?raw=true" alt="drawing" width="700"/>
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l8/4.JPG?raw=true" alt="drawing" width="600"/>
 </p>
 
 <ul>
@@ -78,7 +78,7 @@ All of this will help make the design and implementation of a persistent virtual
 <h2>5. RVM Primitives (cont)</h2>
 
 <p align="center">
-   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l8/5.JPG?raw=true" alt="drawing" width="700"/>
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l8/5.JPG?raw=true" alt="drawing" width="600"/>
 </p>
 
 <ul>
@@ -94,7 +94,7 @@ All of this will help make the design and implementation of a persistent virtual
 <h2>6. How the Server Uses the Primitives</h2>
 
 <p align="center">
-   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l8/6.JPG?raw=true" alt="drawing" width="700"/>
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l8/6.JPG?raw=true" alt="drawing" width="600"/>
 </p>
 
 
@@ -109,7 +109,7 @@ All of this will help make the design and implementation of a persistent virtual
 <h2>7. How the Server Uses the Primitives (cont)</h2>
 
 <p align="center">
-   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l8/7.JPG?raw=true" alt="drawing" width="700"/>
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l8/7.JPG?raw=true" alt="drawing" width="600"/>
 </p>
 
 <ul>
@@ -124,7 +124,7 @@ All of this will help make the design and implementation of a persistent virtual
 <h2>8. Transaction Optimizations</h2>
 
 <p align="center">
-   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l8/8.JPG?raw=true" alt="drawing" width="700"/>
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l8/8.JPG?raw=true" alt="drawing" width="600"/>
 </p>
 
 <ul>
@@ -138,7 +138,7 @@ All of this will help make the design and implementation of a persistent virtual
 <h2>9. Implementation</h2>
 
 <p align="center">
-   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l8/9.JPG?raw=true" alt="drawing" width="700"/>
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l8/9.JPG?raw=true" alt="drawing" width="600"/>
 </p>
 
 
@@ -156,7 +156,7 @@ All of this will help make the design and implementation of a persistent virtual
 <h2>10. Crash Recovery</h2>
 
 <p align="center">
-   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l8/10.JPG?raw=true" alt="drawing" width="700"/>
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l8/10.JPG?raw=true" alt="drawing" width="600"/>
 </p>
 
 <ul>
@@ -170,7 +170,7 @@ All of this will help make the design and implementation of a persistent virtual
 
 <h2>11. Log Truncation</h2>
 <p align="center">
-   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l8/11.JPG?raw=true" alt="drawing" width="700"/>
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l8/11.JPG?raw=true" alt="drawing" width="600"/>
 </p>
 
 <ul>
@@ -184,10 +184,6 @@ All of this will help make the design and implementation of a persistent virtual
 
 
 <h2>12. Lightweight Recoverable Virtual Memory Conclusion</h2>
-
-<p align="center">
-   <img src="" alt="drawing" width="500"/>
-</p>
 
 <ul>
   <li>LRVM is a classic systems research work. You understand what is the pain point for system developers. Once you understand the pain point, then it becomes easy to think about what solution you can bring to the table to solve it pain point. Managing persistence for critical data structures is the pain point that is identified by the LRVM work. LRVM proposes using lightweight transactions, that is, a transaction without all the heavyweight asset properties usually associated with transactions in database literature. And this lightweight transaction is going to give the needed persistent semantics for designing robust subsystems that can tolerate crashes.
