@@ -550,11 +550,6 @@ All of this will help make the design and implementation of a persistent virtual
 
         
 <h2>14. Quicksilver Conclusion</h2>
-
-<p align="center">
-   <img src="" alt="drawing" width="500"/>
-</p>
-
 <ul>
   <li>The intent in this lesson is to give you a feel for how some enduring concepts stand the test of time. The ideas in Quicksilver, namely, using transactions as a fundamental operating system mechanism to bundle and stage recovery of operating system services found resurgence in the 90s in the LRVM work that we discussed earlier for providing persistence. Again, in 2010, it found resurgence in the form of providing safeguard against system vulnerability and malicious attacks on the system. And another research operating systems called Texas. We will mention Texas when we cover a later lesson module on system security. What about the computer industry and the commercial operating systems? Well, they always focused on performance. Reliability always takes the back seat. You will be amazed, what goes on under the covers of an operating system to gain performance. Just as an example, you write to a file, and you think it is on the hard disk. Well, think again. It is a while before your file write actually gets persisted on the disk. What if the system crashes in the meanwhile? Well, too bad. Well things may change in the future. There are new kinds of memories called Storage class memories, that have latency properties that are similar to a DRAM and are yet non-volatile. Will this new technology result in a resurgence of exploring transactions once more in operating systems? Only time will tell.
 </li> 
