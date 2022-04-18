@@ -40,8 +40,6 @@
  </p>
  <ul>
    <li>Here is another interesting chart. This chart shows all the computers in the world in one chart. March of 1977. This is your entire internet on one chart back in 1977. </li> 
-   <li></li> 
-   <li></li>   
  </ul>
 
  <p align="center">
@@ -84,8 +82,6 @@
   <li>Another level of protection is what's also called user programmed sharing controls. Now this would be facilities similar to what you find in Unix file system today, for instance, such as being able to associate different access right for files for different groups of users in unix, for instance, there are levels of protection that you can associate with a particular file that you created. What is the access right for the creator, the owner of the file? What is the access right for a group that is defined and what is the access right for the rest of the world? So there are three levels of, protection that you can associate of the file, and that's an example of user program sharing controls.</li> 
   <li>Another level of protection is having user defined strings on information. For instance, in the military it is often common to have physical files labeled with top secret. That has to be opened by only some privileged set of users. Similarly, you can associate such strings on information that you create and store with the system. There's four levels of protection that I've identified here are not cast in concrete, because as the system evolves, as the user community evolves, You need to be able to deal with the dynamics of use of this information, use of the system. So that is another issue which you can call as a cross-cutting issue with respect to these levels of protection. For example, how do I change the permissions I've given to a particular file to a set of users that I've defined as a group that can access that file. How do I change the set of users I've included in the access list? What do I do to remove somebody from the access list? What do I do to add someone to the access list for information that I've already created? So all of these are issues that deal with the dynamics of use of information.
 </li> 
-  <li></li> 
-  <li></li>   
 </ul>
 
 <h2>5. Design Principles</h2>
