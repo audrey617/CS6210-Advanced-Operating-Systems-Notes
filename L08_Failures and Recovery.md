@@ -69,8 +69,22 @@ All of this will help make the design and implementation of a persistent virtual
 </p>
 
 <ul>
-  <li>Now we'll discuss the primitives provided by the lab of virtual memory for the app developer. Recall what I said earlier and that is we do not want the in-memory data structures when modified to immediately start writing to the corresponding on-disk version in the external data segments, because that would result in a lot of random writes. And therefore we suggested that what we want to do is use a log segment aggregate changes that we're making to the portions of the virtual address space so that the log segment can then be committed to the disk to record the changes that we're making to the virtual memory and so the first set of primitives that RVM provides is initialization. And in particular, this initialize primitive identifies the log segment to be used by the server process for recording changes to the persistent data structures of this process. And every process can declare its own log segment data structure for use in managing its persistence. So if I have a file system, it has it's own data structures. Because remember that RVM is not inside the operating system, but RVM is provided as a runtime library in support of applications that lives on top of the operating system. So the library provides it's primitives and so initialize is allowing the process that is using this library to declare a log segment data structure, which will be the data structure into which RVM, in the course of execution of the process, will aggregate changes that this process is making to persistent data structures, so that later on those changes in the log segment can be committed to the desk. And even further, those changes can eventually be deflected in the data segments that those in memory versions of persistent data structures that present. The map primitive is the primitive that allows the application to say, "what is the region of the virtual address space that I want mapped to an external data segment?" I mentioned that there is a one to one correspondence between an address range and the virtual address space and the external data segments. So if I need to map different portions of the address space of the process to different data segments. I would execute multiple map calls to map different regions of my virtual address space to different external data segments. So this regional descriptor can contains both the address range that I want to be mapped as well as it names the external data segment. That corresponds to this particular address range. In unmap, thus delivers mainly it decouples the address range from the external data segment that it is associated with up.</li> 
-  <li>So in the body of the server code, these are calls that an app developer would make. The begin_transaction and the end_transaction alerts the RVM runtime that the application is about to make changes to persistent data structures between these begin and end_transaction calls to the RVM library. And in fact, signals to the RVM library that the transaction has committed, meaning that all the changes that the application made in between begin and end to data structures that are persistent have to be flushed to the disk. That is, they have to be made persistent. On the other hand, a begin_transaction could also end in an abort_transaction which essentially signals to the RVM library that all the changes that the application made bound between begin_transaction and abort_transaction. Have to be thrown away by the RVM library and should not be committed to the disk, that is they should not be persistent. So the idea then is, between begin_transaction and end_transaction, the application developer is modifying the in-memory version of the persistent data structures And committing them to the persistency storage by calling this n transaction which is saying, commit my changes to the in memory versions to the persistent version on the disk. On the other hand, if the developer calls an abort_transaction after a begin_transaction then all the changes that he or she made to persistent data structures should be thrown by the RVM library and not persistent on the disk. The set_range call is the very first thing that an app developer will do inside a begin_transaction end_transaction sequence. You can think of this code between begin_transaction and end_transaction like a critical section of the app developer's code base. And the first thing that happens within that critical section is a call to set_range. What the set_range is saying is even though an address region may be mapped to an external data segments, in this particular critical section by begin and end_transaction, I'm going to modify only a portion of that address range, and that portion of the address range that I'm going to modify Is specified by the starting address and the size of that block that I'm going to modify. That's the purpose of the set-range call, which says, for this particular transaction, which I started here, for which RVM will return a unique transaction ID to me, when i make this call I'm going to use this transaction ID and tell RVM that for this particular transaction, I'm going modify only a block of memory starting at this address and bound by this address. That's the purpose of the set change code. So, it is only this portion of it that you are going to modify. And we will see how all of what I said is used by the RVM library in its implementation in a minute. But from the user's point of view, from the developer's point of view, this is all that developer needs to know and use in order to write his application that has persistent data structures. As simple as that. All the heavy lifting that is needed to accomplish the developers intent for persistence that are enshrined in these primitives is taken care of by the RVM runtime which we will see in a minute.
+  <li>Now we'll discuss the primitives provided by the lab of virtual memory for the app developer. Recall what I said earlier and that is we do not want the in-memory data structures when modified to immediately start writing to the corresponding on-disk version in the external data segments, because that would result in a lot of random writes. And therefore we suggested that what we want to do is use a log segment to aggregate changes that we're making to the portions of the virtual address space so that the log segment can then be committed to the disk to record the changes that we're making to the virtual memory.</li> 
+  <li>So the first set of primitives that RVM provides is initialization. And in particular, this initialize primitive identifies the log segment to be used by the server process for recording changes to the persistent data structures of this process. And every process can declare its own log segment data structure for use in managing its persistence. So if I have a file system, it has its own data structures. Because remember that RVM is not inside the operating system, but RVM is provided as a runtime library in support of applications that lives on top of the operating system. So the library provides its primitives.
+     <ul>
+      <li>initialize is allowing the process that is using this library to declare a log segment data structure, which will be the data structure into which RVM in the coarse of execution of the process, will aggregate changes that this process is making to persistent data structures, so that later on those changes in the log segment can be committed to the desk. And even further, those changes can eventually be deflected in the data segments that those in memory versions of persistent data structures that present. </li>
+      <li>map primitive is the primitive that allows the application to say, "what is the region of the virtual address space that I want mapped to an external data segment?" I mentioned that there is a one to one correspondence between an address range and the virtual address space and the external data segments. So if I need to map different portions of the address space of the process to different data segments. I would execute multiple map calls to map different regions of my virtual address space to different external data segments. So this regional descriptor can contains both the address range that I want to be mapped as well as it names the external data segment that corresponds to this particular address range.</li>
+      <li>unmap does the reverse. Mainly it decouples the address range from the external data segment that it is associated with up.</li>
+     </ul>
+     </li> 
+  <li>So in the body of the server code, these are calls that an app developer would make.
+     <ul>
+      <li>The begin_transaction and the end_transaction alerts the RVM runtime that the application is about to make changes to persistent data structures between these begin and end_transaction calls to the RVM library. And in fact, signals to the RVM library that the transaction has committed, meaning that all the changes that the application made in between begin and end to data structures that are persistent have to be flushed to the disk. That is, they have to be made persistent. On the other hand, a begin_transaction could also end in an abort_transaction which essentially signals to the RVM library that all the changes that the application made bound between begin_transaction and abort_transaction have to be thrown away by the RVM library and should not be committed to the disk, that is they should not be persistent. So the idea then is, between begin_transaction and end_transaction, the application developer is modifying the in-memory version of the persistent data structures and committing them to the persistency storage by calling this end_transaction which is saying, commit my changes to the in memory versions to the persistent version on the disk. On the other hand, if the developer calls an abort_transaction after a begin_transaction then all the changes that he or she made to persistent data structures should be thrown away by the RVM library and not persistent on the disk. </li>
+      <li>The set_range call is the very first thing that an app developer will do inside a begin_transaction end_transaction sequence. You can think of this code between begin_transaction and end_transaction like a critical section of the app developer's code base. And the first thing that happens within that critical section is a call to set_range. What the set_range is saying is even though an address region may be mapped to an external data segments, in this particular critical section bound by begin and end_transaction, I'm going to modify only a portion of that address range, and that portion of the address range that I'm going to modify is specified by the starting address and the size of that block that I'm going to modify. That's the purpose of the set_range call, which says, for this particular transaction, which I started here, for which RVM will return a unique transaction ID to me, when I make this call, I'm going to use this transaction ID and tell RVM that for this particular transaction, I'm going modify only a block of memory starting at this address and bound by this address. That's the purpose of the set_range call. So, it is only this portion of it that you are going to modify. </li>
+      <li>And we will see how all of what I said is used by the RVM library in its implementation in a minute. But from the user's point of view, from the developer's point of view, this is all that developer needs to know and use in order to write his application that has persistent data structures. As simple as that. All the heavy lifting that is needed to accomplish the developers intent for persistence that are enshrined in these primitives is taken care of by the RVM runtime which we will see in a minute.</li>
+     </ul>
+     
+     
 </li> 
 </ul>
 
@@ -190,33 +204,358 @@ All of this will help make the design and implementation of a persistent virtual
 
         
 # L08b: RioVista
-<p align="center">
-   <img src="https://www.nicepng.com/png/detail/11-117393_to-be-continued-meme-png-street-sign.png" alt="drawing" width="500"/>
-</p>        
+<p>Paper: David E. Lowell and Peter M. Chen, " Free Transactions With Rio Vista ", Proceedings of the Sixteenth ACM Symposium on Operating System Principles, October 1997.</p>
 
-<!-- <h2></h2>
+<h2>1. RioVista Introduction</h2>
 
 <p align="center">
-   <img src="" alt="drawing" width="500"/>
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l8/12.JPG?raw=true" alt="drawing" width="600"/>
 </p>
-
 <ul>
-  <li></li> 
-  <li></li> 
-  <li></li> 
+  <li>The APIs provided by LRVM are designed to remove an important pain point for system developers, namely system crashes. We know that system crashes can come from software errors as well as from power failure. That brings up an interesting thought experiment which is what we're going to discuss next.</li> 
+  <li>So how does LRVM do it? Well, it does it by providing transaction semantics for persistent data structures. It calls itself lightweight since it eliminates all the usual heavyweight properties associated with transactions, which are usually called ACID properties. And LRVM makes transactions lightweight for using precisely for the intended purpose which is recovery management. In LRVM, changes to virtual memory are written as redo logs at the end of a transaction. And these redo logs are forced to the disk at the end of the transaction as common records Of changes made to virtual memory. And as it log force that happens at commit point is what is called a synchronized I/O, because the application has to wait for the I/O to complete before proceeding with further execution. So a precise implementation of the transaction semantics of LRVM requires a log forced to the disk to make sure that the redo log that represents all of the changes made to virtual memory within that critical section bound by a begin_transaction and end_transaction is actually committed and persisted on the disk. It is precisely for this reason namely synchronous I/O that transactions are considered heavyweight, even though the semantics of transactions have been considerably reduced and made simpler in the design of LRVM. In other words, for a precise implementation of LRVM at the commit point, it requires at least one synchronous disk I/O. The system design tend to avoid transaction despite the precise semantics of transaction due to the time penalty associated with disk I/O. If disk I/O can be eliminated, then transactions would be cheap. And if transactions become cheap then everyone will use it and life is good.</li> 
+  <li>Rio Vista, the lesson that we're going to review now, asks the question, "How can we eliminate synchronous disk I/O?" So in other words, Rio Vista is going towards a performance-conscious design and implementation of persistent memory starting from where LRVM left off.
+</li> 
+</ul>
 
-</ul> -->
-# L08c: Quicksilver
         
-<!-- <h2></h2>
+<h2>2. System Crash</h2>
+
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l8/13.JPG?raw=true" alt="drawing" width="600"/>
+</p>
+
+<ul>
+  <li>There are two orthogonal problems that lead to a system crash. One is power failure. The second is software failure, or in other words, the application crashes for some unknown reason, obviously a bug in the application. So Rio Vista poses a very interesting rhetorical question. Suppose we postulate that the only source of system crash is software failure. There are bugs in the software, and not power failure. How does that change the design and implementation of failure recovery? Now the question is how can we eliminate power failure. Well, we can throw some hardware at the problem and make power failure go away. For example, we can get a UPS power supply and connect it to the portion of the system that I want to be up even if the power fails.</li> 
+  <li>So the idea in Rio Vista is, if we can take the memory and take a portion of that main memory. And make that persistent to power failures by adding a battery backup. Then even if there's a power failure, this portion of the memory, whatever changes, you record it here. It's going to survive that power failure because it has battery backed up. That's the idea, if we can throw some hardware at the problem and make the problem disappear. So that we can then focus on how to recover from failure assuming that the only source of failure is software crash. So with this amendment will this make the implementation of transactions as defined in LRVM cheap, so that designers will actually use them? Let's see how this can help.
+</li> 
+</ul>
+
+        
+<h2>3. LRVM Revisited</h2>
+
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l8/14.JPG?raw=true" alt="drawing" width="600"/>
+</p>
+
+
+<ul>
+  <li>Let's revisit the semantics of LRVM and what it does. So this is a time axis.</li>
+  <li>Begin_Transaction: the application when it calls the begin_transaction primitive of LRVM. LRVM says, "okay, the application is going to modify some portion of the memory. So let me create a memory copy of the old contents of the portion of the memory that this transaction is going to modify." And that is called the in-memory undo record of LRVM.</li> 
+  <li>Normal Program Writes: In the body of the transaction, the program is doing normal program writes and they are going into the memory. No problem with that, because LRVM has the undo record already stashed away. So all of these are writes to normal memory and there is no interaction with LRVM during this portion of the transaction code.</li> 
+  <li>End_Transaction: Then the application reaches the end_transaction and makes the end_transaction call to LRVM. At that point, LRVM is going to write a redo record onto the disk when the transaction commits, because end_transaction is synonymous with commiting, so far as LRVM is concerned. And therefore, at this point, the changes that have been made to virtual memory are written out as a redo log record and forced to the disk by LRVM. We know disk I/O is slow and the more you do it, the slower will be the subsystem that is using these LRVM primitives, and that's why LRVM provides the no-flush option in transaction call which allows an applicaiton to tell LRVM write it out to the disk but don't stop me from progressing further in my computation. In other words, the applicaiton is hoping that there won't be any failures that will result in all the changes that it recorded in memory not being forced to the disk. So the LRVM is going to write out the redo log as the background activity and the hope is that there won't be any system crash during the time that it takes for it to do. And this is what we called as the window of vulnerability when we talked about LRVM. So what the no-flash option does is to increase the vulnerability of the system to power failures in favor of performance. And that's a calculated risk an application developer is taking if they specify no-flush optimization in the end_transaction. So, on the other hand, if you are conservative then what you would do is you let the end_transaction have the normal transaction semantic, which to say that adding transaction force the write of the log into the disk to ensure that the log segment has been commmited to the disk. And only then allow the application to proceed further. And at this point, at the commit point, the other thing that LRVM would do is, in addition to forcing the log record to the disk, it will also get rid of the undo record because the undo record is no longer needed for this transaction since the transaction was successfully committed.</li> 
+  <li>Log Truncation: We know as a background activity, what LRVM does is to update the original data segments with the changes that have been recorded in the redo logs because, as you recall, the data segment contains a persistent data which are being brought into memory and modified during this transaction. And those changes had to be eventually persistent. Right now, they're sitting in the redo log records and what the log truncation part of the LRVM library does is to read the redo log records and apply them to the data segment and get rid of the redo logs. So this is the log truncation or clean-up of the disk space that is done periodically by LRVM. Because in the absence of crashes you have to make sure that you clean up the disk every once in a while.</li> 
+  <li>The upshot of LRVM implementation is there are three copies of the VM space done by LRVM to manage persistence for recoverable objects. Of course, it optimizes log force by dealing them at transaction endpoint. But in implementing LRVM one of the biggest sources of vulnerability is power failure. Because if you, in fact, use at optimization to defer writing out the log record to the permanent storage, then all the work that you did in this transaction may actually be wasted if in fact there is a power failure before the log force happens. Now what does providing a battery-backed DRAM give you?
+</li> 
+</ul>
+
+        
+<h2>4. Rio File Cache</h2>
+
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l8/15.JPG?raw=true" alt="drawing" width="600"/>
+</p>
+
+
+<ul>
+  <li>Before we talk about how we can implement RVM efficiently with a back to back DRAM. Let's first understand how we can use a back to back to DRAM to implement a persistent file cache. What we mean by that is, typically file systems use a file cache to hold data that is brought from the disk for efficiency of manipulation by programs or anything on the processor. And when we say it's a persistent file cache, what we're saying is, even if there is power failure, the contents of this file cache is still available when the power comes back up again. And in order to achieve that, we're going to string a UPS power supply, to back this file cache, which is implemented in DRAM. So the contents of the file cache never goes away. And we also postulate that, there is VM, a virtual memory protection, that have been built in to the operating system to prevent operating system errors such as wild writes to the file cache during software crash or power failure.</li> 
+  <li>Now there are two ways to use the Rio file cache. One is, when a process does file writes, actually they are writing to the in memory copy of the file. Typically operating system buffers the writes that you do to files in DRAM and then write them out to the disk in opportune moments later on. And now if these file writes go to the file cache which is battery backed then you make sure that these file writes are persistent. Normally if an application wants to make sure that when it writes a file, the contents of the file is immediately forced to disk, the application will have to do an fsync call in a Unix system, for instance. But if we have this battery-backed file cache, the application can simply do normal file writes and don't worry about doing an fsync, because writing to the file, writes to the file cache, and the file cache is persistent by definition, because it is battery-backed. And similarly, another common operation that is done is Unix allows files to be mmaped, that is mapped into memory. And if an application maps a file into memory and writes to that file using normal program writes, those normal program writes become persistent because these writes are backed by the file cache. And the file cache is battery-backed, and therefore normal program writes becomes persistent.</li> 
+  <li>So with the Rio file cache that is battery-backed, what we get is that file writes by a process as well as normal program writes to memory mapped files become persistent by definition. In the absence of this facility of a persistent file cache. If an application were to mmap a file, and write to that using normal program writes, then it will have to do what is called an msync call in order to make sure that writes that it did to virtual memory actually get persisted on the disk. But with a real file cache that is persistent, there is no need to do that, because by definition any writes that get into this file cache will persist. In other words, the contents of the file cache will survive power failures.</li> 
+  <li>So if there is a system crash, whether it is a power failure or software crash, the file cache data, in memory, is going to be written onto the disk for recovery. And so the upshot is no synchronous writes are needed to the disk any more. It also means that writeback of files written to by an application can be arbitrarily delayed. What that means from the file system perspective is that if the lifetime of files is very short then those files go away. And so you don't have to write it to the disk in the first place. And this is common in compilation process for instance a number of temporary files are created. And those files live in the file cache for a short amount of time and when the compilation process is complete, those files are deleted so you never have to write those files to the disk. So that's a good thing about having this idea of a persistent file cache.</li> 
+  <li>Now let's look at how we can use RIO to implement RVM. So we've got this persistent file cache and we're going to ask the question, if we have this persistent file cache, how can we optimize the implementation of a reliable virtual memory?
+</li> 
+</ul>
+
+        
+<h2>5. Vista RVM on Top of Rio</h2>
+
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l8/16.JPG?raw=true" alt="drawing" width="600"/>
+</p>
+
+
+<ul>
+  <li>Vista is the RVM library that has been implemented on top of the Rio file cache, and let's see how that works.</li> 
+  <li>The semantics of RVM that is implemented in this is exactly the same as what we saw in the previous lesson, namely LRVM. It is just that the implementation takes advantage of the fact that it is sitting on top of a Rio file cache. So what we're going to do in implementing RVM using the Rio file cache is to map the data segment to the virtual memory. Exactly similar to what was done in the LRVM primitive. So, when we map the external data segment to virtual memory, by definition now, this portion of the memory becomes persistent because it is contained in the file cache and the file cache survives power failure because of the battery backup. And therefore, now we have made this portion of the virtual memory, that is mapped to the data segment, persistent. So when we hit the begin_transaction call in the application, what we're going to do is make a before image of the portion of the virtual memory that we're going to modify during this transaction. Remember that in the RVM library, the set of operations that you do to virtual memory between begin_transaction and end_transaction. The user's intent is that those changes are for persistent data structures. And the persistent data structures that they want to modify, they would execute a set_range call to say what portion of that address range needs to persistent. So what we do in this Vista, which is an implementation of RVM is, at the point of begin_transaction, we're going to make a before image, a in-memory copy, of the portion of the address space that we intend to modify during this transaction. That will serve as the undo log. Now, note that this is also mapped to the file cache, so the undo log is mapped to the file cache and therefore this undo log, is by definition, persistent node. So the undo record that we create in memory, we back it up on the file cache and therefore this undo log that we have created is actually persistent. It'll survive failures.</li> 
+  <li>So when the program is executing the body of the transaction, it's doing normal program writes to a portion of the virtual address space where it has persistent data structures as well. So when it does this normal program writes to this virtual memory. The portion of the virtual memory that is mapped to this external data segment is by definition persistent and so these normal programs writes actually get into the data segment, their being persistent automatically because this portion of the virtual address space is mapped to this data segment, which is in the file cache and therefore persistent because of the battery backing. So all the changes that we are making during the execution of the body of the transaction code is actually getting persisted in the original data segment, for which this was an in-memory copy, but the in-memory copy is actually sitting in file cache which is battery backed.</li> 
+  <li>Then we reach the end_transaction in the application code, and remember in the end_transaction is when a change has had to be committed. Well, you know what? The changes are already committed because that is the semantic of mapping the latest segment in virtual memory. And because the file cache is persistent, all the changes that we made to the virtual memory during these normal program writes are actually reflected in the data segment. So the end_transaction at commit point, you don't have to do anything other than getting rid of this undo log, because the transaction is committed and therefore you can throw away this undo log and all the changes are already in there by design by construction. Just as an aside, if you think about LRVM implementation, commit point is the point where there is heavy lifting to be done. Because in LRVM, at the commit point, the redo log, which had been created by LRVM, to reflect the changes to the persistent data structures in memory, have to be forced to the disk. But in Vista, which is implementation of RVM on a persistent file cashe, no work needs to be done at the point of end_transaction for commit because all the changes that the application developer intended to be committed to the data segment are already in there. And therefore, at commit point, all that needs to be done by Vista is to get rid of this undo log.</li> 
+  <li>On the other hand, if the transaction aborts, in that case, what needs to be done is the undo record that we created at the beginning of the transaction, the before image, we are to take that and copy it back into the portion of the virtual memory that we modified, because that is a semantic of RBM. That if the transaction aborts, we restore the virtual memory back to it's original state before the beginning of the transaction. So the before image that we saved at the beginning of the transaction, we copy it back into this portion of the virtual memory that has been modified during this transaction. And once we do that, we can throw away the undo log. And when we restore the before image into the virtual memory that we're also correcting whatever changes we made to the data segment automatically. Because, remember that this picture is just showing the virtual address space of the process and this is really the physical memory which is being used as a file cache battery backed and a portion of the virtual address space is in this battery pack file cache, rest of the address base of the application, does not need persistence, that can be a normal physical memory. Only the portion of the application memory that has persistence guarantees through the data segment needs to be mapped to this portion of the physical memory that is battery backed. So just to recap what happens at end_transaction, if it's a commit, no work to be done except to get rid of the undo record. All the changes to persistent data structures are already in there in the data segment. On the other hand, if it aborts, restore the old image back into the virtual memory, I am back in business as though these transaction never happened. The implication of this Vista implementation, which is RVM on top of Rio file cache, is that there is no disk I/O at all. And there is no redo log, because we directly writing into the data segments All the external data segments that we define in the initialization of the RVM library on the disk, they become memory resident when you map them into the virtual address space of the application. So the external data segments become persistent because of being brought into the file cache. And mapped into the virtual memory space of the server application.
+</li> 
+</ul>
+
+        
+<h2>6. Crash Recovery</h2>
+
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l8/17.JPG?raw=true" alt="drawing" width="600"/>
+</p>
+
+<ul>
+  <li>What do we do for crash recovery? Suppose the system crashes and come back. Treat it just like an abort. Recover the old image from the undo log. Remember that undo log will survive crashes, because it is in the Rio file cache. So if the system crashes and comes back up, you see there is an undo log, take that undo log, apply it to the virtual address space that it corresponds to. You're back in business again. Could there be a crash during crash recovery? No problem with that. Because of idempotency of recovery, there's no problem in dealing with crash that might happen during crash recovery.
+</li> 
+
+</ul>
+
+        
+<h2>7. Vista Simplicity</h2>
+
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l8/18.JPG?raw=true" alt="drawing" width="600"/>
+</p>
+
+
+<ul>
+  <li>Vista, by virtue of its simplicity, by making one of the problems go away, namely, the power failure, the implementation is very simple: 700 lines of code in Vista as opposed to more than 10,000 k lines of code in the original LRVM implementation.</li> 
+  <li>Why? Because there are no redo logs. All the changes that we're making to virtual memory for persistent data structure directly get in to the data segments. So no redo logs. Correspondingly, there is no truncation code, and check pointing and recovery code is significantly simplified, and there is no group commit optimizations.</li> 
+  <li>The upshot of all of these simplifications that comes from one simple trick and that is to make a portion of the DRam persistent. And implement the file cache with that persistent portion of DRAM can get rid of redo logs and get rid of truncation code and Vista has the simplicity of LRVM but it is also performance efficient. I encourage you to browse through the performance results that are reported in the paper on Rio Vista which I have assigned for your reading to see how Vista performs compared to LRVM. In particular, Vista performs three orders of magnitude better than the original LRVM because of the simplicity and the fact that there is no disk I/O. That is the biggest improvement in making Vista perform really well compared to LRVM.
+</li> 
+</ul>
+
+        
+<h2>8. RioVista Conclusion</h2>
+<ul>
+  <li>Rio Vista is a very interesting thought experiment. It basically shows how, if you change the starting assumptions for ae problem, you can come to a completely different design point. In this case, the starting assumption was that source of crashes was only software, not power failure. That changes everything.
+</li> 
+
+</ul>
+
+
+# L08c: Quicksilver        
+<p>R. Haskin et. al.,"Recovery Management in QuickSilver", ACM Transactions on Computer Systems, February 1988.</p>
+
+<h2>1. Cleaning up State Orphan Processes</h2>
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l8/19.JPG?raw=true" alt="drawing" width="600"/>
+</p>
+<ul>
+  <li>Now don't worry. This is not your computer misbehavior. How many times have you see often windows like what I'm showing you on this screen? Why does this happen? The simple answer is programs are not being hygienic, that is, they are not cleaning up after themselves. Now, you can not fault the applications themselves. If an application encounters an error or the user decides to kill an application, either ways, the system services that the application was using have to have a way of gracefully terminating and getting rid of the state, that is the bread crumbs it created along the way. And it may have strewn such bread crumbs all over the computer. Some may be in data structures in memory, some may be visible, like the orphan windows that I'm showing you on the screen and so on. Bottom line is these bread crumbs are using up precious resources in the computer. It may be visible resources like real estate, on your display of failed applications or invisible resources like memory leaks, network bandwidth that is being chewed up by connections that are persisting beyond the life of an application. Persistent data structures on the disk and so on. 
+</li> 
+</ul>
+
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l8/20.JPG?raw=true" alt="drawing" width="600"/>
+</p>
+
+<ul>
+  <li>LRVM and Rio Vista which is really implementation of the RVM semantics on top of a persistent file cache, took a very narrow view of recoverability, namely recovering the state that need to be persistent across system crashes. Either becaue of software failure or power failure. But imagine a system service that spans several machines and network file server is a good example. NFS is suppoed to be stateless which means that the client-server interaction maintains no state at the server, pertaining to the clients. So what that means is, taking down a file server and bringing up the file server again does not need any coordination with the clients that this file server may be serving at any point of time. But look at what is happening from the point of view of the system, especially the client boxes that are interacting with the file system. In this case, there are clients all over the network so far as this file server is concerned. And indirectly, and if a server is leaving bread crumbs all over the LAN because of accesses that a client may have made with a file server, in each one of these boxes. Imagine what happens when a client program that initiated a file system call quits in the middle of its exchange with the file server? How will the file server know how to clean up all the mess? And in fact, with a stateless file server, doesn't even know that there have been bread crumbs created on this node.</li> 
+  <li>The short answer is, the file system cannot know about these kinds of bread crumbs that have been created all over the network. And I'm giving you a file server as one example, but in general, all of the system services that a client program is reliant on create state, and this partial states may live forever if an application crashes in the middle. Worse yet, you as a user may be asked by the operating system to do some cleanup, not knowing what the cleanup may entail for you personally. Am I going to lose two hours of work that I just completed? I have no idea what will happen when I click the OK button here.
+  </li> 
+</ul>
+
+        
+<h2>2. Quicksilver Introduction</h2>
+
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l8/21.JPG?raw=true" alt="drawing" width="600"/>
+</p>
+
+<ul>
+  <li>So Quicksilver asked this question, if recoverability is so critical for so many subsystems, shouldn't recovery be a first class citizen in the design of operating system and not an afterthought? Because LRVM and Rio vista are trying to fix a problem that manifested itself because the operating system was not doing its job well. So the question that Quicksilver asks is, can we make recovery a first class citizen in the design of the operating system?
+</li> 
+</ul>
+
+        
+<h2>3. Quiz Introduction</h2>
+<ul>
+  <li>Users of a system want the cake and to eat it too. They want good performance from the operating system, but they also want the operating system to be robust and recover from such failures. That is, they want the operating system to be reliable. Conventional wisdom is that performance and reliability are opposing concerns. That is, you can have one or the other, but not both. Quicksilver's approach is that if recovery is taken seriously from the get-go, you can design the system to be robust to failures without losing much on performance. Let's have another trivia quiz.
+</li> 
+</ul>
+
+
+        
+<h2>4. Quicksilver</h2>
+
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l8/22.JPG?raw=true" alt="drawing" width="600"/>
+</p>
+
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l8/23.JPG?raw=true" alt="drawing" width="600"/>
+</p>
+
+        
+<h2>5. Distributed System Structure</h2>
+
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l8/24.JPG?raw=true" alt="drawing" width="600"/>
+</p>
+
+
+<ul>
+  <li>If you look at the structure of distributed systems today, what you'll see is there are applications in the applications that users use. And there are system services and there is a micro kernel that's sitting at the bottom. And the system services include things like file server, web server, Window manager, database manager, and the network stack for applications to do network communication with servers that may be on remote machines. And the micro kernel itself may be responsible for process management and managing the hardware resources and providing inter-process communication, both intra-machine among these services. As well as inter-machine through the network stack, the remote machines on the local area network. We've seen that this is a structure we like to see in the operating system. And in fact, from many of the previous lessons that we have looked at in operating system design and implementation, both for a single processor, for a multi-processor, and a networked operating system, this kind of structure lends itself to extensibility and yet high performance.
+</li> 
+</ul>
+
+        
+        
+<h2>6. Quicksilver System Architecture</h2>
+
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l8/25.JPG?raw=true" alt="drawing" width="600"/>
+</p>
+
+<ul>
+  <li>As I mentioned earlier, Quicksilver was done in the early 80s, and here is a sketch reproduced from their paper. An interesting thing that you notice is that this sketch is very similar to what I showed you as the current structure of network operating systems in the earlier panel. It's a microkernel based design and Quicksilver was the same vintage as Mach from CMU. And having seen the structure of operating systems in earlier lessons, this picture should be very familiar to you, that all the system services are provided above the microkernel. And the microkernel is only responsible for Process Management, IPC, and Machine Control. And all of the system services such as Window Manager, File System, Virtual Memory, and Communication, all of them sit above the microkernel, and the system services are implemented as server processes.</li> 
+  <li>Now, the late 80's was exciting time for distributed systems. There were no laptops in that time. We were moving from CRT terminals, Cathode Ray Terminals, connected to mainframe to the era of office workstations, what we routinely call as desktops these days.</li> 
+  <li>Quicksilver was conceived as a workstation operating system. And the ideas that are enshrined in the Quicksilver operating system predates over concurrent with many things that we take for granted today, such as network file system, remote procedure call, the Internet, the World Wide Web, and so on. What sets Quicksilver apart from the competition at that time when new services such as window manager for managing the real estate on the workstation screen and how it should be integrated into the operating system as a whole? Services that may not be available in the workstation itself, for example, a file server maybe remote. So integrating communication into the design of the operating system was key and services that are within a workstation and across workstation on the network in the distributed system need to recover from failures. Rather than ad hoc mechanism for each server to recover from such failures, Quicksilver was the first to propose transaction as a unifying concept for recovery management of the servers. It was the first operating system to propose transactions in operating systems and that's the reason you see transaction manager as part of the service provided by the operating system. A quick personal note, I was a graduate student at University of Wisconsin, Madison in the early '80s, and spent a year in IBM research working with the group that conceived and designed this Quicksilver operating system. My dissertation research, which was on hardware support for inter process communication, used as an experimental platform, a precursor to the Quicksilver operating system which is called 925. Recall what I told you earlier that Quicksilver was intended as a workstation operating system, and 925 was the name of the operating system that was a precursor to Quicksilver. And as you can imagine this is a pun on office workstation nine to five. That was the name given to internally to the precursor of the Quicksilver operating system.
+</li> 
+</ul>
+     
+<h2>7. IPC Fundamental to System Services</h2>
+
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l8/26.JPG?raw=true" alt="drawing" width="600"/>
+</p>
+
+<ul>
+  <li>Because Quicksilver is a distributed operating system, IPC both within and on the local data network is a crucial component of Quicksilver. And this picture shows the semantics of the IPC call. In the kernel, there is a data structure called service queue, which is created by the server that wants the service, request from clients. And clients make a request, and the kernel does an upcall to the server to indicate that this is a client's request. The server executes the upcall associated with this particular request. When it completes the request, the completion goes back into the service queue. And that is an indication for the kernel to give a response back to the client. So then the synchronous client call where the client is waiting til the request is actually serviced, and the completion response comes back to the client. And the service queue is a global service queue, just like UNIX socket. So any process anywhere in the network which has knowledge about the service queue can connect to it and make requests on the service queue. And similarly any server process in the entire distributed system can service requests that are coming into the service queue. And there are some fundamental guarantees provided by Quicksilver for interprocess communication which includes no loss or duplication of requests. So the request comes in, it will get done exactly once. And it also ensures that there's no duplication. It also ensures that there is no loss of the request. And Quicksilver also takes care of the liability of the data transfer that is inherent when the client and the server, are on remote machines. And because the service queue data structure is globally unique for every such service. There is location transparency for client server interactions. Or in other words, a client does not needs to know where in the network its particular request is being serviced. For that is yet another feature of the IPC guarantee.
+</li> 
+
+</ul>
+
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l8/27.JPG?raw=true" alt="drawing" width="600"/>
+</p>
+
+<ul>
+  <li> The IPC call can also be asynchronous. What that means is, the client can make a request asynchronously. And continue with its own execution, whatever it wants to do, it doesn't have a block on this. The kernel is going to take the same action, and that is, if there is a server that is available, then the kernel is going to pass it to that server to execute that request. And, when the completion comes back in, it is buffered in the service queue by the kernel, waiting for the client to come back, and ask for the response. So the client, at some point, has to do a wait on the service queue to indicate that I'm ready to receive the response that may have come, back for the request that I made earlier. And when the client does the wait, if the original request has already been serviced by the server, and the response is sitting in the service queue, then the kernel, will deliver the response to the client. If not, the client will wait until the response comes back. So this is the asynchronous client call, but in either case, as I mentioned earlier. The IPC guarantees hold that there is no loss of the request, and there is no duplication of the request. As you can see from the semantics that I described just now, that Quicksilver IPC is very similar to remote procedure call. In fact, the remote procedure call paradigm was invented around the same time as the Quicksilver Operating System. And since all services are contained in several processes, IPC is fundamental to Quicksilver. </li> 
+</ul>
+
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l8/28.JPG?raw=true" alt="drawing" width="600"/>
+</p>
+<ul>
+  <li>The IPC semantic supported by Quicksilver allows multiple servers to wait on a service queue. And the way they will do that is by making a call called offer which essentially says "I'm willing to offer my services for this particular service queue. Any number of servers can make this offer" and that essentially means that if a request comes in, that any one of these servers can be called by the kernel depending on the busyness of the servers with respect to handling requests that have come in for the service queue in the past.</li> 
+</ul>
+
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l8/29.JPG?raw=true" alt="drawing" width="600"/>
+</p>
+
+<ul>
+  <li>The client-server relationship is interchangeable. For example, a client can make a call on a file system server and the file system server in turn makes a call. To a directory server and a call to a data server. So, in this case, the file system becomes the client to the directory server and the data server. So in that sense, the client-server relationship is interchangeable.</li> 
+  <li>Now the only reason for me to spend some time describing the IPC semantics of Quicksilver is because the recovery mechanism is tied intimately with the IPC. And in fact, that's how you can have the cake and eat it too in Quicksilver. In other words, the client server interactions have to use IPC. So the recovery mechanism, using transactions, rides on top of the IPC, essentially bundling the recovery mechanism with ICP to get it cheaply. Another interesting footnote I wanted to mention. The Quicksilver system was first conceived in the early 80s, but the first paper that described it appeared in 1988. And this is certainly the difference between academic research and industrial research at least in the olden days. Academic research, we tend to shout often. I'm an academic myself, so I take part of the blame. At least in the olden days, industrial research used to take the approach of publishing a paper, especially in systems designed, when it is fully cooked. Like I said, Quicksilver was designed and implemented in the early 80s, 1984 to 1988, but the first paper came out in 1988. But nowadays I have to mention that everyone is shouting often, which explains the proliferation of conferences that you see around the country and the world.</li> 
+</ul>
+
+
+<h2>8. Bundling Distributed IPC and X Actions</h2>
+
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l8/30.JPG?raw=true" alt="drawing" width="600"/>
+</p>
+
+<ul>
+  <li>Let's understand how Quicksilver bundles IPC with recovery management. The secret sauce for recovery management is the notion of transaction. It's a light weight version of transaction. Not the heavyweight version that you normally associate with databases. In that sense, the notion of a transaction in Quicksilver is very similar to what we saw in LRVM. In fact, it is perhaps fair to say that LRVM inherits the semantics of transactions similar to what was proposed in the Quicksilver, because Quicksilver predates LRVM. And the IPC calls a tag with transaction ID.</li> 
+  <li>Let's say a client makes a call to a server, an IPC call to a server. Now, because of location transparency, the client and the servers can be on different machines in the entire local area network. 
+</li> 
+</ul>
+
+      
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l8/31.JPG?raw=true" alt="drawing" width="600"/>
+</p>
+
+<ul>
+  <li>Under the cover, the client contacts the Quicksilver kernel on the node that it is on, let's say node A, which in turn contacts the communication manager that's part of the operating system of Quicksilver and implemented as a server process above the kernel. Now, this communication manager on node A contacts the communication manager on node B via the kernel on node B. So all of this is happening under the covers when a client makes an IPC call to the server. Depending on the nature of the client-server relationship there's going to be state associated with this client-server interaction.</li> 
+  <li>Further the communication manager may itself have state when it is communicating with its peer on a different node of the network. We would like to make sure that the state that is associated with the communication manager as well as the state associated with the high level client-server relationship that I am showing you, all of these are recoverable from failures. And the failures may be things like link failure or crashing of the server. Any of these will result in state being left behind and what we would like to make sure is that all such state that is left behind in the entire distributed system is recoverable.</li> 
+</ul>
+
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l8/32.JPG?raw=true" alt="drawing" width="600"/>
+</p>
+
+<ul>
+  <li>So under the cover the communication manager on node A contacts its transaction manager, and the transaction manager on node A in turn contacts its peer on node B. And now a transaction link is established as a way of recording the trail of client-server interactions to later facilitate picking up the bread crumbs that may potentially be left behind when the client-server interaction terminates either successfully, or unsuccessfully. So, the creator of the transaction is the default owner of the transaction, that is the root of the transaction T. Others are participants. In this example I'm just showing you that a client-server relationship exists here. The transaction manager contacts its peer, and this guy says "yes, I'm willing to participate in this transaction." So this is the transactional tree that gets established as a by-product of the original client-server interaction.</li> 
+  <li>So the owner, that is the root of the transaction, is the coordinator for the transaction tree that gets established. And as we will see shortly this transaction tree can span several sites, because a transaction that starts here, goes to the server, may go to other servers.</li> 
+  <li>So the creator of the transaction is the owner of the transaction. But the owner can also change ownership as well as change the coordinator for this transaction, and we'll see how that is useful in a minute. The client-servers can choose to remain completely unaware of transactions if they so choose. In other words, the mechanisms are there provided by the Quicksilver Operating System, but it is up to each service provider whether or not to use them. And there is no extra overhead for the communication that I am showing you between these transaction managers on these different nodes, because it happens naturally as part of the IPC that has to happen anyway in the distributed system. That is the communication that is needed for these transaction managers to handshake to say "yes, I've received your transaction request, I want to participate in it." that is piggybacked on the normal communication that happens to support this interprocess communication between the client and the server, through the communication managers on these different nodes. They are piggybacked on top of regular IPC. So there is no extra overhead for the communication among the transaction managers. </li> 
+</ul>
+
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l8/33.JPG?raw=true" alt="drawing" width="600"/>
+</p>
+
+<ul>
+  <li>So a chain of client-server interactions leads to a transaction tree as client-server interactions can span multiple nodes, or multiple sites, on the local area network. So there is the the root of the transaction tree, who is the owner that initiated the original transaction through the IPC call, and these are all the participants who said that yes, we are also part of this IPC chain, and we will participate in this transaction that was initiated by this owner.</li> 
+  <li>Examples of how these client-server interactions lead to the creation of transaction trees. You can have a client making a call to a window manager, asking for something to be painted on the screen. And that under the covers will result in a transaction link between these two nodes. Or a client could make a request to a file server for opening a file. That would result in a transaction tree getting established between the participating nodes. And you can see in these examples what kind of bread crumbs will get created on behalf of the client. The window manager may have opened up a window on the display and that's a piece of breadcrumb that had been created on behalf of this client. And similarly, the file server may have opened a file and kept some pointers to where this client is in that particular file. That's part of the breadcrumb that the file server is creating on behalf of this client. And those are the states that we would like them to be recoverable if in fact there is any failure. I mentioned earlier that IPC calls are tagged with the transaction ID that gets created under the covers. And these transaction IDs are automatic. The clients and the servers don't have to do anything special for that. But at the same time, they don't have to care about them either, if they don't want to use it in any fashion or form. The key point is the transactions are provided in the operating system from the point of view of recovery. And because a client-server relationship can traverse multiple nodes or sites in the local area network, it is important to make sure that recoverability has to worry about multi-site atomicity. A transaction that originated in one node may traverse several different nodes and leave bread crumbs all over the place. All those have to be cleared up when a transaction terminates. So there is coordination that needs to be done, and this is where the transaction tree is very useful. And since the transaction that is used as a secret sauce in Quicksilver is purely for recovery management, semantics are very simple and there is no worry about concurrency control either.</li> 
+ 
+</ul>
+  
+        
+<h2>9. Transaction Management</h2>
+
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l8/34.JPG?raw=true" alt="drawing" width="600"/>
+</p>
+
+
+<ul>
+  <li>So due to the client server interactions that happen with the system, I'm giving you one specific example here. A client makes a call to a file system. And the directory server of the file system makes call to the data server where the file is actually located. So all of these are IPC calls. But under the cover a shadow graph structure emerges which is a trail of the client server interactions. The client opening the file so the TM on the owner has a link to a TM on the directory manager and the directory manager is calling the data servers and two different nodes and correspondingly, there is a link from the transaction manager on the directory server to the transaction manager on the data server on these two different nodes.</li> 
+  <li>If you look at it from the point of view from the transaction tree, the client is the owner of the transaction tree and all of these sites are participants in the transaction tree. I mentioned earlier that as the owner of a transaction tree, the owner has the right to delegate the ownership to someone else. Why would they want to do that? We think about it from the point of view of the distributed system that we are talking about. The most fragile parts of the distributive system are the clients. They are the fickle minded ones who can go away, who can abort a file request that they started and so on. So in that sense if the root of the transaction tree is on a client node then cleaning up the bread crumbs may become hard if the client box goes away. Because the owner will go away, and that's the reason the owner can delegate the ownership to any node in the system and that node becomes the transaction manager for this particular transaction tree in terms of what needs to be done to clean up anything that happens adversely during the interaction that I'm showing you in this particular picture. So the heavy lifting that Quicksilver does has to do with what it needs to do under the covers in keeping this order tree of transactions. Corresponding to the IPC interactions from the point of view of recovery. Let's talk about how this order chain is managed by Quicksilver in order to facilitate recovery management.
+</li> 
+</ul>
+
+        
+        
+<h2>10. Distributed Transaction</h2>
+
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l8/35.JPG?raw=true" alt="drawing" width="600"/>
+</p>
+
+
+<ul>
+  <li>By the very nature, transactions are distributed at each node, and the transaction manager is responsible for all the client-server interactions that touches that particular node. For example, the client at this node could have done the following: he could have opened the window for reading Gmail, he could open a window in which is accessing file for editing. Now the transaction manager node A, has to manage the transaction keys corresponding to each of the client server interactions that is initiated by this client. Opening a window for Gmail is one interaction. Opening another window which is accessing a file for everything is another interaction. The transaction manager is responsible for maintaining the transaction trees for each one of those separately. And the transaction manager where the client server interaction originates is the owner as well as the coordinator. But it is designatable to some of the node as I mentioned already. And there is a graph structure for the transaction tree. And this is very useful in terms of reducing network communication because all the transaction manages that form this interaction don't have to always communicate with the coordinator. For instance, the transaction managers at nodes C and D, have been contacted because of IPC that originated at node B, to node C and D respectively. In that case, they only have to report to node B and they don't have to necessarily report to coordinator of the whole transaction sheet. So, this is helpful in reducing the amount of network communication.</li> 
+  <li>All transaction managers are not equal. I mentioned earlier that Brittle nodes in the system are the client nodes, and therefore, it is possible that a transaction manager, that originated at a client node may designate the coordinator to be a more robust node like the file server. And there are different kind of failures that can happen. There could be a failure of a participant node in the transaction. Or there could be a connection failure. Or it is possible that one of the subordinate transaction manager failed to report. All of these are sources of failure. Now one of the things that the transaction manager at each node has to do is to log periodically to persistent store, state that is created on behalf of the client. Or on behalf of the server whatever is happening at that node this transaction manager is responsible for creating checkpoint records for recovability reasons. And these checkpoint records will be useful for warding off against failures or partial recovery of work. So the distributed system failures can happen at any point. If for instance this node fails, then the transaction manager of this node has also failed, and this is something that this transaction manager is going to find out about because it doesn't hear any response from this transaction manager, but a transaction represented by this graph here, is not aborted at the first indication of failure of a node. And the reason is because you don't want error reporting to stop as a result of failure. You want the transaction to be aborted only upon termination as requested by the transaction manager, the coordinator of the transaction tree. And the reason is as I said is to make sure that partial failures, they may have left states. You want to clean up all of that, and that will happen when a coordinator initiates termination of the transaction. We'll see that in a minute.
+</li> 
+</ul>
+
+                
+<h2>11. Commit Initiated by Coordinator</h2>
+
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l8/36.JPG?raw=true" alt="drawing" width="600"/>
+</p>
+
+<ul>
+  <li>When the client-server relationship that resulted in this formation of a transaction tree completes its action (For example, the transaction tree got created as a result of a client opening a file doing a bunch of reads of the file, writes of the file, and finally closes the file. At that point, that interaction between the client and the server is complete), that's when the transaction tree that has been created as a shadow of the original client's relationship would get into gear and say "okay, now it is time to clean up any resources that may have been partially created in order to satisfy that original client-server relationship." And it is the coordinator that initiates the termination of a transaction and the termination initiated by the coordinator can be for commit, or it can be an abort. And the different color-coded arrows show you what are all the kinds of commands that the coordinator may issue to its subordinates who in turn will issue the same commands to their subordinates. If the transaction manager, the coordinator, decides that it is time to commit, it might ask for vote request on committee. Or it might ask for an abort request. Or it might send an end of commit or abort. These are all the communications that would be initiated by the coordinator of the transaction.</li> 
+  <li>And correspondingly, responses will come back up the tree commensurate with the request that was given. So using again the file service as an example, if a client that started a file service request crashed for some reason, then the transaction manager that is a coordinator for their client-server relationship will then send an abort request to all the participating transaction managers that got touched by that particular client, as a result of that file service request. For instance it could a directory manager, it could be data servers that are hosting those files and so on. All those transaction managers will get contacted by the coordinator through this transaction tree with a request to abort that particular transaction ID. And when they get that request, these transaction managers can do local cleanup, whatever that might mean. And indicate to the transaction manager by response that yes, we have done what it needs to be done to clean up the interaction that was started by that failed IPC chain. All the different kinds of communication that I've indicated here are opportunities to tailor the commit protocols, depending on the criticality of the states. That is, the nature of the bread crumbs that are going to be left behind in the different servers. So, for instance, if the transaction tree is representing a client-server relationship between a client that opened a window using the window manager on the screen. Then if the client crashes, then the transaction manager who was the coordinator for that particular client will indicate to the transaction manager at the window manager's site that this particular transaction ID is aborting. And in that case, the window manager can simply clean up the state, because the state that it has got is a volatile state. Namely, a window that it created on behalf of the client, so it can take care of it internally. It need not be persisted. On the other hand, if the interaction that we're talking about involves persistent data structure, for instance through a file server, then the file server may have to take more complicated action. So that is what this transaction tree allows you to do depending on the nature of the client-server relationship. You can choose to use different commit protocols, depending on the criticality of the states that are associated and the nature of the bread crumbs that may be left behind in the different sites, because of the client-server relationships. Persistent servers such as a file system may need a sophisticated commit processing, such as a two-phase commit protocol while window manager will only need a simple one phase commit protocol. So all of those are possible with the structure of the transaction tree and the kinds of requests that flow through the transaction tree both down the tree and up the tree in response. And this is the heavy lifting that is done by the operating system in order to support different classes of services that might exist in the operating system, which may require different recovery management.
+</li> 
+
+</ul>
+
+        
+<h2>12. Upshot of Bundling IPC and Recovery</h2>
+
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l8/37.JPG?raw=true" alt="drawing" width="600"/>
+</p>
+
+<ul>
+  <li>The upshot of bundling the IPC and recovery management is that a service can safely collect all the bread crumbs it left behind in all the places that it touched through the course of its service. Examples of such bread crumbs include memory that was allocated but not reclaimed, file handles, communication handles, or often windows that have been created on the display. All of these are bread crumbs that may be left behind by failed clients or servers. And the fact that you have a transaction tree that records the trail of all the nodes that were touched and the temporary states that were created in all these nodes allows these bread crumbs to be cleanly reclaimed. And there is no extra communication for the recovery management itself, because whatever communication is needed for the transaction managers to talk to one another in participating in the transaction that is shadowing the IPC, actually rides on the IPC itself, and therefore it comes for free. </li> 
+  <li> Quicksilver only provides the mechanisms. The policy is entirely up to each service. And in fact, services can simply ignore these mechanisms if they don't need any recovery management, or choose a policy that is commensurate with the type of service that it is providing. Because there's a variety of mechanisms available in the operating system, simple services may choose to use low-overhead mechanisms. Whereas a more involved service such as a file server may use weighty mechanisms in order to recover from failures. The overhead for recovery management in Quicksilver is very similar to what we already saw in LRVM. The transaction managers have to write log records at every one of these nodes. Because they are handling the interactions between clients or servers at this node with respect to other sites, the transaction managers have to write log records for recovering persistent state. Similar to LRVM, Quicksilver also uses in-memory logs for the transaction managers. And these transaction managers flush the in-memory logs that they create to record persistent states to disk periodically. How often these in-memory log records are written out to the disk by the transaction manager is a performance factor, and it is a window of vulnerability just as in LRVM. Ideally, if you want to be absolutely sure that you can recover from failures, whenever any persistent state is modified and a log record is written by the transaction manager, that log record should be committed to the storage. But that costs synchronous I/O, and so if you're worried about that, you might want to do that more opportunistically, assuming there are not going to be too many failures. So there is a performance vulnerability trade off in how often the transaction manager writes log records to the storage device.
+</li> 
+</ul>
+
+        
+<h2>13. Implementation Notes</h2>
+
+<p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l8/38.JPG?raw=true" alt="drawing" width="600"/>
+</p>
+<ul>
+  <li>So one of the key aspects of Quicksilver implementation is log maintenance. The transaction managers write the log records for recovering the persistent state. They're written in the log records that are in memory data structure of the transaction manager, and every so often, the transaction managers do a "log force" of the in memory log segment to the storage for persistence. And the frequency of log force impacts performance, of course, because they are synchronous I/O operations. And log force can also be initiated by an application if it is concerned about about its persistent state. Getting onto storage but in Quicksilver an app has to be very careful about often they do a log for us. Because log maintenance is done by the transaction manager at a site, for all of the processes that are running at that node. And so the log record in Quicksilver actually contains all the modifications to persistent state required by all the processes that are running at this node. And therefore, if an individual client at a node decides to do a log force, it is actually impacting the performance of not only that particular client, but all the other clients as well. Therefore, services have to be very careful about choosing the mechanisms that is available in operating systems commensurate with their recovery requirments.
+</li> 
+
+</ul>
+
+        
+<h2>14. Quicksilver Conclusion</h2>
 
 <p align="center">
    <img src="" alt="drawing" width="500"/>
 </p>
 
 <ul>
-  <li></li> 
-  <li></li> 
-  <li></li> 
-
-</ul> -->
+  <li>The intent in this lesson is to give you a feel for how some enduring concepts stand the test of time. The ideas in Quicksilver, namely, using transactions as a fundamental operating system mechanism to bundle and stage recovery of operating system services found resurgence in the 90s in the LRVM work that we discussed earlier for providing persistence. Again, in 2010, it found resurgence in the form of providing safeguard against system vulnerability and malicious attacks on the system. And another research operating systems called Texas. We will mention Texas when we cover a later lesson module on system security. What about the computer industry and the commercial operating systems? Well, they always focused on performance. Reliability always takes the back seat. You will be amazed, what goes on under the covers of an operating system to gain performance. Just as an example, you write to a file, and you think it is on the hard disk. Well, think again. It is a while before your file write actually gets persisted on the disk. What if the system crashes in the meanwhile? Well, too bad. Well things may change in the future. There are new kinds of memories called Storage class memories, that have latency properties that are similar to a DRAM and are yet non-volatile. Will this new technology result in a resurgence of exploring transactions once more in operating systems? Only time will tell.
+</li> 
+</ul>
