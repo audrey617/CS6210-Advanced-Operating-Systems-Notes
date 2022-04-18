@@ -26,6 +26,6 @@ Course Name: Gatech CS6210 Advanced Operating Systems; Instructor: Kishore Ramac
 
 - Week 14: [Failures and Recovery](https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/L08_Failures%20and%20Recovery.md)
 
-- Week 15: Security
+- Week 15: [Security](https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/L11_Security.md)
 
 - Week 16: Exam
