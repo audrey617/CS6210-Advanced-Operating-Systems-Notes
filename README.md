@@ -16,7 +16,7 @@ Course Name: Gatech CS6210 Advanced Operating Systems; Instructor: Kishore Ramac
 
 - Week 8: [Distributed Objects and Middleware](https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/L06_Distributed%20Objects%20and%20Middleware.md)
 
-- Week 9-10: [Distributed Subsystems](https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/L07_Distributed%20Subsystems.md)
+- Week 9&10: [Distributed Subsystems](https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/L07_Distributed%20Subsystems.md)
 
 - Week 11: SPRING BREAK
 
@@ -28,4 +28,4 @@ Course Name: Gatech CS6210 Advanced Operating Systems; Instructor: Kishore Ramac
 
 - Week 15: [Security](https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/L11_Security.md)
 
-- Week 16: Exam
+- Week 16: REVIEW
