@@ -508,8 +508,13 @@ All of this will help make the design and implementation of a persistent virtual
   <li>All transaction managers are not equal. I mentioned earlier that Brittle nodes in the system are the client nodes, and therefore, it is possible that a transaction manager, that originated at a client node may designate the coordinator to be a more robust node like the file server. And there are different kind of failures that can happen. There could be a failure of a participant node in the transaction. Or there could be a connection failure. Or it is possible that one of the subordinate transaction manager failed to report. All of these are sources of failure. Now one of the things that the transaction manager at each node has to do is to log periodically to persistent store, state that is created on behalf of the client. Or on behalf of the server whatever is happening at that node this transaction manager is responsible for creating checkpoint records for recovability reasons. And these checkpoint records will be useful for warding off against failures or partial recovery of work. So the distributed system failures can happen at any point. If for instance this node fails, then the transaction manager of this node has also failed, and this is something that this transaction manager is going to find out about because it doesn't hear any response from this transaction manager, but a transaction represented by this graph here, is not aborted at the first indication of failure of a node. And the reason is because you don't want error reporting to stop as a result of failure. You want the transaction to be aborted only upon termination as requested by the transaction manager, the coordinator of the transaction tree. And the reason is as I said is to make sure that partial failures, they may have left states. You want to clean up all of that, and that will happen when a coordinator initiates termination of the transaction. We'll see that in a minute.
 </li> 
 </ul>
-
-                
+<br>
+<br>
+<p><b> OH note</b></p>
+ <p align="center">
+   <img src="https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/img/l8/oh1.JPG?raw=true" alt="drawing" width="800"/>
+</p>
+ 
 <h2>11. Commit Initiated by Coordinator</h2>
 
 <p align="center">
