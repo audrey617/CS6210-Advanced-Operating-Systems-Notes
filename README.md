@@ -10,7 +10,7 @@ Course Name: Gatech CS6210 Advanced Operating Systems (AOS); Instructor: Kishore
 
 - Week 3 : [Virtualization](https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/L03_Virtualization.md) (Memory, CPU, Device Virtualization)
 
-- Week 4&5 : [Parallel Systems (Google Docs)](https://docs.google.com/document/d/1chu8Xz5yP-fJmmAiCy34WcpyaeBAu8fGI-pGVln8IdQ/edit?usp=sharing), [Parallel Systems (github link, pdf)](https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/L04_Parallel%20System.pdf)  (Barriers,RPC, Scheduling, Tornado case)
+- Week 4&5 : [Parallel Systems (Google Docs)](https://docs.google.com/document/d/1chu8Xz5yP-fJmmAiCy34WcpyaeBAu8fGI-pGVln8IdQ/edit?usp=sharing), [Parallel Systems (github link, pdf)](https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/L04_Parallel%20System.pdf)  (Barriers, RPC, Scheduling, Tornado case)
 
 - Week 6&7 : [Distributed Systems](https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/L05_Distributed%20Systems.md) (Lamport Clocks, Latency, Active Networks, Systems from components)
 
@@ -24,7 +24,7 @@ Course Name: Gatech CS6210 Advanced Operating Systems (AOS); Instructor: Kishore
 
 - Week 13: [RT and Multimedia](https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/L10_RT%20and%20Multimedia.md) (TS-Linux, PTS)
 
-- Week 14: [Failures and Recovery](https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/L08_Failures%20and%20Recovery.md) (Lightweight Recoverable Virtual Memory, RioVista, Quicksilver)
+- Week 14: [Failures and Recovery](https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/L08_Failures%20and%20Recovery.md) (LRVM, RioVista, Quicksilver)
 
 - Week 15: [Security](https://github.com/audrey617/CS6210-Advanced-Operating-Systems-Notes/blob/main/L11_Security.md) (Principles, Security in Andrew)
 
