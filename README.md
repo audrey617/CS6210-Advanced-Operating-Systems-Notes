@@ -1,5 +1,5 @@
 ## About the repository
-Course Name: Gatech CS6210 Advanced Operating Systems; Instructor: Kishore Ramachandran; Time: Spring 2022
+Course Name: Gatech CS6210 Advanced Operating Systems (AOS); Instructor: Kishore Ramachandran; Time: Spring 2022
 <p>Repo Desc: Notes for the review purpose. Based off of the transcripts of the lectures. Please feel free to leave a comment in issues or commit/open pull requests if you spot errors in md.file or google docs.</p>
 
 ## Table of AOS contents
