@@ -1,1 +1,1 @@
-None. Check reading list.pdf
+None. Check reading list.pdf provided by TA before
